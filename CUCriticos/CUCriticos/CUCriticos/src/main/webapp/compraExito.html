@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script>
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'cabezal.html');
+        xhr.setRequestHeader('Content-Type', 'text/plain');
+        xhr.send();
+        xhr.onload = function (data) {
+            document.querySelector("nav").innerHTML = data.currentTarget.response;
+            //para más de una barra de navegación
+            /*var navs = document.querySelectorAll("nav");
+            for(var i=0; i<navs.length; i++) {
+                navs[i].innerHTML = data.currentTarget.response;
+            }*/
+            
+        };
+ </script>
+</head>
+<body>
+	<div class="contenedor">
+	        <header>
+	            <!-- barra de navegación -->
+	            <nav></nav>
+	        </header>
+    </div>
+	<h1>Felicitaciones el juego es tuyo!!</h1>
+	<br>
+	<h2>Puedes acceder a tu biblioteca para descargarlo ahora mismo</h2>
+</body>
+</html>
