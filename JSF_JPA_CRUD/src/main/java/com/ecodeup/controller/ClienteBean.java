@@ -28,6 +28,7 @@ public class ClienteBean {
 
 	public String nuevo() {
 		Cliente c= new Cliente();
+		System.out.println("ACA LLEGUEEEEEE");
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("cliente", c);
 		return  "/faces/nuevo.xhtml";
