@@ -43,11 +43,11 @@
 			</h:column>
 			<h:column>
 				<f:facet name="header">Editar</f:facet>
-				<h:commandButton action="#{UsuarioBean.editar(Usuario.id)}" value="Editar"></h:commandButton>
+				<h:commandButton action="#{UsuarioBean.editar(Usuario.nick)}" value="Editar"></h:commandButton>
 			</h:column>
 			<h:column>
 				<f:facet name="header">Eliminar</f:facet>
-				<h:commandButton action="#{UsuarioBean.eliminar(Usuario.id)}" value="Eliminar"></h:commandButton>
+				<h:commandButton action="#{UsuarioBean.eliminar(Usuario.nick)}" value="Eliminar"></h:commandButton>
 			</h:column>
 		</h:dataTable>
 	</h:form>
