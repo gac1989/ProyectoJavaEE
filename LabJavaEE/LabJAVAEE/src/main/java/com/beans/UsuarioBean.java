@@ -93,9 +93,7 @@ public class UsuarioBean {
 	}
 
 	public String actualizar(Usuario Usuario) {
-		//guarda la fecha de actualizacion
-		//UsuarioDAO UsuarioDAO = new UsuarioDAO();
-		//UsuarioDAO.editar(Usuario);
+
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/editar";
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
