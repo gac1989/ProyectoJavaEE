@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>SteamIndie</title>
+	
+
+</h:head>
+<h:body>
+	
+	<ui:include src="navBar.xhtml" />
+	<h1>Bienvenido a SteamIndie</h1>
+	<h2>Seleccione una opcion</h2>
+	<h:form>
+	<h:commandButton action="#{juegoBean.nuevo()}" value="Nuevo Juego" ></h:commandButton>
+	<h:commandButton action="#{juegoBean.listarJuegos()}" value="Listar Juegos" ></h:commandButton>
+	</h:form>
+</h:body>
+</html>

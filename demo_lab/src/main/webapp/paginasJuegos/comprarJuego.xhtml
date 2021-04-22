@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>Listar juegos</title>
+</h:head>
+<h:body>
+
+	<ui:include src="../navBar.xhtml" />	
+	<h1>Datos del Juego</h1>
+	Nombre del juego: #{juego.nombre} <br></br>
+	Precio: U$S #{juego.precio} <br></br>
+	<!--<h:outputText value="#{juego.nombre}"></h:outputText> -->
+	<!--  <h:form id="formTpv"> -->
+	<form name='formTpv' method='post' action='https://www.sandbox.paypal.com/cgi-bin/webscr'> 
+		<input type='hidden' name='cmd' value='_xclick'></input>
+	    <input type='hidden' name='business' value='sb-v143vd5841920@personal.example.com'></input> 
+	    <input type='hidden' name='item_name' value='nombre del juego' readonly="readonly"></input> 
+	    <input type='hidden' name='item_number' value='VENTA-X2561' readonly="readonly"></input> 
+	   <!--   <h:inputHidden value = "#{juego.precio}" id = "amount" />  -->
+	    <input type='hidden' name='amount' value='#{juego.precio}' readonly="readonly"></input>
+	    <input type='hidden' name='page_style' value='primary'></input>
+	    <input type='hidden' name='no_shipping' value='1'></input>
+	    <input type='hidden' name='return' value='#{enrutador.paypalExito()}'></input>
+	    <input type='hidden' name='rm' value='2'></input>
+	    <input type='hidden' name='cancel_return' value='#{enrutador.paypalCancel()}'></input>
+	    <input type='hidden' name='no_note' value='1'></input>
+	    <input type='hidden' name='currency_code' value='EUR'></input>
+	    <input type='hidden' name='cn' value='PP-BuyNowBF'></input>
+	    <input type='hidden' name='custom' value=''></input>
+	    <input type='hidden' name='first_name' value='NOMBRE'> </input>
+	    <input type='hidden' name='last_name' value='APELLIDOS'> </input>
+	    <input type='hidden' name='address1' value='DIRECCIÓN'> </input>
+	    <input type='hidden' name='city' value='POBLACIÓN'> </input>
+	    <input type='hidden' name='zip' value='CÓDIGO POSTAL'></input>
+	    <input type='hidden' name='night_phone_a' value=''> </input>
+	    <input type='hidden' name='night_phone_b' value='TELÉFONO'> </input>
+	    <input type='hidden' name='night_phone_c' value=''> </input>
+	    <input type='hidden' name='lc' value='es'></input>
+	    <input type='hidden' name='country' value='ES'></input>
+		<input type="submit" value="pagar"></input> 
+	</form>
+	<!--</h:form>-->
+</h:body>
+</html>
