@@ -35,7 +35,16 @@ import com.model.Usuario;
 public class UsuarioBean {
 	
 	private List<Usuario> usuarios = this.obtenerUsuarios();
+	private String nuevo = this.nuevo();	
 	
+	public String getNuevo() {
+		return nuevo;
+	}
+
+	public void setNuevo(String nuevo) {
+		this.nuevo = nuevo;
+	}
+
 	public List<Usuario> getUsuarios() {
 		return usuarios;
 	}
@@ -50,6 +59,11 @@ public class UsuarioBean {
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("Usuario", c);
 		return  "/faces/nuevo.xhtml";
+	}
+	
+	public String mostrarUsuarios() {
+
+		return  "/faces/mostrarUsuarios.xhtml";
 	}
 	
 	public String guardar (Usuario Usuario) {
@@ -96,6 +110,16 @@ public class UsuarioBean {
 		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(mdo) { };
 		Response response = target.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
 		response.close();
+	}
+	
+	public static Usuario obtenerUsuario(String nick) {
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/usuario/" + nick;
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Response response = target.request().get();
+		String response2 = response.readEntity(String.class);
+        Usuario u = new Gson().fromJson(response2, Usuario.class);
+		return u;
 	}
 	
 	public String editar(String Usuario) {

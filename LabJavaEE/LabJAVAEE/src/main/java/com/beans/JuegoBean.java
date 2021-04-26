@@ -33,10 +33,19 @@ import com.model.Juego;
 public class JuegoBean {
 
 	private List<Juego> juegos = this.obtenerJuegos();
+	private List<Juego> resultado =null;
+	private String listar =  this.listarJuegos();
 	private UploadedFile file;
 	private String busqueda;
-
 	
+	public String getListar() {
+		return listar;
+	}
+
+	public void setListar(String listar) {
+		this.listar = listar;
+	}
+
 	public UploadedFile getFile() {
 		return file;
 	}
@@ -120,12 +129,7 @@ public class JuegoBean {
   
 		return  "/faces/index.xhtml";
 	}
-	/*	
-	public List<Juego> obtenerJuegos(){
-		JuegoDAO juegoDAO= new JuegoDAO();
-		return juegoDAO.obtenerJuegos();
-	}*/
-	
+
 	public List<Juego> obtenerJuegos(){
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegos";
 		Client client = ClientBuilder.newClient();
@@ -133,15 +137,13 @@ public class JuegoBean {
         Response response = target.request().get();
         String response2 = response.readEntity(String.class);
         Juego[] j = new Gson().fromJson(response2, Juego[].class);
-        List<Juego> datos = Arrays.asList(j);
+        List<Juego> datos = null;
+        if(j!=null) {
+        	datos = Arrays.asList(j);
+        }
         return datos;
 	}
-	/*
-	public List<Juego> buscadorJuego(String busqueda){
-		JuegoDAO juegoDAO= new JuegoDAO();
-		return juegoDAO.buscarJuegos(busqueda);
-	}*/
-	
+
 	public List<Juego> buscadorJuego(String busqueda){
 		System.out.println("Estoy en buscadorJuego() " + busqueda);	
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscadorJuegos/" + busqueda;
@@ -166,27 +168,22 @@ public class JuegoBean {
 		return "/faces/paginasJuegos/listarJuego.xhtml";
 	}
 	
-	/*
-	public String buscarJuego(int id) {
-		JuegoDAO juegoDAO= new JuegoDAO();
-		Juego j = juegoDAO.buscar(id);
-		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-		sessionMap.put("juego",j);
-		return "/faces/paginasJuegos/comprarJuego.xhtml";
-	}*/
-	
+
 	public String buscarJuego(int id) {
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscarJuego";
 		Client client = ClientBuilder.newClient();
+		System.out.println("El id es:  " + id);
         Form form = new Form();
         form.param("id", String.valueOf(id));
         WebTarget target= client.target(urlRestService);
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         String response2 = response.readEntity(String.class);
+        System.out.println("La respuesta es:  " + response2);
         Juego j = new Gson().fromJson(response2, Juego.class);
-		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("juego",j);
 		return "/faces/paginasJuegos/comprarJuego.xhtml";
+	
 	}
 	
 }

@@ -14,7 +14,7 @@
 <h:body>
 	
 	<ui:include src="navBar.xhtml" />
-	<h1>Bienvenido a SteamIndie</h1>
+	<p>Bienvenido #{login.user}</p>
 	<h2>Seleccione una opcion</h2>
 	<h:form>
 	<h:commandButton action="#{juegoBean.nuevo()}" value="Nuevo Juego" ></h:commandButton>

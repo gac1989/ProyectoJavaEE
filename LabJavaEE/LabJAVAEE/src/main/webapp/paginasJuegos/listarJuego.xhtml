@@ -34,11 +34,11 @@
 	<h1>Lista de juegos</h1>
 	
 	<ui:repeat var="juego" value="#{juegoBean.juegos}">
-	
 	<div class="card" style="width: 18rem;">
-	  <h:graphicImage value = "/img/#{juego.rutaImg}" class="card-img-top"/>
+	  <p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{juego.rutaImg}" class="card-img-top"/>
 	  <div class="card-body">
 	    <h5 class="card-title">#{juego.nombre}</h5>
+	    <h5 class="card-title">#{juego.id}</h5>
 	    <h6> U$S #{juego.precio}</h6>
 	    <p class="card-text">#{juego.descripcion}</p>
 	    <h:form>
