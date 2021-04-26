@@ -1,31 +1,16 @@
 package com.model;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-@Entity
-@Table(name="usuario")
+
 public class Usuario {
-	@Id
+	
 	private String nick;
-	@Column
 	private String nombres;
-	@Column
 	private String apellidos;
-	@Column
 	private String direccion;
-	@Column
 	private String email;
-	@Column
 	private String telefono;
-
 
 	public String getNick() {
 		return nick;

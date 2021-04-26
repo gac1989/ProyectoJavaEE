@@ -1,10 +1,8 @@
 package com.beans;
 
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,14 +14,19 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.primefaces.shaded.commons.io.IOUtils;
 
-import com.dao.UsuarioDAO;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.primefaces.model.file.UploadedFile;
+
 import com.google.gson.Gson;
 import com.model.Usuario;
+
+
+
 
 
 
@@ -64,7 +67,6 @@ public class UsuarioBean {
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         String response2 = response.readEntity(String.class);
         System.out.println("La respuesta es: " + response2);
-        
         return  "/faces/index.xhtml";
 	}
 
@@ -77,10 +79,27 @@ public class UsuarioBean {
         String response2 = response.readEntity(String.class);
         Usuario[] u = new Gson().fromJson(response2, Usuario[].class);
         List<Usuario> datos = Arrays.asList(u);
+		System.out.println("IMPRESION ");
         return datos;
 	}
 
+	public void subirImagen() throws FileNotFoundException {
+		System.out.println("ENTRE A LA IMAGEN");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/subir";
+		Client client = ClientBuilder.newClient();
+		File archivo = new File("C:\\Users\\admin\\Desktop\\correo.png");
+		UploadedFile file = null;
+		WebTarget target = client.target(urlRestService);
+		MultipartFormDataOutput mdo = new MultipartFormDataOutput();
+		mdo.addFormData("fichero", archivo, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+		mdo.addFormData("nombre", "correo.png", MediaType.TEXT_PLAIN_TYPE);
+		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(mdo) { };
+		Response response = target.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+		response.close();
+	}
+	
 	public String editar(String Usuario) {
+		
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/usuario/" + Usuario;
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
@@ -93,7 +112,7 @@ public class UsuarioBean {
 	}
 
 	public String actualizar(Usuario Usuario) {
-
+		
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/editar";
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
@@ -105,14 +124,16 @@ public class UsuarioBean {
         form.param("email", Usuario.getEmail());
         form.param("telefono", Usuario.getTelefono());
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
-        String response2 = response.readEntity(String.class);
+        System.out.println("LA RESPUESTA ES: " + response.getStatus());
 		return "/faces/index.xhtml";
 	}
+	
+
 
 	// eliminar un Usuario
 	public String eliminar(String nick) {
-		UsuarioDAO UsuarioDAO = new UsuarioDAO();
-		UsuarioDAO.eliminar(nick);
+		//UsuarioDAO UsuarioDAO = new UsuarioDAO();
+		//UsuarioDAO.eliminar(nick);
 		System.out.println("Usuario eliminado..");
 		return "/faces/index.xhtml";
 	}
