@@ -27,22 +27,19 @@ import com.model.Usuario;
 
 
 
-
-
-
 @ManagedBean(name = "UsuarioBean")
 @RequestScoped
 public class UsuarioBean {
 	
 	private List<Usuario> usuarios = this.obtenerUsuarios();
-	private String nuevo = this.nuevo();	
+	private String nuevo1 = this.nuevo();	
 	
-	public String getNuevo() {
-		return nuevo;
+	public String getNuevo1() {
+		return nuevo1;
 	}
 
-	public void setNuevo(String nuevo) {
-		this.nuevo = nuevo;
+	public void setNuevo1(String nuevo) {
+		this.nuevo1 = nuevo;
 	}
 
 	public List<Usuario> getUsuarios() {

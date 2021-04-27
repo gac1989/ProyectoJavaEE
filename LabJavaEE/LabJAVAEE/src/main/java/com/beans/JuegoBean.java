@@ -30,6 +30,7 @@ import com.model.Juego;
 
 @ManagedBean(name = "juegoBean")
 @RequestScoped
+
 public class JuegoBean {
 
 	private List<Juego> juegos = this.obtenerJuegos();

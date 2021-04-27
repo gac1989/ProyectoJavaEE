@@ -16,11 +16,8 @@
 	<ui:include src="navBar.xhtml" />
 	<p>Bienvenido #{login.user}</p>
 	<h2>Seleccione una opcion</h2>
-	<h:form>
-	<h:commandButton action="#{juegoBean.nuevo()}" value="Nuevo Juego" ></h:commandButton>
-	<h:commandButton action="#{juegoBean.listarJuegos()}" value="Listar Juegos" ></h:commandButton>
-	<h:commandButton action="#{UsuarioBean.nuevo()}" value="Registrarse" ></h:commandButton>
-	<h:commandButton action="#{juegoBean.prueba()}" value="Prueba" ></h:commandButton>
-	</h:form>
+	<h:button value="Listar juegos" outcome="#{juegoBean.listarJuegos()}" />
+	<h:button value="Nuevo juego" outcome="#{juegoBean.nuevo()}" />
+	<h:button value="Mostrar usuarios" outcome="#{UsuarioBean.nuevo()}" />
 </h:body>
 </html>
