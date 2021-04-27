@@ -1,33 +1,36 @@
 package com.lab.java;
 
-
+import javax.ws.rs.POST;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
-
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.apache.commons.io.IOUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.dao.JuegoDAO;
 import com.dao.UsuarioDAO;
 import com.model.Juego;
 import com.model.Usuario;
-
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.FormParam;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
 
 @Path("/ejemplo")
@@ -140,48 +143,107 @@ public class RecursosRest {
 	
 	
 	@POST
-    @Path("/subir")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadImageFile(
-            @FormDataParam("fichero") InputStream fileInputStream, @FormDataParam("fichero") FormDataContentDisposition fileDetail) throws IOException{
-		System.out.print("ENTRE A SUBIR ACAAAA" + fileInputStream.read());
-        String fileName = null;
-        String uploadFilePath = null;
-        
-        try {
-            fileName = fileDetail.getFileName();
-            uploadFilePath = writeToFileServer(fileInputStream, fileName);
-        }
-        catch(IOException ioe){
-            ioe.printStackTrace();
-        }
-        finally{
-        }
-        return Response.ok("Fichero subido a " + uploadFilePath).build();
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/buscarJuego")
+	public Response buscarJuego(@FormParam("id") String calve) {
+		int id = Integer.parseInt(calve);
+		JuegoDAO juegoDAO = new JuegoDAO();
+		Juego j = juegoDAO.buscar(id);
+		return Response.ok(j).build();
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/buscadorJuegos/{busqueda}")
+	public Response buscadorJuegos(@PathParam("busqueda") String busqueda) {
+		System.out.println("Esto en la api" + busqueda);
+		JuegoDAO juegoDAO = new JuegoDAO();
+		List<Juego> juegos = juegoDAO.buscarJuegos(busqueda);
+		if(!juegos.isEmpty()) {
+			return Response.ok(juegos).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	
+	@POST
+    @Path("/subir")
+    @Consumes("multipart/form-data")
+    public Response uploadFile(MultipartFormDataInput input) throws IOException {
+		System.out.print("LLEGUE A SUBIR ACA");
+        String fileName = "";
+        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+        List<InputPart> inputParts = uploadForm.get("fichero");
+        List<InputPart> name = uploadForm.get("nombre");
+        fileName = name.get(0).getBodyAsString();
+        
+       
+        for (InputPart inputPart : inputParts) {
+
+         try {
+
+            InputStream inputStream = inputPart.getBody(InputStream.class,null);
+
+            byte [] bytes = IOUtils.toByteArray(inputStream);
+                
+            //constructs upload file path
+            fileName = UPLOAD_FILE_SERVER + fileName;
+                
+            writeFile(bytes,fileName);
+                
+            System.out.println("Done");
+
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+
+        }
+
+        return Response.status(200)
+            .entity("uploadFile is called, Uploaded file name : " + fileName).build();
+
+    }
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/registrarJuego")
+	public Response registroJuego(@FormParam("nombre") String nombre, @FormParam("descripcion") String descripcion, @FormParam("rutaImg") String rutaImg, @FormParam("precio") String precio) {
+		
+	
+		if(nombre!=null && !nombre.equals("") && descripcion!=null && !descripcion.equals("")&& rutaImg!=null && !rutaImg.equals("")&& precio!=null && !precio.equals("")) {
+			JuegoDAO jDao = new JuegoDAO();
+			Juego j = new Juego();
+			j.setNombre(nombre);
+			j.setDescripcion(descripcion);
+			j.setRutaImg(rutaImg);
+			j.setPrecio(Float.parseFloat(precio));
+			jDao.guardar(j);
+			return Response.ok("SE CREO CORRECTAMENTE EL Juego").build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	
 	 
-	    private String writeToFileServer(InputStream inputStream, String fileName) throws IOException {
- 
-	        OutputStream outputStream = null;
-	        String qualifiedUploadFilePath = UPLOAD_FILE_SERVER + fileName;
-	 
-	        try {
-	        	File archivo = new File(qualifiedUploadFilePath);
-	            outputStream = new FileOutputStream(archivo);
-	            System.out.println("El directorio es: " + qualifiedUploadFilePath);
-	            int read = 0;
-	            byte[] bytes = new byte[1024];
-	            while ((read = inputStream.read(bytes)) != -1) {
-	                outputStream.write(bytes, 0, read);
-	                System.out.println("ENTRE EN EL WHILE");
-	            }
-	            outputStream.flush();
-	            outputStream.close();
+	    //save to somewhere
+	    private void writeFile(byte[] content, String filename) throws IOException {
+
+	        File file = new File(filename);
+
+	        if (!file.exists()) {
+	            file.createNewFile();
 	        }
-	        catch (IOException ioe) {
-	            ioe.printStackTrace();
-	        }
-	        return qualifiedUploadFilePath;
+
+	        FileOutputStream fop = new FileOutputStream(file);
+
+	        fop.write(content);
+	        fop.flush();
+	        fop.close();
+
 	    }
 	
 }
