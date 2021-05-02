@@ -2,6 +2,7 @@ package com.beans;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -11,6 +12,8 @@ import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.ws.rs.client.Client;
@@ -30,15 +33,31 @@ import com.model.Juego;
 
 @ManagedBean(name = "juegoBean")
 @RequestScoped
-
 public class JuegoBean {
 
 	private List<Juego> juegos = this.obtenerJuegos();
-	private List<Juego> resultado =null;
 	private String listar =  this.listarJuegos();
 	private UploadedFile file;
 	private String busqueda;
+	private String nuevo1  = this.nuevo();
+	private List<Juego> resultado = buscadorJuego("fr");
 	
+	public List<Juego> getResultado() {
+		return resultado;
+	}
+
+	public void setResultado(List<Juego> resultado) {
+		this.resultado = resultado;
+	}
+
+	public String getNuevo1() {
+		return nuevo1;
+	}
+
+	public void setNuevo1(String nuevo1) {
+		this.nuevo1 = nuevo1;
+	}
+
 	public String getListar() {
 		return listar;
 	}
@@ -62,8 +81,6 @@ public class JuegoBean {
 	public void setJuegos(List<Juego> juegos) {
 		this.juegos = juegos;
 	}
-	
-	
 
 	public String getBusqueda() {
 		return busqueda;
@@ -84,7 +101,6 @@ public class JuegoBean {
 	public void prueba() {
 	   URL directory = this.getClass().getResource("tmp.png");
 	   File archivo = new File(directory.getPath());
-	   System.out.println("LA RUTA ES" + archivo.getAbsolutePath() + " Y EL ARCHIVO SE LLAMA: " + archivo.getName());
 	}
 	
 	
@@ -132,6 +148,7 @@ public class JuegoBean {
 	}
 
 	public List<Juego> obtenerJuegos(){
+		System.out.println("LaLALALALlalalLALALAL EENTREEEEEE");
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegos";
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
@@ -146,7 +163,6 @@ public class JuegoBean {
 	}
 
 	public List<Juego> buscadorJuego(String busqueda){
-		System.out.println("Estoy en buscadorJuego() " + busqueda);	
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscadorJuegos/" + busqueda;
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
@@ -158,22 +174,21 @@ public class JuegoBean {
 	}
 	
 	public String listarJuegos() {
-		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-		sessionMap.put("juegos",juegos);
+		System.out.println("LISTARRRRR");
+		this.juegos=this.obtenerJuegos();
 		return "/faces/paginasJuegos/listarJuego.xhtml";
 	}
 	
 	public String resultadoBusqueda() {
-		System.out.println("Estoy en resultadoBusqueda() " + busqueda);
-		this.juegos=this.buscadorJuego(busqueda);
-		return "/faces/paginasJuegos/listarJuego.xhtml";
+		//this.resultado=this.buscadorJuego(busqueda);
+		return "/faces/listarBusqueda.xhtml";
 	}
 	
 
 	public String buscarJuego(int id) {
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscarJuego";
 		Client client = ClientBuilder.newClient();
-		System.out.println("El id es:  " + id);
+		System.out.println("El identificador es: " + id);
         Form form = new Form();
         form.param("id", String.valueOf(id));
         WebTarget target= client.target(urlRestService);

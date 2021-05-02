@@ -6,43 +6,27 @@ package com.model;
 public class Usuario {
 	
 	private String nick;
-	private String nombres;
-	private String apellidos;
-	private String direccion;
 	private String email;
-	private String telefono;
+	private String password;
+	private String type;
 
 	public String getNick() {
 		return nick;
+	}
+
+	public String getPass() {
+		return password;
+	}
+
+	public void setPass(String pass) {
+		this.password = pass;
 	}
 
 	public void setNick(String nick) {
 		this.nick = nick;
 	}
 
-	public String getNombres() {
-		return nombres;
-	}
-
-	public void setNombres(String nombres) {
-		this.nombres = nombres;
-	}
-
-	public String getApellidos() {
-		return apellidos;
-	}
-
-	public void setApellidos(String apellidos) {
-		this.apellidos = apellidos;
-	}
-
-	public String getDireccion() {
-		return direccion;
-	}
-
-	public void setDireccion(String direccion) {
-		this.direccion = direccion;
-	}
+	
 
 	public String getEmail() {
 		return email;
@@ -51,21 +35,28 @@ public class Usuario {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	public String getTelefono() {
-		return telefono;
-	}
-
-	public void setTelefono(String telefono) {
-		this.telefono = telefono;
-	}
-
 	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	@Override
 	public String toString() {
-		return "Cliente [id=" + nick + ", nombres=" + nombres + ", apellidos=" + apellidos + ", direccion=" + direccion
-				+ ", email=" + email + ", telefono=" + telefono;
+		return "Usuario [nick=" + nick + ", email=" + email + ", pass=" + password + "]";
 	}
+
+	
 	
 }

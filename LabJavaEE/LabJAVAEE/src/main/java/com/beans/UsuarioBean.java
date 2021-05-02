@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -20,26 +21,38 @@ import javax.ws.rs.core.Response;
 
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.mindrot.jbcrypt.BCrypt;
 import org.primefaces.model.file.UploadedFile;
 
 import com.google.gson.Gson;
+import com.model.Desarrollador;
+import com.model.Jugador;
 import com.model.Usuario;
 
 
 
 @ManagedBean(name = "UsuarioBean")
-@RequestScoped
+@SessionScoped
 public class UsuarioBean {
 	
 	private List<Usuario> usuarios = this.obtenerUsuarios();
-	private String nuevo1 = this.nuevo();	
-	
-	public String getNuevo1() {
-		return nuevo1;
+	private String nuevoJug = this.nuevoJugador();
+	private String nuevoDes = this.nuevoDesarrollador();
+
+	public String getNuevoJug() {
+		return nuevoJug;
 	}
 
-	public void setNuevo1(String nuevo) {
-		this.nuevo1 = nuevo;
+	public void setNuevoJug(String nuevoJug) {
+		this.nuevoJug = nuevoJug;
+	}
+
+	public String getNuevoDes() {
+		return nuevoDes;
+	}
+
+	public void setNuevoJDes(String nuevoJDes) {
+		this.nuevoDes = nuevoJDes;
 	}
 
 	public List<Usuario> getUsuarios() {
@@ -49,13 +62,31 @@ public class UsuarioBean {
 	public void setUsuarios(List<Usuario> Usuarios) {
 		this.usuarios = Usuarios;
 	}
-
-	public String nuevo() {
-		Usuario c= new Usuario();
+	
+	public String hash(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt(12));
+    }
+	public static boolean verifyHash(String password, String hash) {
+		System.out.println("La pass es: " + password + " El hash es: " + hash);
+        return BCrypt.checkpw(password, hash);
+    }
+	
+	
+	public String nuevoJugador() {
+		Jugador c= new Jugador();
+		c.setType("jugador");
 		System.out.println("ACA LLEGUEEEEEE");
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("Usuario", c);
-		return  "/faces/nuevo.xhtml";
+		return  "/faces/nuevojugador.xhtml";
+	}
+	public String nuevoDesarrollador() {
+		Desarrollador c= new Desarrollador();
+		c.setType("desarrollador");
+		System.out.println("ACA LLEGUEEEEEE");
+		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+		sessionMap.put("Usuario", c);
+		return  "/faces/nuevodesarrollador.xhtml";
 	}
 	
 	public String mostrarUsuarios() {
@@ -63,19 +94,29 @@ public class UsuarioBean {
 		return  "/faces/mostrarUsuarios.xhtml";
 	}
 	
-	public String guardar (Usuario Usuario) {
+	public static Usuario checkUser(String nick, String pass) {
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/usuario/" + nick;
+		Client client = ClientBuilder.newClient();
+        WebTarget target= client.target(urlRestService);
+        Response response = target.request().get();
+        String response2 = response.readEntity(String.class);
+        System.out.println("La respuesta es: " + response2);
+        Usuario u = new Gson().fromJson(response2, Usuario.class);
+        if(u!=null && verifyHash(pass, u.getPass())) {
+    		return u;
+        }
+        System.out.println("La respuesta es: NULA " );
+        return null;
+	}
+	
+	public String guardar (Usuario user) {
 		
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/registrarse";
 		Client client = ClientBuilder.newClient();
-        Form form = new Form();
-        form.param("nick", Usuario.getNick());
-        form.param("nombre", Usuario.getNombres());
-        form.param("apellido", Usuario.getApellidos());
-        form.param("direccion", Usuario.getDireccion());
-        form.param("email", Usuario.getEmail());
-        form.param("telefono", Usuario.getTelefono());
+        System.out.println("La contraseña es: " + user.getPass() + " El hash es:  " + hash(user.getPass()) + " "+ user.getEmail());
+        user.setPassword(hash(user.getPass()));
         WebTarget target= client.target(urlRestService);
-        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        Response response = target.request().post(Entity.entity(Entity.json(user), MediaType.APPLICATION_JSON));
         String response2 = response.readEntity(String.class);
         System.out.println("La respuesta es: " + response2);
         return  "/faces/index.xhtml";
@@ -139,11 +180,8 @@ public class UsuarioBean {
 		WebTarget target= client.target(urlRestService);
 		Form form = new Form();
         form.param("nick", Usuario.getNick());
-        form.param("nombre", Usuario.getNombres());
-        form.param("apellido", Usuario.getApellidos());
-        form.param("direccion", Usuario.getDireccion());
         form.param("email", Usuario.getEmail());
-        form.param("telefono", Usuario.getTelefono());
+        form.param("pass", Usuario.getPass());
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         System.out.println("LA RESPUESTA ES: " + response.getStatus());
 		return "/faces/index.xhtml";

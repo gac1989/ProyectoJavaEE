@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>Nuevo Usuario</title>
+</h:head>
+<h:body>
+	<h:form id="form">
+		<h:panelGrid columns="2" cellspacing="20" border="1" id="panel">
+			<f:facet name="header">
+				<h:outputText value="Nuevo Usuario"></h:outputText>
+			</f:facet>
+			
+			<h:outputText value="Nick"></h:outputText>
+			<h:inputText value="#{Usuario.nick}"></h:inputText>
+	
+			<h:outputText value="Email"></h:outputText>
+			<h:inputText value="#{Usuario.email}" id="email"></h:inputText>
+			
+			<h:outputText value="Contrasenia"></h:outputText>
+			<h:inputSecret value="#{Usuario.pass}"></h:inputSecret>
+			
+			<h:outputText value="Nombre"></h:outputText>
+			<h:inputSecret value="#{Usuario.nombre}"></h:inputSecret>
+			
+			<h:outputText value="Apellido"></h:outputText>
+			<h:inputSecret value="#{Usuario.apellido}"></h:inputSecret>
+
+			<f:facet name="footer">
+				<h:commandButton action="#{UsuarioBean.guardar(Usuario)}"
+					value="Guardar"></h:commandButton>
+			</f:facet>
+		</h:panelGrid>
+	</h:form>
+	
+</h:body>
+</html>

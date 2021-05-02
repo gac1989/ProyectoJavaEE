@@ -14,7 +14,6 @@
 	</h2>
 	<h:form>
 	<h:commandButton action="#{UsuarioBean.nuevo()}" value="Nuevo usuario"></h:commandButton>
-	
 		<h:dataTable value="#{UsuarioBean.usuarios}" var="Usuario"
 			border="1">
 			<h:column>
@@ -22,24 +21,8 @@
 				<h:outputText value="#{Usuario.nick}"></h:outputText>
 			</h:column>
 			<h:column>
-				<f:facet name="header">Nombres</f:facet>
-				<h:outputText value="#{Usuario.nombres}"></h:outputText>
-			</h:column>
-			<h:column>
-				<f:facet name="header">Apellidos</f:facet>
-				<h:outputText value="#{Usuario.apellidos}"></h:outputText>
-			</h:column>
-			<h:column>
-				<f:facet name="header">Direccion</f:facet>
-				<h:outputText value="#{Usuario.direccion}"></h:outputText>
-			</h:column>
-			<h:column>
 				<f:facet name="header">Email</f:facet>
 				<h:outputText value="#{Usuario.email}"></h:outputText>
-			</h:column>
-			<h:column>
-				<f:facet name="header">Telefono</f:facet>
-				<h:outputText value="#{Usuario.telefono}"></h:outputText>
 			</h:column>
 			<h:column>
 				<f:facet name="header">Editar</f:facet>

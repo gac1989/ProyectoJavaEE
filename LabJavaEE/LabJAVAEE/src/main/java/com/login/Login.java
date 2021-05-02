@@ -10,6 +10,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 
 
 @ManagedBean
@@ -49,15 +51,19 @@ public class Login implements Serializable {
 
 	//validate login
 	public String validateUsernamePassword() {
-		System.out.println("LLEGUE AL LOGIN");
 		boolean valid = false;
-		Usuario u = UsuarioBean.obtenerUsuario(user);
+		Usuario u = null;
+		if(user!=null) {
+			u = UsuarioBean.checkUser(user,pwd);
+		}
 		if(user!=null && u!=null) {
-			valid = (pwd.equals("1234"));
+			valid = true;
 		}
 		if (valid) {
 			HttpSession session = SessionUtils.getSession();
 			session.setAttribute("username", user);
+			session.setAttribute("type", "administrador");
+			System.out.println("USUARIO: " + user + " TIPO: " + session.getAttribute("type"));
 			return "faces/index.xhtml";
 		} else {
 			FacesContext.getCurrentInstance().addMessage(
@@ -68,7 +74,13 @@ public class Login implements Serializable {
 			return "login";
 		}
 	}
+	 public String hash(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt(12));
+    }
 
+	 public boolean verifyHash(String password, String hash) {
+        return BCrypt.checkpw(password, hash);
+    }
 	//logout event, invalidate session
 	public String logout() {
 		HttpSession session = SessionUtils.getSession();

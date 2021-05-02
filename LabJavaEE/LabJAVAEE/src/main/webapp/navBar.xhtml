@@ -27,15 +27,17 @@
         	 <h:link value = "Juegos" outcome = "#{juegoBean.listar}" class="nav-link"/>
         </li>
         <li class="nav-item dropdown">
-         	<h:link value = "Registrarse" outcome = "#{UsuarioBean.nuevo}" class="nav-link"/>
+         	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Registrarse </a>
+         	<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+	            <li><h:link value = "Desarrollador" outcome = "#{UsuarioBean.nuevoDes}" class="nav-link"/></li>
+	            <li><h:link value = "Jugador" outcome = "#{UsuarioBean.nuevoJug}" class="nav-link"/></li>
+	            <li><h:link class="dropdown-divider"/></li>
+          </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+         <li class="nav-item dropdown">
+         	<h:link value = "Crear juego" outcome = "#{juegoBean.nuevo1}" class="nav-link"/>
         </li>
       </ul>
- 
-  
-        
         <h:form class="d-flex">
       	<h:inputText value="#{juegoBean.busqueda}" class="form-control me-2" placeholder="Buscar" required="true"></h:inputText>
       	<h:commandButton action="#{juegoBean.resultadoBusqueda()}" value="Buscar" class="btn btn-outline-success"></h:commandButton>

@@ -31,12 +31,11 @@ public class LoginFilter implements Filter {
 			HttpServletResponse resp = (HttpServletResponse) response;
 			HttpSession ses = reqt.getSession(false);
 			String reqURI = reqt.getRequestURI();
-			System.out.println("LA RUTA ES: " + reqURI);
 			if (reqURI.indexOf("/login.xhtml") >= 0
 					|| (ses != null && ses.getAttribute("username") != null)
 					|| reqURI.indexOf("/public/") >= 0
 					|| reqURI.contains("javax.faces.resource")
-					|| (reqURI.equals("/LabJAVAEE/faces/paginasJuegos/listarJuego.xhtml") || reqURI.equals("/LabJAVAEE/faces/nuevo.xhtml")))
+					|| (reqURI.equals("/LabJAVAEE/faces/paginasJuegos/listarJuego.xhtml") || reqURI.equals("/LabJAVAEE/faces/nuevodesarrollador.xhtml") || reqURI.equals("/LabJAVAEE/faces/nuevojugador.xhtml")))
 				chain.doFilter(request, response);
 			else
 				resp.sendRedirect(reqt.getContextPath() + "/faces/login.xhtml");
