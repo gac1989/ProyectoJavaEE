@@ -45,6 +45,14 @@ public class UsuarioDAO {
 		entity.getTransaction().commit();
 	}
 
+	/// eliminar Usuario
+		public void agregarJuego(Usuario u) {
+			entity.getTransaction().begin();
+			entity.persist(u);
+			entity.getTransaction().commit();
+		}
+
+	
 	// obtener todos los Usuario
 	public List<Usuario> obtenerUsuarios() {
 		List<Usuario> listaUsuarios = new ArrayList<Usuario>();

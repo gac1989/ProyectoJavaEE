@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +29,16 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.dao.JuegoDAO;
+import com.dao.JugadorDAO;
 import com.dao.UsuarioDAO;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.model.Administrador;
+import com.model.Desarrollador;
 import com.model.Juego;
+import com.model.Jugador;
 import com.model.Usuario;
 
 
@@ -44,9 +53,7 @@ public class RecursosRest {
     @Path("/descarga/{imagen}")
     @Produces({"image/png", "image/jpg", "image/gif"})
     public Response downloadImageFile(@PathParam("imagen") String imagen) {
-        System.out.println("LLEGUE A LAS FOTOSS");
         File file = new File(UPLOAD_FILE_SERVER + imagen);
- 
         Response.ResponseBuilder responseBuilder = Response.ok((Object) file);
         responseBuilder.header("Content-Disposition", "attachment; filename=\"" + imagen + "\"");
         return responseBuilder.build();
@@ -56,7 +63,21 @@ public class RecursosRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/saludo")
 	public String saludar() {
-		System.out.println("Hola Mundo desde REST");
+		JugadorDAO u = new JugadorDAO();
+		Jugador u1 = u.buscar("bruno540");
+		JuegoDAO j = new JuegoDAO();
+		Juego j1 = j.buscar(1);
+		Map<String, Juego> juego = u1.getJuegos();
+		juego.put(j1.getNombre(), j1);
+		u.agregarJuego(u1);
+		u1 = u.buscar("bruno540");
+		Map<String, Juego> juego2 = u1.getJuegos();
+	   for (String name : juego2.keySet())
+        {
+            // search  for value
+            Juego url = juego2.get(name);
+            System.out.println("Key = " + name + ", Value = " + url.getNombre());
+        }
 		return "Hola Mundo desde REST";
 	}
 	
@@ -88,19 +109,54 @@ public class RecursosRest {
 	}
 	
 	@POST
+	@Path("/checkusuario")
 	@Produces(MediaType.APPLICATION_JSON)
+	public Response checkUsuario(@FormParam("nick") String nick, @FormParam("pass") String pass) {
+		UsuarioDAO UsuarioDAO = new UsuarioDAO();
+		Usuario user = UsuarioDAO.buscar(nick);
+		if(user!=null && user.getPassword().equals(pass)) {
+			return Response.ok(user).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/registrarse")
-	public Response registro(@FormParam("nick") String nick, @FormParam("nombre") String nombre, @FormParam("apellido") String apellido, @FormParam("direccion") String direccion, @FormParam("email") String email, @FormParam("telefono") String telefono) {
-		if(nick!=null && !nick.equals("") && nombre!=null && !nombre.equals("")&& apellido!=null && !apellido.equals("")&& direccion!=null && !direccion.equals("")&& telefono!=null && !telefono.equals("")&& email!=null && !email.equals("")) {
-			UsuarioDAO u = new UsuarioDAO();
-			Usuario u1 = new Usuario();
-			u1.setNick(nick);
-			u1.setNombres(nombre);
-			u1.setApellidos(apellido);
-			u1.setDireccion(direccion);
-			u1.setTelefono(telefono);
-			u1.setEmail(email);
-			u.guardar(u1);
+	public Response registro(String json) {
+		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+		JsonObject type = convertedObject.getAsJsonObject("entity");
+		JsonElement type1 = type.get("type");
+		System.out.println("El tipo es: " + type1.getAsString());
+		JsonElement tree = new Gson().toJsonTree(convertedObject);
+		JsonElement entity = tree.getAsJsonObject().getAsJsonObject("entity");
+		if(entity!=null) {
+			switch(type1.getAsString()) {
+				case "jugador":{
+					UsuarioDAO u = new UsuarioDAO();
+					Jugador u1 = new Gson().fromJson(entity.toString(), Jugador.class);
+					u.guardar(u1);
+				}
+				case "desarrollador":{
+					UsuarioDAO u = new UsuarioDAO();
+					Desarrollador u1 = new Gson().fromJson(entity.toString(), Desarrollador.class);
+					u.guardar(u1);
+				}
+				case "administrador":{
+					UsuarioDAO u = new UsuarioDAO();
+					Administrador u1 = new Gson().fromJson(entity.toString(), Administrador.class);
+					u.guardar(u1);
+				}
+				default:{
+					UsuarioDAO u = new UsuarioDAO();
+					Usuario u1 = new Gson().fromJson(entity.toString(), Usuario.class);
+					System.out.println("ENTREE al DEFAULT");
+					u.guardar(u1);
+				}
+			}
 			return Response.ok("SE CREO CORRECTAMENTE EL USUARIO").build();
 		}
 		else {
@@ -110,16 +166,13 @@ public class RecursosRest {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/editar")
-	public Response editar(@FormParam("nick") String nick, @FormParam("nombre") String nombre, @FormParam("apellido") String apellido, @FormParam("direccion") String direccion, @FormParam("email") String email, @FormParam("telefono") String telefono) {
-		if(nombre!=null && !nombre.equals("")&& apellido!=null && !apellido.equals("")&& direccion!=null && !direccion.equals("")&& telefono!=null && !telefono.equals("")&& email!=null && !email.equals("")) {
+	public Response editar(@FormParam("nick") String nick, @FormParam("email") String email, @FormParam("pass") String pass) {
+		if(email!=null && !email.equals("") && pass!=null && !pass.equals("")) {
 			UsuarioDAO u = new UsuarioDAO();
 			Usuario u1 = new Usuario();
 			u1.setNick(nick);
-			u1.setNombres(nombre);
-			u1.setApellidos(apellido);
-			u1.setDireccion(direccion);
-			u1.setTelefono(telefono);
 			u1.setEmail(email);
+			u1.setPassword(pass);
 			u.editar(u1);
 			return Response.ok("SE EDITO CORRECTAMENTE EL USUARIO").build();
 		}
@@ -156,7 +209,6 @@ public class RecursosRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/buscadorJuegos/{busqueda}")
 	public Response buscadorJuegos(@PathParam("busqueda") String busqueda) {
-		System.out.println("Esto en la api" + busqueda);
 		JuegoDAO juegoDAO = new JuegoDAO();
 		List<Juego> juegos = juegoDAO.buscarJuegos(busqueda);
 		if(!juegos.isEmpty()) {
