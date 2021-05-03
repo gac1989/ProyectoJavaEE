@@ -38,13 +38,11 @@
          	<h:link value = "Crear juego" outcome = "#{juegoBean.nuevo1}" class="nav-link"/>
         </li>
       </ul>
-        <h:form class="d-flex">
+      <h:form class="d-flex">
       	<h:inputText value="#{juegoBean.busqueda}" class="form-control me-2" placeholder="Buscar" required="true"></h:inputText>
-      	<h:commandButton action="#{juegoBean.resultadoBusqueda()}" value="Buscar" class="btn btn-outline-success"></h:commandButton>
+      	<h:commandButton action="#{juegoBean.resultadoBusqueda(juegoBean.busqueda)}" value="Buscar" class="btn btn-outline-success"></h:commandButton>
       </h:form>
         
-      
-      
     </div>
   </div>
 </nav>

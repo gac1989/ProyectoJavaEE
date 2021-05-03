@@ -12,32 +12,32 @@
 	<h:form id="form">
 		<h:panelGrid columns="2" cellspacing="20" border="1" id="panel">
 			<f:facet name="header">
-				<h:outputText value="Nuevo Usuario"></h:outputText>
+				<h:outputText value="Nuevo Desarrollador"></h:outputText>
 			</f:facet>
 			
 			<h:outputText value="Nick"></h:outputText>
-			<h:inputText value="#{Usuario.nick}"></h:inputText>
+			<h:inputText value="#{Desarrollador.nick}"></h:inputText>
 	
 			<h:outputText value="Email"></h:outputText>
-			<h:inputText value="#{Usuario.email}"></h:inputText>
+			<h:inputText value="#{Desarrollador.email}"></h:inputText>
 			
 			<h:outputText value="Contrasenia"></h:outputText>
-			<h:inputSecret value="#{Usuario.pass}"></h:inputSecret>
+			<h:inputSecret value="#{Desarrollador.pass}"></h:inputSecret>
 			
 			<h:outputText value="Pais"></h:outputText>
-			<h:inputSecret value="#{Usuario.pais}"></h:inputSecret>
+			<h:inputSecret value="#{Desarrollador.pais}"></h:inputSecret>
 			
 			<h:outputText value="Empresa"></h:outputText>
-			<h:inputSecret value="#{Usuario.nombre_empresa}"></h:inputSecret>
+			<h:inputSecret value="#{Desarrollador.nombre_empresa}"></h:inputSecret>
 			
 			<h:outputText value="Direccion"></h:outputText>
-			<h:inputSecret value="#{Usuario.direccion}"></h:inputSecret>
+			<h:inputSecret value="#{Desarrollador.direccion}"></h:inputSecret>
 
 				
 			<h:outputText value="Telefono"></h:outputText>
-			<h:inputSecret value="#{Usuario.telefono}"></h:inputSecret>
+			<h:inputSecret value="#{Desarrollador.telefono}"></h:inputSecret>
 			<f:facet name="footer">
-				<h:commandButton action="#{UsuarioBean.guardar(Usuario)}"
+				<h:commandButton action="#{UsuarioBean.guardar(Jugador)}"
 					value="Guardar"></h:commandButton>
 			</f:facet>
 		</h:panelGrid>

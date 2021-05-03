@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -25,7 +26,9 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.primefaces.model.file.UploadedFile;
 
 import com.google.gson.Gson;
+import com.login.SessionUtils;
 import com.model.Desarrollador;
+import com.model.Juego;
 import com.model.Jugador;
 import com.model.Usuario;
 
@@ -34,10 +37,20 @@ import com.model.Usuario;
 @ManagedBean(name = "UsuarioBean")
 @SessionScoped
 public class UsuarioBean {
-	
+	private List<Juego> juegos = this.obtenerJuegosJugador();
 	private List<Usuario> usuarios = this.obtenerUsuarios();
 	private String nuevoJug = this.nuevoJugador();
 	private String nuevoDes = this.nuevoDesarrollador();
+
+	
+	
+	public List<Juego> getJuegos() {
+		return juegos;
+	}
+
+	public void setJuegos(List<Juego> juegos) {
+		this.juegos = juegos;
+	}
 
 	public String getNuevoJug() {
 		return nuevoJug;
@@ -77,7 +90,7 @@ public class UsuarioBean {
 		c.setType("jugador");
 		System.out.println("ACA LLEGUEEEEEE");
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-		sessionMap.put("Usuario", c);
+		sessionMap.put("Jugador", c);
 		return  "/faces/nuevojugador.xhtml";
 	}
 	public String nuevoDesarrollador() {
@@ -85,7 +98,7 @@ public class UsuarioBean {
 		c.setType("desarrollador");
 		System.out.println("ACA LLEGUEEEEEE");
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-		sessionMap.put("Usuario", c);
+		sessionMap.put("Desarrollador", c);
 		return  "/faces/nuevodesarrollador.xhtml";
 	}
 	
@@ -135,6 +148,30 @@ public class UsuarioBean {
         return datos;
 	}
 
+	public String mostrarPropios() {
+		this.juegos=this.obtenerJuegosJugador();
+		return "/faces/listarpropios.xhtml";
+	}
+	
+	public List<Juego> obtenerJuegosJugador(){
+		HttpSession session = SessionUtils.getSession();
+		String nick = (String)session.getAttribute("username");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosusuario/" + nick;
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+        Response response = target.request().get();
+        String response2 = response.readEntity(String.class);
+        Juego[] j = null;
+        if(response2!=null && !response2.isEmpty()) {
+        	 j = new Gson().fromJson(response2, Juego[].class);
+        }
+        List<Juego> datos = null;
+        if(j!=null) {
+        	datos = Arrays.asList(j);
+        }
+        return datos;
+	}
+	
 	public void subirImagen() throws FileNotFoundException {
 		System.out.println("ENTRE A LA IMAGEN");
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/subir";
@@ -187,7 +224,20 @@ public class UsuarioBean {
 		return "/faces/index.xhtml";
 	}
 	
-
+	public String comprar(String idjuego) {
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/comprarjuego";
+		HttpSession session = SessionUtils.getSession();
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		String nick = (String)session.getAttribute("username");
+		System.out.println("El id del juego es: " + idjuego + " El nick es: " + nick);
+		Form form = new Form();
+        form.param("nick", nick);
+        form.param("id", idjuego);
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        System.out.println("LA RESPUESTA ES: " + response.getStatus());
+        return "http://localhost:8080/LabJAVAEE/faces/index.xhtml";
+	}
 
 	// eliminar un Usuario
 	public String eliminar(String nick) {

@@ -40,8 +40,17 @@ public class JuegoBean {
 	private UploadedFile file;
 	private String busqueda;
 	private String nuevo1  = this.nuevo();
-	private List<Juego> resultado = buscadorJuego("fr");
+	private List<Juego> resultado = this.buscadorJuego(busqueda);
+	private Juego prueba = null;
 	
+	public Juego getPrueba() {
+		return prueba;
+	}
+
+	public void setPrueba(Juego prueba) {
+		this.prueba = prueba;
+	}
+
 	public List<Juego> getResultado() {
 		return resultado;
 	}
@@ -164,12 +173,23 @@ public class JuegoBean {
 
 	public List<Juego> buscadorJuego(String busqueda){
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscadorJuegos/" + busqueda;
+		System.out.println("ACA ESTAMOS Y LA BUSQUEDA ES: " + busqueda);
+		Juego j1 = new Juego();
+		j1.setDescripcion("LALALLA");
+		j1.setNombre("EL PEOR JUEGO");
+		this.prueba=j1;
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
         Response response = target.request().get();
         String response2 = response.readEntity(String.class);
-        Juego[] j = new Gson().fromJson(response2, Juego[].class);
-		List<Juego> datos = Arrays.asList(j);
+        Juego[] j = null;
+        if(response2!=null && response2.isEmpty()){
+        	j = new Gson().fromJson(response2, Juego[].class);
+        }
+        List<Juego> datos = null;
+        if(j!=null) {
+        	datos = Arrays.asList(j);
+        }
 		return datos;
 	}
 	
@@ -179,9 +199,10 @@ public class JuegoBean {
 		return "/faces/paginasJuegos/listarJuego.xhtml";
 	}
 	
-	public String resultadoBusqueda() {
-		//this.resultado=this.buscadorJuego(busqueda);
-		return "/faces/listarBusqueda.xhtml";
+	public String resultadoBusqueda(String busqueda1) {
+		System.out.println("La busqueda es:    " + busqueda);
+		this.resultado=this.buscadorJuego(busqueda);
+		return "/faces/listarBusqueda.xhtml?faces-redirect=true&includeViewParams=true";
 	}
 	
 

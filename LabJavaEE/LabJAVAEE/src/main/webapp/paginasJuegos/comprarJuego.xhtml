@@ -27,7 +27,7 @@
 y	    <input type='hidden' name='amount' value='#{juego.precio}' readonly="readonly"></input>
 	    <input type='hidden' name='page_style' value='primary'></input>
 	    <input type='hidden' name='no_shipping' value='1'></input>
-	    <input type='hidden' name='return' value='#{enrutador.paypalExito()}'></input>
+	    <input type='hidden' name='return' value='#{UsuarioBean.comprar(juego.id)}'></input>
 	    <input type='hidden' name='rm' value='2'></input>
 	    <input type='hidden' name='cancel_return' value='#{enrutador.paypalCancel()}'></input>
 	    <input type='hidden' name='no_note' value='1'></input>

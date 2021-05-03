@@ -40,7 +40,7 @@
 	<ui:include src="./navBar.xhtml" />
 	
 	<h1>Lista de juegos</h1>
-	<c:forEach items="#{juegoBean.resultado}" var="juego">
+	<c:forEach items="#{UsuarioBean.juegos}" var="juego">
         <div class="card" style="width: 18rem;">
 		  <p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{juego.rutaImg}" class="card-img-top"/>
 		  <div class="card-body">
@@ -48,9 +48,6 @@
 		    <h5 class="card-title">#{juego.id}</h5>
 		    <h6> U$S #{juego.precio}</h6>
 		    <p class="card-text">#{juego.descripcion}</p>
-		    <h:form>
-		    	<h:commandButton action="#{juegoBean.buscarJuego(juego.id)}" value="Comprar" class="btn btn-primary"></h:commandButton>
-		  	</h:form>
 	 	 </div>
 	</div>
     </c:forEach>

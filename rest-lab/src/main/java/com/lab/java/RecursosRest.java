@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -37,6 +38,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.model.Administrador;
 import com.model.Desarrollador;
+import com.model.JPAUtil;
 import com.model.Juego;
 import com.model.Jugador;
 import com.model.Usuario;
@@ -67,17 +69,8 @@ public class RecursosRest {
 		Jugador u1 = u.buscar("bruno540");
 		JuegoDAO j = new JuegoDAO();
 		Juego j1 = j.buscar(1);
-		Map<String, Juego> juego = u1.getJuegos();
-		juego.put(j1.getNombre(), j1);
-		u.agregarJuego(u1);
-		u1 = u.buscar("bruno540");
-		Map<String, Juego> juego2 = u1.getJuegos();
-	   for (String name : juego2.keySet())
-        {
-            // search  for value
-            Juego url = juego2.get(name);
-            System.out.println("Key = " + name + ", Value = " + url.getNombre());
-        }
+		List juego = u1.getJuegos();
+		
 		return "Hola Mundo desde REST";
 	}
 	
@@ -107,6 +100,45 @@ public class RecursosRest {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/juegosusuario/{nick}")
+	public Response obtenerJuegosUsuario(@PathParam("nick") String nick) {
+		JugadorDAO u = new JugadorDAO();
+		Jugador u1 = u.buscar(nick);
+		if(u1!=null) {
+			return Response.ok(u1.getJuegos()).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	
+	@POST
+	@Path("/comprarjuego")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response comprarJuego(@FormParam("nick") String nick, @FormParam("id") String id) {
+		if(nick!=null && id!=null) {
+			JugadorDAO u = new JugadorDAO();
+			Jugador u1 = u.buscar(nick);
+			JuegoDAO j = new JuegoDAO();
+			int idjuego = Integer.parseInt(id);
+			Juego j1 = j.buscar(idjuego);
+			if(u1!=null && j1!=null) {
+				u1.agregarJuego(j1);
+				u.guardar(u1);
+			}
+			return Response.ok("SE COMPRO EL JUEGO CORRECTAMENTE").build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	
+	
 	
 	@POST
 	@Path("/checkusuario")

@@ -2,6 +2,7 @@ package com.model;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
@@ -29,8 +30,16 @@ public class Jugador extends Usuario {
 	@OneToMany(/*targetEntity = Curso.class,*/cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
 	@JoinTable(name="usuariojuego", joinColumns = @JoinColumn(name = "nick"),
     inverseJoinColumns = @JoinColumn(name = "juego_id") )
-	@MapKey(name = "nombre")    
-	private Map<String,Juego> juegos;
+	//@MapKey(name = "nombre")    
+	private List<Juego> juegos;
+	
+	
+	public List<Juego> getJuegos() {
+		return juegos;
+	}
+	public void setJuegos(List juegos) {
+		this.juegos = juegos;
+	}
 	public Date getFecha_nac() {
 		return fecha_nac;
 	}
@@ -50,15 +59,12 @@ public class Jugador extends Usuario {
 		this.apellido = apellido;
 	}
 	
-	public Map<String, Juego> getJuegos() {
-		if(juegos==null) {
-			juegos= new HashMap<String, Juego>();
-		}
-		return juegos;
+	
+	public void agregarJuego(Juego j) {
+		this.juegos.add(j);
 	}
-	public void setJuegos(Map<String, Juego> juegos) {
-		this.juegos = juegos;
-	}
+	
+	
 	@Override
 	public String toString() {
 		return "Jugador [fecha_nac=" + fecha_nac + ", nombre=" + nombre + ", apellido=" + apellido + "]";
