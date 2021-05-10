@@ -357,9 +357,7 @@ public class RecursosRest {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/registrarJuego")
-	public Response registroJuego(@FormParam("nombre") String nombre, @FormParam("descripcion") String descripcion, @FormParam("rutaImg") String rutaImg, @FormParam("precio") String precio) {
-		
-	
+	public Response registroJuego(@FormParam("nombre") String nombre, @FormParam("descripcion") String descripcion, @FormParam("rutaImg") String rutaImg, @FormParam("precio") String precio, @FormParam("categoria") String categoria) {
 		if(nombre!=null && !nombre.equals("") && descripcion!=null && !descripcion.equals("")&& rutaImg!=null && !rutaImg.equals("")&& precio!=null && !precio.equals("")) {
 			JuegoDAO jDao = new JuegoDAO();
 			Juego j = new Juego();
@@ -368,6 +366,10 @@ public class RecursosRest {
 			j.setRutaImg(rutaImg);
 			j.setPrecio(Float.parseFloat(precio));
 			jDao.guardar(j);
+			CategoriaDAO c = new CategoriaDAO();
+			Categoria c1 = c.buscar(categoria);
+			c1.agregarJuego(j);
+			c.guardar(c1);
 			return Response.ok("SE CREO CORRECTAMENTE EL Juego").build();
 		}
 		else {

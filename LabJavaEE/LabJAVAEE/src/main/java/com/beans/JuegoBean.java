@@ -42,6 +42,17 @@ public class JuegoBean implements Serializable{
 	private String nuevo1  = this.nuevo();
 	private List<Juego> resultado = null;
 	private Juego prueba = null;
+	private String categoria = null;
+	
+	public String getCategoria() {
+		return categoria;
+	}
+
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
 	
 	public Juego getPrueba() {
 		return prueba;
@@ -127,6 +138,7 @@ public class JuegoBean implements Serializable{
         Form form = new Form();
         System.out.println("El juego es: " + juego.getNombre());
         System.out.println("La imagen es: " + juego.getRutaImg());
+        System.out.println("La categorias es: " + this.categoria);
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         String path = servletContext.getContextPath();
         System.out.println("El path es: " + System.getProperty("user.dir"));
@@ -134,6 +146,7 @@ public class JuegoBean implements Serializable{
         form.param("descripcion", juego.getDescripcion());
         form.param("rutaImg", juego.getRutaImg());
         form.param("precio", String.valueOf(juego.getPrecio()));
+        form.param("categoria", this.categoria);
         WebTarget target= client.target(urlRestService);
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         URL directory = this.getClass().getResource("tmp.png");
@@ -204,23 +217,20 @@ public class JuegoBean implements Serializable{
 	
 	public String buscarJuego(int id) {
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscarJuego";
-		/*Client client = ClientBuilder.newClient();
-		
-		*/
-		id--;
-		System.out.println("El identificador es: " + id);/*
+		Client client = ClientBuilder.newClient();
+		//id--;
+		System.out.println("El identificador es: " + id);
         Form form = new Form();
         form.param("id", String.valueOf(id));
         WebTarget target= client.target(urlRestService);
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         String response2 = response.readEntity(String.class);
         System.out.println("La respuesta es:  " + response2);
-        Juego j = new Gson().fromJson(response2, Juego.class);*/
-		Juego j = this.juegos.get(id);
+        Juego j = new Gson().fromJson(response2, Juego.class);
 		System.out.println("El juego es:  " + j.getNombre());
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("juego",j);
-		return "/faces/paginasJuegos/comprarJuego.xhtml?faces-redirect=true&nombreJuego=" + j.getNombre() + "&precioJuego=" + j.getPrecio();
+		return "/faces/paginasJuegos/comprarJuego.xhtml?faces-redirect=true&nombreJuego=" + j.getNombre() + "&precioJuego=" + j.getPrecio() + "&id=" + j.getId();
 	}
 	public String resultadoBusqueda(String busqueda1) {
 		System.out.println("La busqueda es:    " + busqueda);

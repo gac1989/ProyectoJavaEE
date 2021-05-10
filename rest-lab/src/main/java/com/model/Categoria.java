@@ -32,8 +32,6 @@ public class Categoria {
 	private List<Juego> juegos;
 
 	
-	
-	
 	public List<Juego> getJuegos() {
 		return juegos;
 	}

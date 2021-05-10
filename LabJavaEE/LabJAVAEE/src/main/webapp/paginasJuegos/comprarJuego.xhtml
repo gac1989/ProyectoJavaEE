@@ -8,45 +8,102 @@
 		content="width=device-width, initial-scale=1"
 		http-equiv="X-UA-Conpatible" />
 	<title>Listar juegos</title>
+	
+	<style>
+	
+	body {
+	  margin: 0;
+	  padding: 0;
+	  background-color: #17a2b8;
+	  height: 100vh;
+	}
+	#login .container #login-row #login-column #login-box {
+	  margin-top: 20px;
+	  max-width: 600px;
+	  height: 320px;
+	  border: 1px solid #9C9C9C;
+	  background-color: #EAEAEA;
+	}
+	#login .container #login-row #login-column #login-box #login-form {
+	  padding: 20px;
+	}
+	#login .container #login-row #login-column #login-box #login-form #register-link {
+	  margin-top: -85px;
+	}
+	img {
+		height: 250x;
+		width: 100px;
+		margin-left: 44%;
+		border-radius: 50%;
+		border: #17a2b8 3px solid;
+	}
+	h3{
+		text-align: center;
+		color: #17a2b8; 
+		padding-right: 50px;
+	}
+	</style>
+	
 </h:head>
 <h:body>
 
 	<ui:include src="../navBar.xhtml" />	
-	<h1>Datos del Juego</h1>
-	<h:form enctype="multipart/form-data">
-	<h:outputText value="#{param['juegoid']}" />
-	<h:inputText value="#{param['nombreJuego']}"></h:inputText>
- 	<br></br>
-	Precio: U$S #{param['precioJuego']} <br></br>
-	</h:form>
 	
-	<form name='formTpv' method='post' action='https://www.sandbox.paypal.com/cgi-bin/webscr'> 
-		<input type='hidden' name='cmd' value='_xclick'></input>
-	    <input type='hidden' name='business' value='sb-v143vd5841920@personal.example.com'></input> 
-	    <input type='hidden' name='item_name' value='nombre del juego' readonly="readonly"></input> 
-	    <input type='hidden' name='item_number' value='VENTA-X2561' readonly="readonly"></input> 
-y	    <input type='hidden' name='amount' value="#{param['precioJuego']}" readonly="readonly"></input>
-	    <input type='hidden' name='page_style' value='primary'></input>
-	    <input type='hidden' name='no_shipping' value='1'></input>
-	    <input type='hidden' name='return' value="#{enrutador.confirmar(juego.id)}"/>
-	    <input type='hidden' name='rm' value='2'></input>
-	    <input type='hidden' name='cancel_return' value='#{enrutador.paypalCancel()}'></input>
-	    <input type='hidden' name='no_note' value='1'></input>
-	    <input type='hidden' name='currency_code' value='EUR'></input>
-	    <input type='hidden' name='cn' value='PP-BuyNowBF'></input>
-	    <input type='hidden' name='custom' value=''></input>
-	    <input type='hidden' name='first_name' value='NOMBRE'> </input>
-	    <input type='hidden' name='last_name' value='APELLIDOS'> </input>
-	    <input type='hidden' name='address1' value='DIRECCIÓN'> </input>
-	    <input type='hidden' name='city' value='POBLACIÓN'> </input>
-	    <input type='hidden' name='zip' value='CÓDIGO POSTAL'></input>
-	    <input type='hidden' name='night_phone_a' value=''> </input>
-	    <input type='hidden' name='night_phone_b' value='TELÉFONO'> </input>
-	    <input type='hidden' name='night_phone_c' value=''> </input>
-	    <input type='hidden' name='lc' value='es'></input>
-	    <input type='hidden' name='country' value='ES'></input>
-		<input type="submit" value="pagar"></input> 
-	</form>
+	<div id="login">
+        <h3 class="text-center text-white pt-5">Datos del juego</h3>
+        <div class="container">
+		<br></br>
+		
+		<h3>Compra Juego</h3>
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+                        <h:form id="login-form" class="form" action="" method="post">
+             
+                            <div class="form-group">
+                                <label for="username" class="text-info">Nombre:</label><br></br>
+                                 <h:outputText id="username" value="#{param['nombreJuego']}" class="form-control"></h:outputText>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="text-info">Precio:</label><br></br>
+                                <h:outputText id="password" value="#{param['precioJuego']}" class="form-control"></h:outputText>
+                                <br></br>
+                            </div>
+                        </h:form>
+                        <form name='formTpv' method='post' action='https://www.sandbox.paypal.com/cgi-bin/webscr'> 
+							<input type='hidden' name='cmd' value='_xclick'></input>
+						    <input type='hidden' name='business' value='sb-v143vd5841920@personal.example.com'></input> 
+						    <input type='hidden' name='item_name' value='nombre del juego' readonly="readonly"></input> 
+						    <input type='hidden' name='item_number' value='VENTA-X2561' readonly="readonly"></input> 
+						    <input type='hidden' name='amount' value="#{param['precioJuego']}" readonly="readonly"></input>
+						    <input type='hidden' name='page_style' value='primary'></input>
+						    <input type='hidden' name='no_shipping' value='1'></input>
+						    <input type='hidden' name='return' value="#{enrutador.confirmar(param['id'])}"/>
+						    <input type='hidden' name='rm' value='2'></input>
+						    <input type='hidden' name='cancel_return' value='#{enrutador.paypalCancel()}'></input>
+						    <input type='hidden' name='no_note' value='1'></input>
+						    <input type='hidden' name='currency_code' value='EUR'></input>
+						    <input type='hidden' name='cn' value='PP-BuyNowBF'></input>
+						    <input type='hidden' name='custom' value=''></input>
+						    <input type='hidden' name='first_name' value='NOMBRE'> </input>
+						    <input type='hidden' name='last_name' value='APELLIDOS'> </input>
+						    <input type='hidden' name='address1' value='DIRECCIÓN'> </input>
+						    <input type='hidden' name='city' value='POBLACIÓN'> </input>
+						    <input type='hidden' name='zip' value='CÓDIGO POSTAL'></input>
+						    <input type='hidden' name='night_phone_a' value=''> </input>
+						    <input type='hidden' name='night_phone_b' value='TELÉFONO'> </input>
+						    <input type='hidden' name='night_phone_c' value=''> </input>
+						    <input type='hidden' name='lc' value='es'></input>
+						    <input type='hidden' name='country' value='ES'></input>
+							<input type="submit" value="pagar" class="btn btn-info btn-md" style="margin-left: 20px"></input> 
+						</form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+
 	
 	
 </h:body>

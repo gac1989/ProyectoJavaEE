@@ -12,6 +12,7 @@
 	<title>Nuevo juego</title>
 </h:head>
 <h:body>
+	<ui:include src="../navBar.xhtml" />	
 	<h1>Nuevo Juego</h1>
 	<h:form enctype="multipart/form-data">
 		<h:panelGrid columns="2" cellspacing="20" border="1">
@@ -28,7 +29,11 @@
 
 			<h:outputText value="Precio"></h:outputText>
 			<h:inputText value="#{juego.precio}"></h:inputText>
-
+			
+			<h:selectOneMenu id="priceMenu" value="#{juegoBean.categoria}">
+			    <f:selectItems value="#{CategoriaBean.getCategoriasList()}" />
+			</h:selectOneMenu>
+			
 			<h:outputText value="Portada"></h:outputText>
 			<p:fileUpload value="#{juegoBean.file}" mode="simple" skinSimple="true"/>
 			<f:facet name="footer">
