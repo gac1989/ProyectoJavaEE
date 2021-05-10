@@ -22,26 +22,72 @@ public class LoginFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 
 	}
+	
+	public boolean publico(String url) {
+		if(url.equals("/LabJAVAEE/faces/paginasJuegos/listarJuego.xhtml")|| url.equals("/LabJAVAEE/") || url.equals("/LabJAVAEE/faces/error.xhtml")|| url.indexOf("/public/") >= 0 || url.contains("javax.faces.resource")|| url.equals("/LabJAVAEE/faces/listarBusqueda.xhtml")) {
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		try {
 			HttpServletRequest reqt = (HttpServletRequest) request;
 			HttpServletResponse resp = (HttpServletResponse) response;
 			HttpSession ses = reqt.getSession(false);
+			String type = "";
 			String reqURI = reqt.getRequestURI();
-			if (reqURI.indexOf("/login.xhtml") >= 0
-					|| (ses != null && ses.getAttribute("username") != null)
-					|| reqURI.indexOf("/public/") >= 0
-					|| reqURI.contains("javax.faces.resource")
-					|| (reqURI.equals("/LabJAVAEE/faces/paginasJuegos/listarJuego.xhtml") || reqURI.equals("/LabJAVAEE/faces/nuevodesarrollador.xhtml") || reqURI.equals("/LabJAVAEE/faces/nuevojugador.xhtml")))
-				chain.doFilter(request, response);
-			else
-				resp.sendRedirect(reqt.getContextPath() + "/faces/login.xhtml");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
+			if(ses!=null) {
+				type=(String)ses.getAttribute("type");
+			}
+			if(type==null || type.equals("")) {
+				type="visitante";
+			}
+			System.out.println("El tipo es: " + type);
+			switch(type) {
+				case "jugador":{
+					System.out.println("LLegue al jugador: " + type);
+					System.out.println("La ruta jugador es: " + reqURI);
+					if (this.publico(reqURI) || reqURI.equals("/LabJAVAEE/faces/paginasJuegos/comprarJuego.xhtml") || reqURI.equals("/LabJAVAEE/faces/index.xhtml")||reqURI.equals("/LabJAVAEE/faces/admin.xhtml") || reqURI.equals("/LabJAVAEE/faces/listarpropios.xhtml") || reqURI.equals("/LabJAVAEE/faces/paginasJuegos/confirmar.xhtml")) {
+						chain.doFilter(request, response);
+						return;
+					}
+					else {
+						resp.sendRedirect(reqt.getContextPath() + "/faces/error.xhtml");
+						return;
+					}
+				}
+				case "desarrollador":{
+					System.out.println("LLegue al desarrollador: " + type);
+					System.out.println("La ruta desarrollador es: " + reqURI);
+					if (this.publico(reqURI) || reqURI.equals("/LabJAVAEE/faces/paginasJuegos/nuevoJuego.xhtml") || reqURI.equals("/LabJAVAEE/faces/index.xhtml")||reqURI.equals("/LabJAVAEE/faces/admin.xhtml")) {
+						System.out.println("Redireccione en el desarrollador ");
+						chain.doFilter(request, response);
+						return;
+					}
+					else {
+						resp.sendRedirect(reqt.getContextPath() + "/faces/error.xhtml");
+						return;
+					}
+				}
+				case "visitante":{
+					System.out.println("LLegue al visitante: " + type);
+					System.out.println("La ruta es: " + reqURI);
+					if (this.publico(reqURI) || reqURI.equals("/LabJAVAEE/faces/login.xhtml")||reqURI.equals("/LabJAVAEE/faces/nuevojugador.xhtml") ||reqURI.equals("/LabJAVAEE/faces/nuevodesarrollador.xhtml")) {
+						chain.doFilter(request, response);
+						return;
+					}
+					else {
+						resp.sendRedirect(reqt.getContextPath() + "/faces/error.xhtml");
+						return;
+					}
+				}
+				default:{
+					
+				}
+			}
+		
 	}
 
 	@Override

@@ -1,16 +1,14 @@
 package com.model;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
-import javax.persistence.MapKey;
+import javax.persistence.ManyToMany;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -27,17 +25,16 @@ public class Jugador extends Usuario {
 	private String nombre;
 	@Column
 	private String apellido;
-	@OneToMany(/*targetEntity = Curso.class,*/cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+	@ManyToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
 	@JoinTable(name="usuariojuego", joinColumns = @JoinColumn(name = "nick"),
     inverseJoinColumns = @JoinColumn(name = "juego_id") )
-	//@MapKey(name = "nombre")    
 	private List<Juego> juegos;
 	
 	
 	public List<Juego> getJuegos() {
 		return juegos;
 	}
-	public void setJuegos(List juegos) {
+	public void setJuegos(List<Juego> juegos) {
 		this.juegos = juegos;
 	}
 	public Date getFecha_nac() {
@@ -58,7 +55,6 @@ public class Jugador extends Usuario {
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	}
-	
 	
 	public void agregarJuego(Juego j) {
 		this.juegos.add(j);

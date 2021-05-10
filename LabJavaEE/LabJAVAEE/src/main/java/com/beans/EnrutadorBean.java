@@ -29,7 +29,12 @@ public class EnrutadorBean {
 		System.out.println("El juego comprado es: " + juego);
 	}
 	
+	public String confirmar(int idjuego) {
+		return "http://localhost:8080/LabJAVAEE/faces/paginasJuegos/confirmar.xhtml?juegoid=" + String.valueOf(idjuego);
+	}
+	
 	public String paypalCancel() {
+		System.out.println("ACA TAMBIEN ENTRO SOY UNA MIERDA");
 		return "http://localhost:8080/demo_lab/";
 	}
 }

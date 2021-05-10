@@ -1,41 +1,56 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core">
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
 <h:head>
 	<meta charset="utf-8" name="viewport"
 		content="width=device-width, initial-scale=1"
 		http-equiv="X-UA-Conpatible" />
+	<link type = "text/css" rel = "stylesheet" href = "resources/styles.css" /> 
 	<title>Nuevo Usuario</title>
 </h:head>
 <h:body>
-	<h:form id="form">
-		<h:panelGrid columns="2" cellspacing="20" border="1" id="panel">
-			<f:facet name="header">
-				<h:outputText value="Nuevo Jugador"></h:outputText>
-			</f:facet>
-			
-			<h:outputText value="Nick"></h:outputText>
-			<h:inputText value="#{Jugador.nick}"></h:inputText>
-	
-			<h:outputText value="Email"></h:outputText>
-			<h:inputText value="#{Jugador.email}" id="email"></h:inputText>
-			
-			<h:outputText value="Contrasenia"></h:outputText>
-			<h:inputSecret value="#{Jugador.pass}"></h:inputSecret>
-			
-			<h:outputText value="Nombre"></h:outputText>
-			<h:inputSecret value="#{Jugador.nombre}"></h:inputSecret>
-			
-			<h:outputText value="Apellido"></h:outputText>
-			<h:inputSecret value="#{Jugador.apellido}"></h:inputSecret>
-
-			<f:facet name="footer">
-				<h:commandButton action="#{UsuarioBean.guardar(Jugador)}"
-					value="Guardar"></h:commandButton>
-			</f:facet>
-		</h:panelGrid>
-	</h:form>
-	
+	<ui:include src="navBar.xhtml" />
+	<br></br>
+	<h3>Nuevo Jugador</h3>
+	 	<h:panelGroup layout="block" class="container" >	
+	 		<p:menuitem>
+				<h:graphicImage value="img/indie2.jpg" style="width200px;"></h:graphicImage>
+			</p:menuitem>
+			<h:form id="form" >
+				<h:panelGrid columns="3" border="1" id="panel" >
+					<f:facet name="header">
+						<h:outputText value="Nuevo Jugador"/>
+					</f:facet>	
+						<h:outputLabel value="Nombre: " for="nombre"/>
+						<h:inputText id="nombre" value="#{Jugador.nombre}"/>
+						<h:message for="nombre"/>
+						
+						<h:outputLabel value="Apellido: " for="apellido"/>
+						<h:inputText id="apellido" value="#{Jugador.apellido}"/>
+						<h:message for="apellido"/>
+						
+						<h:outputLabel value="Nick: *" for="nick"/>
+						<h:inputText id="nick" value="#{Jugador.nick}" required="true" requiredMessage="Debe crear un nickname" />
+						<h:message for="nick" style="color:red"/>
+						
+						<h:outputLabel value="Email: *" for="email"/>
+						<h:inputText id="email" value="#{Jugador.email}" required="true" requiredMessage="Debe crear un email" />
+						<h:message for="email" style="color:red"/>
+						
+						<h:outputLabel value="Contrasenia: *" for="contrasenia"/>
+						<h:inputSecret id="contrasenia" value="#{Jugador.pass}" required="true" requiredMessage="Debe crear una contrasenia"/>
+						<h:message for="contrasenia" style="color:red"/>
+						
+					<f:facet name="footer">
+						<br/>
+						<h:commandButton action="#{UsuarioBean.guardar(Jugador)}" value="Guardar"  />
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</h:panelGroup>
 </h:body>
 </html>

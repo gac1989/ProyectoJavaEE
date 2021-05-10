@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 import com.model.Jugador;
@@ -11,7 +12,7 @@ import com.model.JPAUtil;
 
 public class JugadorDAO {
 	EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
-
+	EntityTransaction trans = entity.getTransaction();
 	// guardar Jugador
 	public void guardar(Jugador Jugador) {
 		entity.getTransaction().begin();
@@ -30,9 +31,11 @@ public class JugadorDAO {
 
 	// buscar Jugador
 	public Jugador buscar(String nick) {
+		trans.begin();
 		Jugador c = new Jugador();
 		c = entity.find(Jugador.class, nick);
 		// JPAUtil.shutdown();
+		trans.commit();
 		return c;
 	}
 
@@ -45,7 +48,6 @@ public class JugadorDAO {
 		entity.getTransaction().commit();
 	}
 
-	/// eliminar Jugador
 		public void agregarJuego(Jugador u) {
 			entity.getTransaction().begin();
 			entity.persist(u);
@@ -58,6 +60,7 @@ public class JugadorDAO {
 		List<Jugador> listaJugadors = new ArrayList<Jugador>();
 		Query q = entity.createQuery("SELECT c FROM Jugador c");
 		listaJugadors = q.getResultList();
+		entity.close();
 		return listaJugadors;
 	}
 

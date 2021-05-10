@@ -33,14 +33,14 @@ import com.model.Juego;
 
 @ManagedBean(name = "juegoBean")
 @RequestScoped
-public class JuegoBean {
-
-	private List<Juego> juegos = this.obtenerJuegos();
-	private String listar =  this.listarJuegos();
+public class JuegoBean implements Serializable{
+	private static final long serialVersionUID = 5443351151396868724L;
+	private List<Juego> juegos = null;
+	private String listar = "/faces/paginasJuegos/listarJuego.xhtml";;
 	private UploadedFile file;
 	private String busqueda;
 	private String nuevo1  = this.nuevo();
-	private List<Juego> resultado = this.buscadorJuego(busqueda);
+	private List<Juego> resultado = null;
 	private Juego prueba = null;
 	
 	public Juego getPrueba() {
@@ -84,6 +84,9 @@ public class JuegoBean {
 	}
 
 	public List<Juego> getJuegos() {
+		if(juegos==null) {
+			juegos=this.obtenerJuegos();
+		}
 		return juegos;
 	}
 
@@ -199,28 +202,31 @@ public class JuegoBean {
 		return "/faces/paginasJuegos/listarJuego.xhtml";
 	}
 	
-	public String resultadoBusqueda(String busqueda1) {
-		System.out.println("La busqueda es:    " + busqueda);
-		this.resultado=this.buscadorJuego(busqueda);
-		return "/faces/listarBusqueda.xhtml?faces-redirect=true&includeViewParams=true";
-	}
-	
-
 	public String buscarJuego(int id) {
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscarJuego";
-		Client client = ClientBuilder.newClient();
-		System.out.println("El identificador es: " + id);
+		/*Client client = ClientBuilder.newClient();
+		
+		*/
+		id--;
+		System.out.println("El identificador es: " + id);/*
         Form form = new Form();
         form.param("id", String.valueOf(id));
         WebTarget target= client.target(urlRestService);
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         String response2 = response.readEntity(String.class);
         System.out.println("La respuesta es:  " + response2);
-        Juego j = new Gson().fromJson(response2, Juego.class);
+        Juego j = new Gson().fromJson(response2, Juego.class);*/
+		Juego j = this.juegos.get(id);
+		System.out.println("El juego es:  " + j.getNombre());
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("juego",j);
-		return "/faces/paginasJuegos/comprarJuego.xhtml";
-	
+		return "/faces/paginasJuegos/comprarJuego.xhtml?faces-redirect=true&nombreJuego=" + j.getNombre() + "&precioJuego=" + j.getPrecio();
 	}
+	public String resultadoBusqueda(String busqueda1) {
+		System.out.println("La busqueda es:    " + busqueda);
+		this.resultado=this.buscadorJuego(busqueda);
+		return "/faces/listarBusqueda.xhtml?faces-redirect=true&includeViewParams=true";
+	}
+	
 	
 }

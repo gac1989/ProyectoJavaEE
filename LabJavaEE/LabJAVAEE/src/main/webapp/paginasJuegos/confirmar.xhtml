@@ -12,11 +12,9 @@
 
 </h:head>
 <h:body>
-	<ui:include src="./navBar.xhtml" />
-	<p>Bienvenido </p>
-	<h:form>
-	<h:commandButton action="#{juegoBean.nuevo()}" value="Nuevo Juego" class="btn btn-outline-success"></h:commandButton>
-	</h:form>
-	<h:button value="Mis juegos" outcome="#{UsuarioBean.propios}" class="btn btn-outline-success"/>
+	
+	<p>Compra realizada con exito! El j</p>
+	<h:outputText value="#{param['juegoid']}" />
+  	<input type='hidden' name='cancel_return' value="#{ComprarJuego.comprar(param['juegoid'])}"></input>
 </h:body>
 </html>

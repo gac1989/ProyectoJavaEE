@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
@@ -26,25 +25,41 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.primefaces.model.file.UploadedFile;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.login.SessionUtils;
 import com.model.Desarrollador;
 import com.model.Juego;
 import com.model.Jugador;
 import com.model.Usuario;
+import com.model.UsuarioDAO;
 
 
-
-@ManagedBean(name = "UsuarioBean")
-@SessionScoped
+@ManagedBean(name = "UsuarioBean", eager = true)
+@RequestScoped
 public class UsuarioBean {
-	private List<Juego> juegos = this.obtenerJuegosJugador();
-	private List<Usuario> usuarios = this.obtenerUsuarios();
+	private List<Juego> juegos = null;
+	private List<Usuario> usuarios = null;
 	private String nuevoJug = this.nuevoJugador();
 	private String nuevoDes = this.nuevoDesarrollador();
+	private String propios = "/faces/listarpropios.xhtml";;
+	
+	
+	
+	public String getPropios() {
+		return propios;
+	}
+
+	public void setPropios(String propios) {
+		this.propios = propios;
+	}
 
 	
-	
 	public List<Juego> getJuegos() {
+		System.out.println("Entre a buscar juegos");
+		if(juegos==null) {
+			juegos=this.obtenerJuegosJugador();
+		}
 		return juegos;
 	}
 
@@ -69,6 +84,9 @@ public class UsuarioBean {
 	}
 
 	public List<Usuario> getUsuarios() {
+		if(usuarios==null) {
+			usuarios=this.obtenerUsuarios();
+		}
 		return usuarios;
 	}
 
@@ -96,7 +114,7 @@ public class UsuarioBean {
 	public String nuevoDesarrollador() {
 		Desarrollador c= new Desarrollador();
 		c.setType("desarrollador");
-		System.out.println("ACA LLEGUEEEEEE");
+		System.out.println("ACA LLEGUEEEEEE DESARROLLADOR");
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("Desarrollador", c);
 		return  "/faces/nuevodesarrollador.xhtml";
@@ -113,8 +131,25 @@ public class UsuarioBean {
         WebTarget target= client.target(urlRestService);
         Response response = target.request().get();
         String response2 = response.readEntity(String.class);
+        
         System.out.println("La respuesta es: " + response2);
+        JsonObject convertedObject = new Gson().fromJson(response2, JsonObject.class);
+        JsonElement type=null;
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        if(convertedObject!=null) {
+        	type = convertedObject.get("pais");
+        }
         Usuario u = new Gson().fromJson(response2, Usuario.class);
+        if(type!=null) {
+        	sessionMap.put("type", "desarrollador");
+			u.setType("desarrollador");
+		}
+		else {
+			if(u!=null) {
+				sessionMap.put("type", "jugador");
+				u.setType("jugador");
+			}
+		}
         if(u!=null && verifyHash(pass, u.getPass())) {
     		return u;
         }
@@ -137,19 +172,11 @@ public class UsuarioBean {
 
 	public List<Usuario> obtenerUsuarios() {
 	
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/usuarios";
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
-        String response2 = response.readEntity(String.class);
-        Usuario[] u = new Gson().fromJson(response2, Usuario[].class);
-        List<Usuario> datos = Arrays.asList(u);
-		System.out.println("IMPRESION ");
-        return datos;
+        return new UsuarioDAO().obtenerUsuarios();
 	}
 
 	public String mostrarPropios() {
-		this.juegos=this.obtenerJuegosJugador();
+		System.out.println("Cargo los juegossssss ");
 		return "/faces/listarpropios.xhtml";
 	}
 	
@@ -224,25 +251,8 @@ public class UsuarioBean {
 		return "/faces/index.xhtml";
 	}
 	
-	public String comprar(String idjuego) {
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/comprarjuego";
-		HttpSession session = SessionUtils.getSession();
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-		String nick = (String)session.getAttribute("username");
-		System.out.println("El id del juego es: " + idjuego + " El nick es: " + nick);
-		Form form = new Form();
-        form.param("nick", nick);
-        form.param("id", idjuego);
-        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
-        System.out.println("LA RESPUESTA ES: " + response.getStatus());
-        return "http://localhost:8080/LabJAVAEE/faces/index.xhtml";
-	}
-
 	// eliminar un Usuario
 	public String eliminar(String nick) {
-		//UsuarioDAO UsuarioDAO = new UsuarioDAO();
-		//UsuarioDAO.eliminar(nick);
 		System.out.println("Usuario eliminado..");
 		return "/faces/index.xhtml";
 	}

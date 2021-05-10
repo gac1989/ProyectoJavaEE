@@ -14,20 +14,21 @@
 	<ui:include src="../navBar.xhtml" />	
 	<h1>Datos del Juego</h1>
 	<h:form enctype="multipart/form-data">
-	<h:inputText value="#{juego.nombre}"></h:inputText>
+	<h:outputText value="#{param['juegoid']}" />
+	<h:inputText value="#{param['nombreJuego']}"></h:inputText>
  	<br></br>
-	Precio: U$S #{juego.precio} <br></br>
+	Precio: U$S #{param['precioJuego']} <br></br>
 	</h:form>
-
+	
 	<form name='formTpv' method='post' action='https://www.sandbox.paypal.com/cgi-bin/webscr'> 
 		<input type='hidden' name='cmd' value='_xclick'></input>
 	    <input type='hidden' name='business' value='sb-v143vd5841920@personal.example.com'></input> 
 	    <input type='hidden' name='item_name' value='nombre del juego' readonly="readonly"></input> 
 	    <input type='hidden' name='item_number' value='VENTA-X2561' readonly="readonly"></input> 
-y	    <input type='hidden' name='amount' value='#{juego.precio}' readonly="readonly"></input>
+y	    <input type='hidden' name='amount' value="#{param['precioJuego']}" readonly="readonly"></input>
 	    <input type='hidden' name='page_style' value='primary'></input>
 	    <input type='hidden' name='no_shipping' value='1'></input>
-	    <input type='hidden' name='return' value='#{UsuarioBean.comprar(juego.id)}'></input>
+	    <input type='hidden' name='return' value="#{enrutador.confirmar(juego.id)}"/>
 	    <input type='hidden' name='rm' value='2'></input>
 	    <input type='hidden' name='cancel_return' value='#{enrutador.paypalCancel()}'></input>
 	    <input type='hidden' name='no_note' value='1'></input>

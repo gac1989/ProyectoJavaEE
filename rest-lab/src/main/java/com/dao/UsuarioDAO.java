@@ -31,8 +31,10 @@ public class UsuarioDAO {
 	// buscar Usuario
 	public Usuario buscar(String nick) {
 		Usuario c = new Usuario();
+		entity.getTransaction().begin();
 		c = entity.find(Usuario.class, nick);
 		// JPAUtil.shutdown();
+		entity.getTransaction().commit();
 		return c;
 	}
 
@@ -55,9 +57,11 @@ public class UsuarioDAO {
 	
 	// obtener todos los Usuario
 	public List<Usuario> obtenerUsuarios() {
+		entity.getTransaction().begin();
 		List<Usuario> listaUsuarios = new ArrayList<Usuario>();
 		Query q = entity.createQuery("SELECT c FROM Usuario c");
 		listaUsuarios = q.getResultList();
+		entity.getTransaction().commit();
 		return listaUsuarios;
 	}
 

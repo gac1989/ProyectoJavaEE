@@ -53,6 +53,8 @@ public class Login implements Serializable {
 	public String validateUsernamePassword() {
 		boolean valid = false;
 		Usuario u = null;
+		HttpSession session = SessionUtils.getSession();
+		session.setAttribute("type", "visitante");
 		if(user!=null) {
 			u = UsuarioBean.checkUser(user,pwd);
 		}
@@ -60,10 +62,9 @@ public class Login implements Serializable {
 			valid = true;
 		}
 		if (valid) {
-			HttpSession session = SessionUtils.getSession();
 			session.setAttribute("username", user);
-			session.setAttribute("type", "administrador");
-			System.out.println("USUARIO: " + user + " TIPO: " + session.getAttribute("type"));
+			session.setAttribute("type", u.getType());
+			System.out.println("USUARIO: " + user + " TIPO: " + u.getType());
 			return "faces/index.xhtml";
 		} else {
 			FacesContext.getCurrentInstance().addMessage(

@@ -42,6 +42,7 @@ import com.model.JPAUtil;
 import com.model.Juego;
 import com.model.Jugador;
 import com.model.Usuario;
+import com.sun.xml.bind.v2.model.core.Element;
 
 
 @Path("/ejemplo")
@@ -49,7 +50,7 @@ public class RecursosRest {
 	
 	final String UPLOAD_FILE_SERVER = "C:\\Users\\admin\\Desktop\\uploads\\";
 	
-	
+	private static JugadorDAO jugadorcontrol = new JugadorDAO();
 	
 	@GET
     @Path("/descarga/{imagen}")
@@ -94,7 +95,14 @@ public class RecursosRest {
 		UsuarioDAO UsuarioDAO = new UsuarioDAO();
 		Usuario user = UsuarioDAO.buscar(nick);
 		if(user!=null) {
-			return Response.ok(user).build();
+			if(user instanceof Jugador) {
+				Jugador j = (Jugador)user;
+				return Response.ok(j).build();
+			}
+			else {
+				Desarrollador d = (Desarrollador)user;
+				return Response.ok(d).build();
+			}
 		}
 		else {
 			return Response.status(Response.Status.NOT_FOUND).build();
@@ -105,8 +113,7 @@ public class RecursosRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/juegosusuario/{nick}")
 	public Response obtenerJuegosUsuario(@PathParam("nick") String nick) {
-		JugadorDAO u = new JugadorDAO();
-		Jugador u1 = u.buscar(nick);
+		Jugador u1 = jugadorcontrol.buscar(nick);
 		if(u1!=null) {
 			return Response.ok(u1.getJuegos()).build();
 		}
@@ -120,6 +127,7 @@ public class RecursosRest {
 	@Path("/comprarjuego")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response comprarJuego(@FormParam("nick") String nick, @FormParam("id") String id) {
+		System.out.println("El nick en la api es: " + nick + " El id en la api es: " + id);
 		if(nick!=null && id!=null) {
 			JugadorDAO u = new JugadorDAO();
 			Jugador u1 = u.buscar(nick);
@@ -231,10 +239,13 @@ public class RecursosRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/buscarJuego")
 	public Response buscarJuego(@FormParam("id") String calve) {
-		int id = Integer.parseInt(calve);
-		JuegoDAO juegoDAO = new JuegoDAO();
-		Juego j = juegoDAO.buscar(id);
-		return Response.ok(j).build();
+		if(calve!=null && !calve.equals("")) {
+			int id = Integer.parseInt(calve);
+			JuegoDAO juegoDAO = new JuegoDAO();
+			Juego j = juegoDAO.buscar(id);
+			return Response.ok(j).build();
+		}
+		return Response.status(Response.Status.NOT_FOUND).build();
 	}
 	
 	@GET
