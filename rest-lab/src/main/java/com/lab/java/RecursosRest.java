@@ -29,6 +29,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import com.dao.CategoriaDAO;
 import com.dao.JuegoDAO;
 import com.dao.JugadorDAO;
 import com.dao.UsuarioDAO;
@@ -37,6 +38,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.model.Administrador;
+import com.model.Categoria;
 import com.model.Desarrollador;
 import com.model.JPAUtil;
 import com.model.Juego;
@@ -123,6 +125,8 @@ public class RecursosRest {
 	}
 	
 	
+	
+	
 	@POST
 	@Path("/comprarjuego")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -146,6 +150,41 @@ public class RecursosRest {
 	}
 	
 	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/juegoscategoria/{nombrecat}")
+	public Response obtenerJuegosCategoria(@PathParam("nombrecat") String nombrecat) {
+		CategoriaDAO c = new CategoriaDAO();
+		Categoria c1 = c.buscar(nombrecat);
+		if(c1!=null) {
+			return Response.ok(c1.getJuegos()).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	@POST
+	@Path("/categoriajuego")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response categoriaJuego(@FormParam("nombrecat") String nombre_cat, @FormParam("id") String id) {
+		System.out.println("El nombre de la categoria es: " + nombre_cat + " El id en la api es: " + id);
+		if(nombre_cat!=null && id!=null) {
+			CategoriaDAO c = new CategoriaDAO();
+			Categoria c1 = c.buscar(nombre_cat);
+			JuegoDAO j = new JuegoDAO();
+			int idjuego = Integer.parseInt(id);
+			Juego j1 = j.buscar(idjuego);
+			if(c1!=null && j1!=null) {
+				c1.agregarJuego(j1);
+				c.guardar(c1);
+			}
+			return Response.ok("SE AGREGO EL JUEGO CORRECTAMENTE").build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
 	
 	
 	@POST
@@ -234,6 +273,20 @@ public class RecursosRest {
 		}
 	}
 	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/categorias")
+	public Response getCategorias() {
+		System.out.println("CATEGORIA");
+		CategoriaDAO categoriaDAO = new CategoriaDAO();
+		List<Categoria> categoria = categoriaDAO.obtenerCategorias();
+		if(!categoria.isEmpty()) {
+			return Response.ok(categoria).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)

@@ -13,7 +13,11 @@
 	<title>Listar juegos</title>
 
 	<style>
-
+		
+		h1{
+			color: #17a2b8;
+		}
+		
         .card{
             float: left;
             padding: 10px;
@@ -37,7 +41,6 @@
 </h:head>
 <h:body>
 	<ui:include src="../navBar.xhtml" />
-	<h1>Lista de juegos</h1>
 	<c:forEach items="#{juegoBean.juegos}" var="juego">
         <div class="card" style="width: 18rem;">
 		  <p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{juego.rutaImg}" class="card-img-top"/>

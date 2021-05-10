@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
@@ -36,7 +37,7 @@ import com.model.UsuarioDAO;
 
 
 @ManagedBean(name = "UsuarioBean", eager = true)
-@RequestScoped
+@SessionScoped
 public class UsuarioBean {
 	private List<Juego> juegos = null;
 	private List<Usuario> usuarios = null;
