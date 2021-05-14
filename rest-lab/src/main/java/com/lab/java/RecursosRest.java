@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,7 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.dao.CategoriaDAO;
+import com.dao.EventoDAO;
 import com.dao.JuegoDAO;
 import com.dao.JugadorDAO;
 import com.dao.UsuarioDAO;
@@ -40,6 +43,7 @@ import com.google.gson.JsonParser;
 import com.model.Administrador;
 import com.model.Categoria;
 import com.model.Desarrollador;
+import com.model.Evento;
 import com.model.JPAUtil;
 import com.model.Juego;
 import com.model.Jugador;
@@ -371,6 +375,44 @@ public class RecursosRest {
 			c1.agregarJuego(j);
 			c.guardar(c1);
 			return Response.ok("SE CREO CORRECTAMENTE EL Juego").build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	//Eventos
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/eventos")
+	public Response getEventos() {
+		System.out.println("Evento");
+		EventoDAO eventoDAO = new EventoDAO();
+		List<Evento> eventos = eventoDAO.obtenerEventos();
+		if(!eventos.isEmpty()) {
+			return Response.ok(eventos).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/evento")
+	public Response registroEvento(@FormParam("nombre") String nombre, @FormParam("descuento") String descuento,  @FormParam("fecha_ini") String fecha_ini,  @FormParam("fecha_fin") String fecha_fin) throws ParseException {
+		DateFormat df = DateFormat.getDateInstance();
+
+		if(nombre!=null &&  !nombre.equals("") && descuento!=null && !descuento.equals("")&& fecha_ini!=null && !fecha_ini.equals("")&& fecha_fin!=null && !fecha_fin.equals("")) {
+			EventoDAO eventoDao = new EventoDAO();
+			Evento evento = new Evento();
+			evento.setNombre(nombre);
+			evento.setDescuento(Float.parseFloat(descuento));
+			evento.setFecha_ini(df.parse(fecha_ini));
+			evento.setFecha_fin(df.parse(fecha_fin));
+			eventoDao.guardar(evento);
+			return Response.ok("SE CREO CORRECTAMENTE EL evento").build();
 		}
 		else {
 			return Response.status(Response.Status.NOT_FOUND).build();
