@@ -1,5 +1,6 @@
 package com.beans;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -22,24 +23,40 @@ import com.google.gson.Gson;
 import com.login.SessionUtils;
 import com.model.Juego;
 
-@ManagedBean(name = "ComprarJuego", eager = true)
+@ManagedBean(name = "ComprarJuego")
 @RequestScoped
 public class ComprarJuego implements Serializable{
 	
 	private static final long serialVersionUID = 5443351151396868724L;
+	private Juego j = null;
 	
-	public String comprar(String idjuego) {
+	
+	public Juego getJ() {
+		return j;
+	}
+
+	public void setJ(Juego j) {
+		this.j = j;
+	}
+
+	public static String comprar(String idjuego, String nick) throws IOException {
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/comprarjuego";
-		HttpSession session = SessionUtils.getSession();
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
-		String nick = (String)session.getAttribute("username");
 		System.out.println("El id del juego es: " + idjuego+ " El nick es: " + nick);
 		Form form = new Form();
         form.param("nick", nick);
         form.param("id", idjuego);
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         System.out.println("LA RESPUESTA ES: " + response.getStatus());
-        return "/faces/index.xhtml";
+        return "";
+	}
+	
+	public String buscarJuego(Juego j) {
+		System.out.println("El identificador es: " + j.getId());
+		System.out.println("El juego es:  " + j.getNombre());
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+		sessionMap.put("juego",j);
+		return "/faces/comprar.xhtml?faces-redirect=true&nombreJuego=" + j.getNombre() + "&precioJuego=" + j.getPrecio() + "&id=" + j.getId();
 	}
 }

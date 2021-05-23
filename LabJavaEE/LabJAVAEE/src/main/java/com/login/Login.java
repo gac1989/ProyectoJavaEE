@@ -23,7 +23,17 @@ public class Login implements Serializable {
 	private String pwd;
 	private String msg;
 	private String user;
+	private Usuario usuario;
 	private String validateUsernamePassword = this.validateUsernamePassword();
+	
+	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 
 	public String getPwd() {
 		return pwd;
@@ -63,9 +73,16 @@ public class Login implements Serializable {
 		}
 		if (valid) {
 			session.setAttribute("username", user);
+			session.setAttribute("sessionid", session.getId());
 			session.setAttribute("type", u.getType());
+			session.setAttribute("user", u);
 			System.out.println("USUARIO: " + user + " TIPO: " + u.getType());
-			return "faces/index.xhtml";
+			if(u.getType().equals("administrador")) {
+				return "faces/Admin/admin.xhtml?faces-redirect=true";
+			}
+			else {
+				return "faces/index.xhtml";
+			}
 		} else {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -86,6 +103,6 @@ public class Login implements Serializable {
 	public String logout() {
 		HttpSession session = SessionUtils.getSession();
 		session.invalidate();
-		return "login";
+		return "/faces/login.xhtml?faces-redirect=true";
 	}
 }

@@ -6,7 +6,16 @@ public class Juego {
 	private String descripcion;
 	private String rutaImg;
 	private float precio;
+	private float nota;
 	
+	
+	
+	public float getNota() {
+		return nota;
+	}
+	public void setNota(float nota) {
+		this.nota = nota;
+	}
 	public int getId() {
 		return id;
 	}

@@ -10,7 +10,10 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
@@ -23,10 +26,19 @@ public class CategoriaBean {
 	private List<Categoria> categorias = this.obtenerCategorias();
 	private List<Juego> juegos = null;
 	private String nombreCat = null;
+	private String nueva = null;
+
 	
 	
-	
-	
+	public String getNueva() {
+		return nueva;
+	}
+
+
+	public void setNueva(String nueva) {
+		this.nueva = nueva;
+	}
+
 
 	public List<SelectItem> getCategoriasList(){
 		 List<SelectItem> retVal = new ArrayList<SelectItem>();
@@ -96,6 +108,18 @@ public class CategoriaBean {
         return datos;
 	}
 
+	public String crearCategoria(String nombre) {
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/crearCategoria";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("nombre", nombre);
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        String response2 = response.readEntity(String.class);
+        System.out.println("La respuesta es:  " + response2);
+        return "/faces/Admin/admin.xhtml";
+	}
+	
 	public List<Categoria> getCategorias() {
 		return categorias;
 	}

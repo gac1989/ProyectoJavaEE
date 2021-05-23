@@ -2,6 +2,10 @@ package com.beans;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +48,19 @@ public class UsuarioBean {
 	private String nuevoJug = this.nuevoJugador();
 	private String nuevoDes = this.nuevoDesarrollador();
 	private String propios = "/faces/listarpropios.xhtml";;
+	private UploadedFile file;
 	
 	
 	
+	
+	public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
+
 	public String getPropios() {
 		return propios;
 	}
@@ -133,22 +147,28 @@ public class UsuarioBean {
         Response response = target.request().get();
         String response2 = response.readEntity(String.class);
         
-        System.out.println("La respuesta es: " + response2);
         JsonObject convertedObject = new Gson().fromJson(response2, JsonObject.class);
         JsonElement type=null;
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         if(convertedObject!=null) {
         	type = convertedObject.get("pais");
         }
-        Usuario u = new Gson().fromJson(response2, Usuario.class);
+        Usuario u = null;
         if(type!=null) {
         	sessionMap.put("type", "desarrollador");
+			u = new Gson().fromJson(response2, Desarrollador.class);
 			u.setType("desarrollador");
 		}
 		else {
-			if(u!=null) {
+			if(convertedObject.get("nombre")!=null) {
 				sessionMap.put("type", "jugador");
+				u = new Gson().fromJson(response2, Jugador.class);
 				u.setType("jugador");
+			}
+			else {
+				u = new Gson().fromJson(response2, Usuario.class);
+				sessionMap.put("type", "administrador");
+				u.setType("administrador");
 			}
 		}
         if(u!=null && verifyHash(pass, u.getPass())) {
@@ -159,7 +179,11 @@ public class UsuarioBean {
 	}
 	
 	public String guardar (Usuario user) {
-		
+		if (file != null) {
+            String message = "Successful " + file.getFileName() + " is uploaded.";
+            System.out.println(message);
+            user.setRutaImg(file.getFileName());
+        }
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/registrarse";
 		Client client = ClientBuilder.newClient();
         System.out.println("La contraseña es: " + user.getPass() + " El hash es:  " + hash(user.getPass()) + " "+ user.getEmail());
@@ -168,6 +192,25 @@ public class UsuarioBean {
         Response response = target.request().post(Entity.entity(Entity.json(user), MediaType.APPLICATION_JSON));
         String response2 = response.readEntity(String.class);
         System.out.println("La respuesta es: " + response2);
+        //Cargar imagen
+        URL directory = this.getClass().getResource("tmp.png");
+        File archivo = new File(directory.getPath());
+        System.out.println("LA RUTA ES" + archivo.getAbsolutePath() + " Y EL ARCHIVO ES: " + archivo.getName());
+        try {
+			Files.copy(file.getInputStream(),archivo.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        //
+        String urlRestService2 = "http://localhost:8080/rest-lab/api/ejemplo/subir";
+        WebTarget target2= client.target(urlRestService2);
+        MultipartFormDataOutput mdo = new MultipartFormDataOutput();
+		mdo.addFormData("fichero", archivo, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+		mdo.addFormData("nombre", file.getFileName(), MediaType.TEXT_PLAIN_TYPE);
+		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(mdo) { };
+		Response response3 = target2.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+		System.out.println("La respuesta al subir el juego es: " + response3.getStatus());
         return  "/faces/index.xhtml";
 	}
 
@@ -243,11 +286,11 @@ public class UsuarioBean {
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/editar";
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
-		Form form = new Form();
+		/*Form form = new Form();
         form.param("nick", Usuario.getNick());
         form.param("email", Usuario.getEmail());
-        form.param("pass", Usuario.getPass());
-        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        form.param("pass", Usuario.getPass());*/
+        Response response = target.request().post(Entity.entity(Entity.json(Usuario), MediaType.APPLICATION_JSON));
         System.out.println("LA RESPUESTA ES: " + response.getStatus());
 		return "/faces/index.xhtml";
 	}

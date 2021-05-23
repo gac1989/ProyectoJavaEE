@@ -16,6 +16,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -29,6 +30,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.primefaces.model.file.UploadedFile;
 
 import com.google.gson.Gson;
+import com.login.SessionUtils;
 import com.model.Juego;
 
 @ManagedBean(name = "juegoBean")
@@ -36,6 +38,7 @@ import com.model.Juego;
 public class JuegoBean implements Serializable{
 	private static final long serialVersionUID = 5443351151396868724L;
 	private List<Juego> juegos = null;
+	private List<Juego> juegosjugador = null;
 	private String listar = "/faces/paginasJuegos/listarJuego.xhtml";;
 	private UploadedFile file;
 	private String busqueda;
@@ -44,6 +47,22 @@ public class JuegoBean implements Serializable{
 	private Juego prueba = null;
 	private String categoria = null;
 	
+	
+	
+	public List<Juego> getJuegosjugador() {
+		System.out.println("Entre a buscar juegos");
+		if(juegosjugador==null) {
+			juegosjugador=this.obtenerJuegosJugador();
+		}
+		return juegosjugador;
+	}
+
+
+	public void setJuegosjugador(List<Juego> juegosjugador) {
+		this.juegosjugador = juegosjugador;
+	}
+
+
 	public String getCategoria() {
 		return categoria;
 	}
@@ -112,8 +131,13 @@ public class JuegoBean implements Serializable{
 	public void setBusqueda(String busqueda) {
 		this.busqueda = busqueda;
 	}
-
-
+	
+	public String perfilJuego(Juego j) {
+		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+		sessionMap.put("perfil", j);
+		return  "/faces/perfil.xhtml?faces-redirect=true";
+	}
+	
 	public String nuevo() {
 		Juego j= new Juego();
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
@@ -169,7 +193,7 @@ public class JuegoBean implements Serializable{
         String response3 = response.readEntity(String.class);
 		System.out.println("La respuesta al subir el juego es: " + response2.getStatus());
   
-		return  "/faces/index.xhtml";
+		return  "/faces/index.xhtml?faces-redirect=true";
 	}
 
 	public List<Juego> obtenerJuegos(){
@@ -187,26 +211,23 @@ public class JuegoBean implements Serializable{
         return datos;
 	}
 
-	public List<Juego> buscadorJuego(String busqueda){
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscadorJuegos/" + busqueda;
-		System.out.println("ACA ESTAMOS Y LA BUSQUEDA ES: " + busqueda);
-		Juego j1 = new Juego();
-		j1.setDescripcion("LALALLA");
-		j1.setNombre("EL PEOR JUEGO");
-		this.prueba=j1;
+	public List<Juego> obtenerJuegosJugador(){
+		HttpSession session = SessionUtils.getSession();
+		String nick = (String)session.getAttribute("username");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosusuario/" + nick;
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
         Response response = target.request().get();
         String response2 = response.readEntity(String.class);
         Juego[] j = null;
-        if(response2!=null && response2.isEmpty()){
-        	j = new Gson().fromJson(response2, Juego[].class);
+        if(response2!=null && !response2.isEmpty()) {
+        	 j = new Gson().fromJson(response2, Juego[].class);
         }
         List<Juego> datos = null;
         if(j!=null) {
         	datos = Arrays.asList(j);
         }
-		return datos;
+        return datos;
 	}
 	
 	public String listarJuegos() {
@@ -230,13 +251,8 @@ public class JuegoBean implements Serializable{
 		System.out.println("El juego es:  " + j.getNombre());
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("juego",j);
-		return "/faces/paginasJuegos/comprarJuego.xhtml?faces-redirect=true&nombreJuego=" + j.getNombre() + "&precioJuego=" + j.getPrecio() + "&id=" + j.getId();
+		return "/faces/comprar.xhtml?faces-redirect=true&nombreJuego=" + j.getNombre() + "&precioJuego=" + j.getPrecio() + "&id=" + j.getId();
 	}
-	public String resultadoBusqueda(String busqueda1) {
-		System.out.println("La busqueda es:    " + busqueda);
-		this.resultado=this.buscadorJuego(busqueda);
-		return "/faces/listarBusqueda.xhtml?faces-redirect=true&includeViewParams=true";
-	}
-	
+
 	
 }

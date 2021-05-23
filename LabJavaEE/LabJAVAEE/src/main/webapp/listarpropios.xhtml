@@ -39,7 +39,7 @@
 	<ui:include src="./navBar.xhtml" />
 	
 	<h1>Lista de juegos</h1>
-	<c:forEach items="#{UsuarioBean.juegos}" var="juego">
+	<c:forEach items="#{juegoBean.juegosjugador}" var="juego">
         <div class="card" style="width: 18rem;">
 		  <p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{juego.rutaImg}" class="card-img-top"/>
 		  <div class="card-body">

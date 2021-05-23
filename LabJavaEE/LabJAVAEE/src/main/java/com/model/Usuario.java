@@ -9,6 +9,17 @@ public class Usuario {
 	private String email;
 	private String password;
 	private String type;
+	private String rutaImg;
+	
+	
+	
+	public String getRutaImg() {
+		return rutaImg;
+	}
+
+	public void setRutaImg(String rutaImg) {
+		this.rutaImg = rutaImg;
+	}
 
 	public String getNick() {
 		return nick;
@@ -25,7 +36,7 @@ public class Usuario {
 	public void setNick(String nick) {
 		this.nick = nick;
 	}
-
+		
 	
 
 	public String getEmail() {

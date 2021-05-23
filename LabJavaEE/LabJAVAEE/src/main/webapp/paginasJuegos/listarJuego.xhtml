@@ -45,17 +45,14 @@
         <div class="card" style="width: 18rem;">
 		  <p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{juego.rutaImg}" class="card-img-top"/>
 		  <div class="card-body">
-		    <h5 class="card-title">#{juego.nombre}</h5>
+		  	<h:form>
+		    	<h5 class="card-title"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}"></h:commandLink></h5>
+		    </h:form>
 		    <h5 class="card-title">#{juego.id}</h5>
 		    <h6> U$S #{juego.precio}</h6>
 		    <p class="card-text">#{juego.descripcion}</p>
-		    <h:form>
-		    	<h:commandButton action="#{juegoBean.buscarJuego(juego.id)}" value="Comprar" class="btn btn-primary"></h:commandButton>
-		  	</h:form>
 	 	 </div>
 	</div>
     </c:forEach>
-    
-    
 </h:body>
 </html>
