@@ -31,10 +31,8 @@ public class UsuarioDAO {
 	// buscar Usuario
 	public Usuario buscar(String nick) {
 		Usuario c = new Usuario();
-		entity.getTransaction().begin();
 		c = entity.find(Usuario.class, nick);
 		// JPAUtil.shutdown();
-		entity.getTransaction().commit();
 		return c;
 	}
 

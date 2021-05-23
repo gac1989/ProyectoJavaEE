@@ -22,7 +22,18 @@ public class Usuario {
 	private String password;
 	@Column
 	private String email;
+	@Column
+	private String rutaImg;
 	
+	
+	public String getRutaImg() {
+		return rutaImg;
+	}
+
+	public void setRutaImg(String rutaImg) {
+		this.rutaImg = rutaImg;
+	}
+
 	public String getNick() {
 		return nick;
 	}

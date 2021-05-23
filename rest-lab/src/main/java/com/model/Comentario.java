@@ -1,11 +1,9 @@
 package com.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 @Entity
@@ -17,8 +15,25 @@ public class Comentario {
 	@Column
 	private String texto;
 	@Column
-	//private Usuario autor;
+	private int nota;
 	
+	@ManyToOne
+	@JoinColumn(name="nick", foreignKey = @ForeignKey(name = "nick"))
+	private Jugador autor;
+	
+
+	public int getNota() {
+		return nota;
+	}
+	public void setNota(int nota) {
+		this.nota = nota;
+	}
+	public Jugador getAutor() {
+		return autor;
+	}
+	public void setAutor(Jugador autor) {
+		this.autor = autor;
+	}
 	public int getId() {
 		return id;
 	}
@@ -31,12 +46,7 @@ public class Comentario {
 	public void setTexto(String texto) {
 		this.texto = texto;
 	}
-	/*public Usuario getAutor() {
-		return autor;
-	}
-	public void setAutor(Usuario autor) {
-		this.autor = autor;
-	}*/
+	
 	@Override
 	public String toString() {
 		return "Comentario [id=" + id + ", texto=" + texto + ", autor=" + "]";

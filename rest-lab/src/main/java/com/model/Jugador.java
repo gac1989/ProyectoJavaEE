@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 @Table(name="jugador")
@@ -28,6 +30,7 @@ public class Jugador extends Usuario {
 	@ManyToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
 	@JoinTable(name="usuariojuego", joinColumns = @JoinColumn(name = "nick"),
     inverseJoinColumns = @JoinColumn(name = "juego_id") )
+	@JsonBackReference
 	private List<Juego> juegos;
 	
 	

@@ -31,11 +31,9 @@ public class JugadorDAO {
 
 	// buscar Jugador
 	public Jugador buscar(String nick) {
-		trans.begin();
 		Jugador c = new Jugador();
 		c = entity.find(Jugador.class, nick);
 		// JPAUtil.shutdown();
-		trans.commit();
 		return c;
 	}
 
