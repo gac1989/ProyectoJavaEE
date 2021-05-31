@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.ws.rs.client.Client;
@@ -21,7 +22,7 @@ import com.model.Categoria;
 import com.model.Juego;
 
 @ManagedBean(name = "CategoriaBean")
-@SessionScoped
+@RequestScoped
 public class CategoriaBean {
 	private List<Categoria> categorias = this.obtenerCategorias();
 	private List<Juego> juegos = null;
@@ -118,6 +119,31 @@ public class CategoriaBean {
         String response2 = response.readEntity(String.class);
         System.out.println("La respuesta es:  " + response2);
         return "/faces/Admin/admin.xhtml";
+	}
+	
+	public String editarCategoria(String nombre, String nuevoNombre) {
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/editarCategoria";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("nombre", nombre);
+        form.param("nombreNuevo", nuevoNombre);
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        String response2 = response.readEntity(String.class);
+        System.out.println("La respuesta es:  " + response2);
+        return "/faces/Admin/categoria.xhtml";
+	}
+	
+	public String eliminarCategoria(String nombre) {
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/eliminarCategoria";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("nombre", nombre);
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        String response2 = response.readEntity(String.class);
+        System.out.println("La respuesta es:  " + response2);
+        return "/faces/Admin/categoria.xhtml";
 	}
 	
 	public List<Categoria> getCategorias() {

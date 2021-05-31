@@ -2,7 +2,9 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <h:head>
     <meta charset="utf-8"/>
@@ -16,64 +18,37 @@
     <link href="assets/css/master.css" rel="stylesheet" />
     <link href="assets/vendor/chartsjs/Chart.min.css" rel="stylesheet" />
     <link href="assets/vendor/flagiconcss/css/flag-icon.min.css" rel="stylesheet" />
+    
+    <style>
+    	.first{
+    		display:inline-flex;
+    		border-radius: 100px;
+    		background-color: gold;
+    	}
+   		.second{
+   			display:inline-flex;
+   			border-radius: 100px;
+    		background-color: silver;
+    	}
+    	.third{
+    		display:inline-flex;
+    		border-radius: 100px;
+    		background-color: #cd7f32;
+    	}
+    
+    
+    </style>
+    
 </h:head>
 
-<body>
+<h:body>
     <div class="wrapper">
-        <nav id="sidebar" class="active">
-            <div class="sidebar-header">
-                <img src="assets/img/bootstraper-logo.png" alt="bootraper logo" class="app-logo" />
-            </div>
-            <ul class="list-unstyled components text-secondary">
-                <li>
-                    <a href="admin.xhtml"><i class="fas fa-home"></i> Dashboard</a>
-                </li>
-                <li>
-                    <a href="categoria.xhtml"><i class="fas fa-file-alt"></i> Categorias</a>
-                </li>
-                
-            </ul>
-        </nav>
+    <ui:include src="barra.xhtml" />
         <div id="body" class="active">
             <nav class="navbar navbar-expand-lg navbar-white bg-white">
                 <button type="button" id="sidebarCollapse" class="btn btn-light"><i class="fas fa-bars"></i><span></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item dropdown">
-                            <div class="nav-dropdown">
-                                <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-link"></i> <span>Quick Access</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
-                                    <ul class="nav-list">
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-list"></i> Access Logs</a></li>
-                                        <div class="dropdown-divider"></div>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-database"></i> Back ups</a></li>
-                                        <div class="dropdown-divider"></div>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cloud-download-alt"></i> Updates</a></li>
-                                        <div class="dropdown-divider"></div>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-user-shield"></i> Roles</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <div class="nav-dropdown">
-                                <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>#{username}</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
-                                    <ul class="nav-list">
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Messages</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a></li>
-                                        <div class="dropdown-divider"></div>
-                                        <h:form>
-	                                        <li>   
-				                            	<h3><h:commandLink action="#{login.logout}" value="Logout"></h:commandLink></h3>
-				                           	</li>
-			                           	</h:form>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                    <ui:include src="logout.xhtml" />
                 </div>
             </nav>
             <div class="content">
@@ -96,15 +71,15 @@
                                         </div>
                                         <div class="col-sm-8">
                                             <div class="detail">
-                                                <p class="detail-subtitle">New Orders</p>
-                                                <span class="number">6,267</span>
+                                                <p class="detail-subtitle">Ventas</p>
+                                                <span class="number">#{AdminBean.stats.totalventas}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="footer">
                                         <hr />
                                         <div class="stats">
-                                            <i class="fas fa-calendar"></i> For this Week
+                                            <i class="fas fa-calendar"></i> Total
                                         </div>
                                     </div>
                                 </div>
@@ -121,15 +96,15 @@
                                         </div>
                                         <div class="col-sm-8">
                                             <div class="detail">
-                                                <p class="detail-subtitle">Revenue</p>
-                                                <span class="number">$180,900</span>
+                                                <p class="detail-subtitle">Ingresos</p>
+                                                <span class="number">U$S #{AdminBean.stats.total}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="footer">
                                         <hr />
                                         <div class="stats">
-                                            <i class="fas fa-calendar"></i> For this Month
+                                            <i class="fas fa-calendar"></i> Total
                                         </div>
                                     </div>
                                 </div>
@@ -146,15 +121,15 @@
                                         </div>
                                         <div class="col-sm-8">
                                             <div class="detail">
-                                                <p class="detail-subtitle">Page views</p>
-                                                <span class="number">28,210</span>
+                                                <p class="detail-subtitle">Ingresos netos</p>
+                                                <span class="number">U$S #{AdminBean.stats.totalneto}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="footer">
                                         <hr />
                                         <div class="stats">
-                                            <i class="fas fa-stopwatch"></i> For this Month
+                                            <i class="fas fa-stopwatch"></i> Total
                                         </div>
                                     </div>
                                 </div>
@@ -190,18 +165,12 @@
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="content">
-                                            <div class="head">
-                                                <h5 class="mb-0">Traffic Overview</h5>
-                                                <p class="text-muted">Current year website visitor data</p>
-                                            </div>
-                                            <div class="canvas-wrapper">
-                                                <canvas class="chart" id="trafficflow"></canvas>
-                                            </div>
-                                            <div class="ui hidden divider"></div>
-                                        </div>
-                                    </div>
+                                   <div class="card">
+									    <h:form>
+									        <p:barChart min="0" model="#{ChartsBean.barModel2}">
+									        </p:barChart>
+									    </h:form>
+									</div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card">
@@ -230,113 +199,23 @@
                                         <table class="table no-margin bg-lighter-grey">
                                             <thead class="success">
                                                 <tr>
-                                                    <th>Country</th>
-                                                    <th class="text-right">Unique Visitors</th>
+                                                    <th>Juegos mas populares</th>
+                                                    <th class="text-right">Ventas</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-us"></i> United States</td>
-                                                    <td class="text-right">27,340</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-in"></i> India</td>
-                                                    <td class="text-right">21,280</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-jp"></i> Japan</td>
-                                                    <td class="text-right">18,210</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-gb"></i> United Kingdom</td>
-                                                    <td class="text-right">15,176</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-es"></i> Spain</td>
-                                                    <td class="text-right">14,276</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-de"></i> Germany</td>
-                                                    <td class="text-right">13,176</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-br"></i> Brazil</td>
-                                                    <td class="text-right">12,176</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-id"></i> Indonesia</td>
-                                                    <td class="text-right">11,886</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-ph"></i> Philippines</td>
-                                                    <td class="text-right">11,509</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="flag-icon flag-icon-nz"></i> New Zealand</td>
-                                                    <td class="text-right">1,700</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="content">
-                                    <div class="head">
-                                        <h5 class="mb-0">Most Visited Pages</h5>
-                                        <p class="text-muted">Current year website visitor data</p>
-                                    </div>
-                                    <div class="canvas-wrapper">
-                                        <table class="table no-margin bg-lighter-grey">
-                                            <thead class="success">
-                                                <tr>
-                                                    <th>Page Name</th>
-                                                    <th class="text-right">Visitors</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>/about.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">8,340</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>/special-promo.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">7,280</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>/products.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">6,210</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>/documentation.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">5,176</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>/customer-support.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">4,276</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>/index.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">3,176</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>/products-pricing.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">2,176</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>/product-features.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">1,886</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>/contact-us.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">1,509</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>/terms-and-condition.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">1,100</td>
-                                                </tr>
+                                            	<c:forEach items="#{AdminBean.statventas}" var="juego" varStatus="loop">
+	                                            	<tr>
+	                                                    <td>
+                                                   			 <c:if test="#{loop.index==0}"><div class="first"><i class="fas fa-medal"></i></div></c:if>
+                                                   			 <c:if test="#{loop.index==1}"><div class="second"><i class="fas fa-medal"></i></div></c:if>
+                                                   			 <c:if test="#{loop.index==2}"><div class="third"><i class="fas fa-medal"></i></div></c:if>
+                                                   			#{juego.nombre}
+	                                                    </td>
+	                                                    <td class="text-right">#{juego.ventas}</td>
+	                                                </tr>
+                                            	</c:forEach>
+                                               
                                             </tbody>
                                         </table>
                                     </div>
@@ -402,11 +281,8 @@
             </div>
         </div>
     </div>
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/chartsjs/Chart.min.js"></script>
-    <script src="assets/js/dashboard-charts.js"></script>
     <script src="assets/js/script.js"></script>
-</body>
+</h:body>
 
 </html>

@@ -31,6 +31,10 @@
 			width: 250px;
 			object-fit: cover;
 		}
+		.titulo{
+			color: #17a2b8;
+			text-decoration: none;
+		}
 				
 	</style>
 	
@@ -38,19 +42,18 @@
 <h:body>
 	<ui:include src="./navBar.xhtml" />
 	
-	<h1>Lista de juegos</h1>
+	<h1>Mis juegos</h1>
 	<c:forEach items="#{juegoBean.juegosjugador}" var="juego">
         <div class="card" style="width: 18rem;">
 		  <p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{juego.rutaImg}" class="card-img-top"/>
 		  <div class="card-body">
-		    <h5 class="card-title">#{juego.nombre}</h5>
-		    <h5 class="card-title">#{juego.id}</h5>
+		  	<h:form>
+		  		<h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2>
+		    </h:form>
 		    <h6> U$S #{juego.precio}</h6>
-		    <p class="card-text">#{juego.descripcion}</p>
 	 	 </div>
 	</div>
     </c:forEach>
-    
     
 </h:body>
 </html>

@@ -1,5 +1,6 @@
 package com.model;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -27,24 +29,60 @@ public class Juego {
 	private int id;
 	@Column
 	private String nombre;
-	@Column
+	@Column(length = 1000000)
 	private String descripcion;
 	@Column
 	private String rutaImg;
 	@Column
 	private float precio;
+	@Column
+	private float oferta;
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="comentariojuego", joinColumns = @JoinColumn(name = "juego_id"),
     inverseJoinColumns = @JoinColumn(name = "comentario_id") )
 	@JsonBackReference
 	private List<Comentario> comentarios;
-	@ManyToOne
-	@JoinColumn(name="nombreEvento", foreignKey = @ForeignKey(name = "nombre"))
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="nombreEvento")
 	private Evento evento;
 	@Column
 	private float nota = 0;
+	@ManyToOne
+	@JoinColumn(name = "desarrollador_id")
+	@JsonBackReference
+	private Desarrollador desarrollador;
+	@OneToMany(mappedBy = "juego")
+	@JsonBackReference
+	private List<CompraJuego> ventas;
+	 
 	
 	
+	
+	public float getOferta() {
+		if(evento!=null) {
+			this.oferta=this.precio-((this.precio*evento.getDescuento())/100);
+		}
+		else {
+			this.oferta=this.precio;
+		}
+		return oferta;
+	}
+	
+	public void setOferta(float oferta) {
+		this.oferta = oferta;
+	}
+	public List<CompraJuego> getVentas() {
+		return ventas;
+	}
+	public void setVentas(List<CompraJuego> ventas) {
+		this.ventas = ventas;
+	}
+	public Desarrollador getDesarrollador() {
+		return desarrollador;
+	}
+	public void setDesarrollador(Desarrollador desarrollador) {
+		this.desarrollador = desarrollador;
+	}
 	public Evento getEvento() {
 		return evento;
 	}
@@ -95,8 +133,26 @@ public class Juego {
 		this.comentarios = comentarios;
 	}
 	
+	private int replaceComentario(Comentario c1) {
+		for(Iterator<Comentario> featureIterator = comentarios.iterator(); 
+		    featureIterator.hasNext(); ) {
+		    Comentario feature = featureIterator.next();
+		    if(feature.getAutor().getNick().equals(feature.getAutor().getNick())) {
+		    	System.out.println("El autor ya hizo un comentario");
+		    	return comentarios.indexOf(feature);
+		    }
+		}
+		return -1;
+	}
+	
 	public void agregarComentario(Comentario c1) {
-		this.comentarios.add(c1);
+		int valor = replaceComentario(c1);
+		if(valor!=-1) {
+			this.comentarios.set(valor, c1);
+		}
+		else {
+			this.comentarios.add(c1);
+		}
 		int suma = 0;
 		for(Comentario c : this.comentarios) {
 			suma = suma + c.getNota();
@@ -105,6 +161,10 @@ public class Juego {
 		System.out.println("La nota es: " + this.nota);
 	}
 	
+	
+	public void agregarVenta(CompraJuego compra) {
+		this.ventas.add(compra);
+	}
 	
 	@Override
 	public String toString() {

@@ -61,5 +61,9 @@ public class EventoDAO {
 		listaEventos = q.getResultList();
 		return listaEventos;
 	}
+	
+	public void cerrar() {
+		entity.close();
+	}
 
 }

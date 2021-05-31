@@ -7,8 +7,25 @@ public class Juego {
 	private String rutaImg;
 	private float precio;
 	private float nota;
+	private float precio_descuento;
+	private Evento evento;
 	
 	
+	
+	
+	public Evento getEvento() {
+		return evento;
+	}
+	public void setEvento(Evento evento) {
+		this.evento = evento;
+	}
+	public float getPrecio_descuento() {
+		
+		return precio_descuento;
+	}
+	public void setPrecio_descuento(float precio_descuento) {
+		this.precio_descuento = precio_descuento;
+	}
 	
 	public float getNota() {
 		return nota;

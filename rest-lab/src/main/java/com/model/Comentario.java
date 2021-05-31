@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name="comentario")
 public class Comentario {
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;

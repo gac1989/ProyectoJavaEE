@@ -76,7 +76,7 @@ public class LoginFilter implements Filter {
 				case "administrador":{
 					System.out.println("LLegue al administrador: " + type);
 					System.out.println("La ruta administrador es: " + reqURI);
-					if (this.publico(reqURI) || reqURI.equals("/LabJAVAEE/faces/Admin/admin.xhtml") || reqURI.equals("/LabJAVAEE/faces/Admin/categoria.xhtml")) {
+					if (this.publico(reqURI) || reqURI.equals("/LabJAVAEE/faces/Admin/admin.xhtml") || reqURI.equals("/LabJAVAEE/faces/Admin/categoria.xhtml")|| reqURI.equals("/LabJAVAEE/faces/Admin/eventos.xhtml") || reqURI.equals("/LabJAVAEE/faces/Admin/stats.xhtml")) {
 						System.out.println("Redireccione en el desarrollador ");
 						chain.doFilter(request, response);
 						return;

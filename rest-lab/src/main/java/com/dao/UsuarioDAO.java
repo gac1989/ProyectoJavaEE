@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
 import com.model.Usuario;
 import com.model.JPAUtil;
 
 public class UsuarioDAO {
-	EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
+	
+	EntityManagerFactory factory = JPAUtil.getEntityManagerFactory();
+	EntityManager entity = factory.createEntityManager();
 
 	// guardar Usuario
 	public void guardar(Usuario Usuario) {
@@ -32,7 +37,6 @@ public class UsuarioDAO {
 	public Usuario buscar(String nick) {
 		Usuario c = new Usuario();
 		c = entity.find(Usuario.class, nick);
-		// JPAUtil.shutdown();
 		return c;
 	}
 
@@ -46,11 +50,11 @@ public class UsuarioDAO {
 	}
 
 	/// eliminar Usuario
-		public void agregarJuego(Usuario u) {
-			entity.getTransaction().begin();
-			entity.persist(u);
-			entity.getTransaction().commit();
-		}
+	public void agregarJuego(Usuario u) {
+		entity.getTransaction().begin();
+		entity.persist(u);
+		entity.getTransaction().commit();
+	}
 
 	
 	// obtener todos los Usuario
@@ -62,5 +66,9 @@ public class UsuarioDAO {
 		entity.getTransaction().commit();
 		return listaUsuarios;
 	}
-
+	
+	public void cerrar() {
+		entity.close();
+	}
+	
 }

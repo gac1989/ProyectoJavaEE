@@ -39,6 +39,7 @@ public class JuegoBean implements Serializable{
 	private static final long serialVersionUID = 5443351151396868724L;
 	private List<Juego> juegos = null;
 	private List<Juego> juegosjugador = null;
+	private List<Juego> juegosdesarrollador = null;
 	private String listar = "/faces/paginasJuegos/listarJuego.xhtml";;
 	private UploadedFile file;
 	private String busqueda;
@@ -49,8 +50,20 @@ public class JuegoBean implements Serializable{
 	
 	
 	
+	public List<Juego> getJuegosdesarrollador() {
+		if(juegosdesarrollador==null) {
+			juegosdesarrollador=this.obtenerJuegosDesarrollador();
+		}
+		return juegosdesarrollador;
+	}
+
+
+	public void setJuegosdesarrollador(List<Juego> juegosdesarrollador) {
+		this.juegosdesarrollador = juegosdesarrollador;
+	}
+
+
 	public List<Juego> getJuegosjugador() {
-		System.out.println("Entre a buscar juegos");
 		if(juegosjugador==null) {
 			juegosjugador=this.obtenerJuegosJugador();
 		}
@@ -157,6 +170,8 @@ public class JuegoBean implements Serializable{
             System.out.println(message);
             juego.setRutaImg(file.getFileName());
         }
+		HttpSession session = SessionUtils.getSession();
+		String nick = (String)session.getAttribute("username");
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/registrarJuego";
 		Client client = ClientBuilder.newClient();
         Form form = new Form();
@@ -166,6 +181,7 @@ public class JuegoBean implements Serializable{
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         String path = servletContext.getContextPath();
         System.out.println("El path es: " + System.getProperty("user.dir"));
+        form.param("nick", nick);
         form.param("nombre", juego.getNombre());
         form.param("descripcion", juego.getDescripcion());
         form.param("rutaImg", juego.getRutaImg());
@@ -230,28 +246,43 @@ public class JuegoBean implements Serializable{
         return datos;
 	}
 	
+	public List<Juego> obtenerJuegosDesarrollador(){
+		HttpSession session = SessionUtils.getSession();
+		String nick = (String)session.getAttribute("username");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosdesarrollador/" + nick;
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+        Response response = target.request().get();
+        String response2 = response.readEntity(String.class);
+        Juego[] j = null;
+        if(response2!=null && !response2.isEmpty()) {
+        	 j = new Gson().fromJson(response2, Juego[].class);
+        }
+        List<Juego> datos = null;
+        if(j!=null) {
+        	datos = Arrays.asList(j);
+        }
+        System.out.println("La respuesta es: " + response.getStatus());
+        return datos;
+	}
+	
 	public String listarJuegos() {
 		System.out.println("LISTARRRRR");
 		this.juegos=this.obtenerJuegos();
 		return "/faces/paginasJuegos/listarJuego.xhtml";
 	}
 	
-	public String buscarJuego(int id) {
+	public static Juego buscarJuego(int id) {
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscarJuego";
 		Client client = ClientBuilder.newClient();
-		//id--;
 		System.out.println("El identificador es: " + id);
         Form form = new Form();
         form.param("id", String.valueOf(id));
         WebTarget target= client.target(urlRestService);
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         String response2 = response.readEntity(String.class);
-        System.out.println("La respuesta es:  " + response2);
         Juego j = new Gson().fromJson(response2, Juego.class);
-		System.out.println("El juego es:  " + j.getNombre());
-        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-		sessionMap.put("juego",j);
-		return "/faces/comprar.xhtml?faces-redirect=true&nombreJuego=" + j.getNombre() + "&precioJuego=" + j.getPrecio() + "&id=" + j.getId();
+		return j;
 	}
 
 	

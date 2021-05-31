@@ -62,4 +62,7 @@ public class CategoriaDAO {
 		return listaCategorias;
 	}
 
+	public void cerrar() {
+		entity.close();
+	}
 }

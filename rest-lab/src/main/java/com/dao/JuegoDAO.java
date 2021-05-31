@@ -84,5 +84,9 @@ public class JuegoDAO {
 		}
 		System.out.println(path);
 	}
+	
+	public void cerrar() {
+		entity.close();
+	}
 }
 

@@ -40,22 +40,31 @@
 	        </li>
         </h:panelGroup>
          <li class="nav-item dropdown">
-         	<h:link value = "Crear juego" outcome = "#{juegoBean.nuevo1}" class="nav-link" rendered="#{type == 'desarrollador'}"/>
+         	<h:link value = "Agregar juego" outcome = "#{juegoBean.nuevo1}" class="nav-link" rendered="#{type == 'desarrollador'}"/>
         </li>
         <li class="nav-item dropdown">
          	<h:link value = "Biblioteca" outcome = "/faces/listarpropios.xhtml" class="nav-link" rendered="#{type == 'jugador'}"/>
-        </li>
-        <li class="nav-item dropdown">
-        	<h:form>
-         		<h:commandLink value = "Logout" action="#{login.logout}" class="nav-link" rendered="#{type == 'desarrollador' or type == 'jugador'}" />
-        	</h:form>
         </li>
       </ul>
       <h:form class="d-flex">
       	<h:inputText value="#{BusquedaBean.busqueda}" class="form-control me-2" placeholder="Buscar" required="true"></h:inputText>
       	<h:commandButton action="#{BusquedaBean.resultadoBusqueda(BusquedaBean.busqueda)}" value="Buscar" class="btn btn-outline-success"></h:commandButton>
       </h:form>
-   
+      <ul class="nav navbar-nav ml-auto">
+        	<h:panelGroup rendered="#{type != 'visitante'}">
+		        <li class="nav-item dropdown">
+		         	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">#{user.nick} </a>
+		         	<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+			            <li><h:link value = "Perfil" outcome = "/faces/perfilDesarrollador" class="nav-link" rendered="#{type == 'desarrollador'}"/></li>
+		             	<li><h:link value = "Perfil" outcome = "/faces/perfilJugador" class="nav-link" rendered="#{type == 'jugador'}"/></li>
+			            <li><h:link class="dropdown-divider"/></li>
+			             <h:form>
+			           		 <h:commandLink value = "Logout" action="#{login.logout}" class="nav-link" rendered="#{type == 'desarrollador' or type == 'jugador'}" />
+			           	</h:form>
+		          </ul>
+		        </li>
+	        </h:panelGroup>
+       </ul>
     </div>
   </div>
 </nav>

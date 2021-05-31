@@ -28,18 +28,28 @@ public class Evento {
 	private Date fecha_ini;
 	@Column
 	private Date fecha_fin;
+	@Column
+	private int activo;
 
+	
+	
+	
+	public int getActivo() {
+		return activo;
+	}
+	public void setActivo(int activo) {
+		this.activo = activo;
+	}
 	public String getNombre() {
 		return nombre;
 	}
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	@OneToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
-	@JoinTable(name="eventoJuego", joinColumns = @JoinColumn(name = "nombre"),
-            inverseJoinColumns = @JoinColumn(name = "id"))
+	@OneToMany(mappedBy = "evento")
+	@JsonBackReference
 	private List<Juego> juegos;
-
+	
 	
 	
 	

@@ -10,35 +10,45 @@
 		content="width=device-width, initial-scale=1"
 		http-equiv="X-UA-Conpatible" />
 	<title>SteamIndie</title>
-		<link type = "text/css" rel = "stylesheet" href = "./resources/style2.css" /> 
-
+	<style>
+		img {
+			height: 250px;
+			width: 250px;
+			object-fit: cover;
+		}
+	</style>
 </h:head>
 <h:body>
 	<ui:include src="./navBar.xhtml" />
-	<div id="login">
-        <h3 class="text-center text-white pt-5">Login form</h3>
-        <div class="container">
-        <p:menuitem>
-			<h:graphicImage value="img/indie2.jpg"></h:graphicImage>
-		</p:menuitem>
-		<br></br>
-		<h3>Steamindie</h3>
-            <div id="login-row" class="row justify-content-center align-items-center">
-                <div id="login-column" class="col-md-6">
-                    <div id="login-box" class="col-md-12">
-                       	<div class="form-group">
-                            <h3>Bienvenido #{user.getNick()}</h3>
-                            <h:form>
-                            	<h3><h:commandLink action="#{login.logout}" value="Logout"></h:commandLink></h3>
-                            	<h3><h:commandLink action="/faces/perfilDesarrollador.xhtml" value="Perfil" rendered="#{user.type == 'desarrollador'}"></h:commandLink></h3>
-                           		<h3><h:commandLink action="/faces/perfilJugador.xhtml" value="Perfil" rendered="#{user.type == 'jugador'}"></h:commandLink></h3>
-                           	</h:form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-	
+	<h:form id="form">
+	    <div class="card">
+	        <p:carousel value="#{juegoBean.juegos}" var="juego" responsive="true">
+	            <div class="product">
+	                <div class="product-grid-item p-p-5">
+	                    <div class="product-grid-item-top">
+	                        <div>
+	                            <i class="pi pi-tag product-category-icon"/>
+	                        </div>
+	                    </div>
+	                    <div class="product-grid-item-content">
+	                     	<p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{juego.rutaImg}" class="card-img-top"/>
+	                        <div class="product-name">#{juego.nombre}</div>
+	                        <div class="product-description">#{juego.descripcion.length() gt 50 ? juego.descripcion.substring(0,57).concat('...') : juego.descripcion}</div>
+	                        <p:rating readonly="true" value="#{3}"/>
+	                    </div>
+	                    <div class="product-grid-item-bottom">
+	                        <h:outputText value="#{juego.precio}" styleClass="product-price">
+	                            <f:convertNumber currencySymbol="$" type="currency"/>
+	                        </h:outputText>
+	                        <p:commandButton type="button" value="Add To Cart"
+	                                         icon="pi pi-shopping-cart"
+	                                         disabled="">
+	                        </p:commandButton>
+	                    </div>
+	                </div>
+	            </div>
+	        </p:carousel>
+	    </div>
+	</h:form>
 </h:body>
 </html>

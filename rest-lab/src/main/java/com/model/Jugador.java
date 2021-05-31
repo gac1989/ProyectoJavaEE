@@ -1,19 +1,17 @@
 package com.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import com.dao.CompraDAO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
@@ -27,17 +25,24 @@ public class Jugador extends Usuario {
 	private String nombre;
 	@Column
 	private String apellido;
-	@ManyToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
-	@JoinTable(name="usuariojuego", joinColumns = @JoinColumn(name = "nick"),
-    inverseJoinColumns = @JoinColumn(name = "juego_id") )
+	@OneToMany(mappedBy = "user")
 	@JsonBackReference
-	private List<Juego> juegos;
+	private List<CompraJuego> juegos;
 	
 	
-	public List<Juego> getJuegos() {
+	public List<CompraJuego> getJuegos() {
 		return juegos;
 	}
-	public void setJuegos(List<Juego> juegos) {
+	
+	public List<Juego> obtenerJuegos(){
+		List<Juego> misjuegos = new ArrayList<Juego>();
+		for(CompraJuego compra: this.juegos) {
+			misjuegos.add(compra.getJuego());
+		}
+		return misjuegos;
+	}
+	
+	public void setJuegos(List<CompraJuego> juegos) {
 		this.juegos = juegos;
 	}
 	public Date getFecha_nac() {
@@ -59,8 +64,9 @@ public class Jugador extends Usuario {
 		this.apellido = apellido;
 	}
 	
-	public void agregarJuego(Juego j) {
-		this.juegos.add(j);
+	
+	public void agregarJuego(CompraJuego compra) {
+		this.juegos.add(compra);
 	}
 	
 	

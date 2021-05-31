@@ -8,7 +8,9 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 import com.model.Jugador;
+import com.model.Desarrollador;
 import com.model.JPAUtil;
+import com.model.Juego;
 
 public class JugadorDAO {
 	EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
@@ -45,13 +47,13 @@ public class JugadorDAO {
 		entity.remove(c);
 		entity.getTransaction().commit();
 	}
-
-		public void agregarJuego(Jugador u) {
-			entity.getTransaction().begin();
-			entity.persist(u);
-			entity.getTransaction().commit();
-		}
-
+		
+	public List<Juego> obtenerJuegos(Desarrollador d1){
+		List<Juego> juegos = null;
+		Query q = entity.createQuery("SELECT j FROM Juego j JOIN j.desarrollador d WHERE j.desarrollador=d.nick ");
+		juegos = q.getResultList();
+		return juegos;
+	}
 	
 	// obtener todos los Jugador
 	public List<Jugador> obtenerJugadors() {
@@ -60,6 +62,10 @@ public class JugadorDAO {
 		listaJugadors = q.getResultList();
 		entity.close();
 		return listaJugadors;
+	}
+	
+	public void cerrar() {
+		entity.close();
 	}
 
 }

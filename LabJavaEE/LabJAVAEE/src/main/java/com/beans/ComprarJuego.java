@@ -24,7 +24,7 @@ import com.login.SessionUtils;
 import com.model.Juego;
 
 @ManagedBean(name = "ComprarJuego")
-@RequestScoped
+@SessionScoped
 public class ComprarJuego implements Serializable{
 	
 	private static final long serialVersionUID = 5443351151396868724L;

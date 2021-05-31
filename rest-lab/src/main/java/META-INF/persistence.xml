@@ -15,6 +15,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     <class>com.model.Categoria</class>
     <class>com.model.Comentario</class>
     <class>com.model.Evento</class>
+    <class>com.model.CompraJuego</class>
     <properties>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/labjava_base?serverTimezone=UTC" />

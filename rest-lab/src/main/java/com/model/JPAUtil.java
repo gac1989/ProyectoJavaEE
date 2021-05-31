@@ -10,6 +10,7 @@ public class JPAUtil {
 
 	public static EntityManagerFactory getEntityManagerFactory() {
 		if (factory==null) {
+			System.out.println("LALALALAL CREO LA FABRICA");
 			factory=Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 		}
 		return factory;				
