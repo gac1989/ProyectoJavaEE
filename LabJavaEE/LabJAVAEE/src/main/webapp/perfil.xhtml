@@ -199,13 +199,15 @@
                    <div class="card card-outline-secondary my-4">
                        <div class="card-header">Product Reviews</div>
                        <div class="card-body">
+                   		 	<h:form>
                     		<c:forEach items="#{ComentarioBean.obtenerComentarios(perfil.id)}" var="c">
                     			<div jsf:rendered="#{c.estado!='BLOQUEADO'}">
-	                    			<p>#{c.texto} - #{c.nota}  <h:form><h:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" value="Reportar" class="btn btn-warning" rendered="#{c.autor.nick!=user.nick}"/></h:form></p>
-	                          		<small class="text-muted">Posted by #{c.autor.nick}</small>
+	                    			<p>#{c.texto} - #{c.nota}  <h:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" value="Reportar" class="btn btn-warning" rendered="#{c.autor.nick!=user.nick}"/></p>
+	                          		<small class="text-muted">Posted by <h:commandLink action="#{PublicacionBean.mostrarPerfil(c.autor.nick)}" value="#{c.autor.nick}"></h:commandLink></small>
 	                          		<hr />
                           		</div>
                            </c:forEach>
+                           </h:form>
                            <h:form>
 	                           <h:panelGroup rendered="#{type == 'jugador'}">
 		                           	<p:inputNumber id="input1" value="#{ComentarioBean.nota}" modifyValueOnWheel="false" maxValue="5" minValue="1" rendered="#{ComentarioBean.done eq true}"/>

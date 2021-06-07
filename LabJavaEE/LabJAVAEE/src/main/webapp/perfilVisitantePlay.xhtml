@@ -4,7 +4,8 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 	<h:head>
 	  	<title>Bootstrap Example</title>
 		<meta charset="utf-8"/>
@@ -26,7 +27,7 @@
 			.account-settings .user-profile .user-avatar {
 			    margin: 0 0 1rem 0;
 			}
-			.account-settings .user-profile .user-avatar img {
+			img {
 			    width: 90px;
 			    height: 90px;
 			    -webkit-border-radius: 100px;
@@ -73,6 +74,66 @@
 			    border: 0;
 			    margin-bottom: 1rem;
 			}
+			body{
+			    margin-top:20px;
+			    background:#eee;
+			}
+			@media (min-width: 0) {
+			    .g-mr-15 {
+			        margin-right: 1.07143rem !important;
+			    }
+			}
+			@media (min-width: 0){
+			    .g-mt-3 {
+			        margin-top: 0.21429rem !important;
+			    }
+			}
+			
+			.g-height-50 {
+			    height: 50px;
+			}
+			
+			.g-width-50 {
+			    width: 50px !important;
+			}
+			
+			@media (min-width: 0){
+			    .g-pa-30 {
+			        padding: 2.14286rem !important;
+			    }
+			}
+			
+			.g-bg-secondary {
+			    background-color: #fafafa !important;
+			}
+			
+			.u-shadow-v18 {
+			    box-shadow: 0 5px 10px -6px rgba(0, 0, 0, 0.15);
+			}
+			
+			.g-color-gray-dark-v4 {
+			    color: #777 !important;
+			}
+			
+			.g-font-size-12 {
+			    font-size: 0.85714rem !important;
+			}
+			
+			.media-comment {
+			    margin-top:20px
+			}
+			#pub{
+			    border-radius: 0px;
+			    width: 100%;
+			    height: 100%;
+			}
+			
+			hr {
+			  margin-top: 1rem;
+			  margin-bottom: 1rem;
+			  border: 0;
+			  border-top: 1px solid rgba(0, 0, 0, 0.1);
+			}
 		</style>
 	</h:head>
 	<h:body>
@@ -86,10 +147,10 @@
 				<div class="account-settings">
 					<div class="user-profile">
 						<div class="user-avatar">
-							<p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{user.rutaImg}"/>
+							<p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{visitado.rutaImg}"/>
 						</div>
-						<h5 class="user-name">#{user.nick}</h5>
-						<h6 class="user-email">#{user.email}</h6>
+						<h5 class="user-name">#{visitado.nick}</h5>
+						<h6 class="user-email">#{visitado.email}</h6>
 					</div>
 				</div>
 			</div>
@@ -114,14 +175,12 @@
 									</div>
 									<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
 										<label for="nick">Nick:</label><br></br>
-				                        <h:inputText id="nick" value="#{user.nick}" class="form-control" required="true" requiredMessage="Debe ingresar un nickname"></h:inputText>
-				                   		<h:message for="nick" style="color:red"/>
+				                        <h:inputText id="nick" value="#{visitado.nick}" class="form-control" readonly="true"></h:inputText>
 									</div>
 									<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
 										<div class="form-group">
 											<label for="email" >Email:</label><br></br>
-				                            <h:inputText id="email" value="#{user.email}" class="form-control"  required="true" requiredMessage="Debe ingresar un email"></h:inputText>
-				                            <h:message for="email" style="color:red"/>
+				                            <h:inputText id="email" value="#{visitado.email}" class="form-control" readonly="true"></h:inputText>
 										</div>
 									</div>
 								</div>
@@ -132,31 +191,44 @@
 									<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
 										<div class="form-group">
 											<label for="nombre" >Nombre:</label><br></br>
-					                        <h:inputText id="nombre" value="#{user.nombre}" class="form-control" required="true" requiredMessage="Debe ingresar un nombre"></h:inputText>
-					                        <h:message for="nombre" style="color:red"/>
+					                        <h:inputText id="nombre" value="#{visitado.nombre}" class="form-control" readonly="true"></h:inputText>
 										</div>
 									</div>
 									<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
 										<div class="form-group">
 											<label for="apellido">Apellido:</label><br></br>
-				                            <h:inputText id="apellido" value="#{user.apellido}" class="form-control" required="true" requiredMessage="Debe ingresar un apellido"></h:inputText>
-				                            <h:message for="apellido" style="color:red"/>
+				                            <h:inputText id="apellido" value="#{visitado.apellido}" class="form-control" readonly="true"></h:inputText>
 										</div>
 									</div>
 									
 								</div>
-								<div class="row gutters">
-									<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-										<div class="text-right">
-											<br></br>
-											<h:commandButton action="index" value="Cancelar" class="btn btn-secondary" />
-											<h:commandButton action="#{UsuarioBean.actualizar(user)}" value="Guardar" class="btn btn-primary" />
-										</div>
-									</div>
-								</div>
 							</h:form>
 						</div>
 						<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+							<div class="card">
+							 <br/>
+							    <div class="container" style="overflow-y: scroll; height: 50em;">
+							    	<div class="row">
+								    	<c:forEach items="#{PublicacionBean.obtenerPublicaciones(visitado)}" var="stat">
+							    			<div class="col-md-8">
+										        <div class="media g-mb-30 media-comment">
+										        	<img src="http://localhost:8080/rest-lab/api/ejemplo/descarga/#{visitado.rutaImg}" width="70" class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15"/>
+										            <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+										              <div class="g-mb-15">
+										                <h5 class="h5 g-color-gray-dark-v1 mb-0">#{visitado.nick}</h5>
+										                <span class="g-color-gray-dark-v4 g-font-size-12">5 days ago</span>
+										              </div>
+										              <p>#{stat.texto}</p>
+										              <c:if test="#{stat.imagen!=null}">
+									                	 <img src="http://localhost:8080/rest-lab/api/ejemplo/descarga/#{stat.imagen}" id="pub"/>
+							                	   	  </c:if>
+										            </div>
+										        </div>
+									        </div>
+		                                </c:forEach>
+	                                </div>
+                                </div>
+							</div>
 						</div>
 					  	<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
 					  	</div>

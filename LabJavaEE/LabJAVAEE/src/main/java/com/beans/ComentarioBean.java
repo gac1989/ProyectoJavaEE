@@ -27,9 +27,18 @@ public class ComentarioBean {
 	private boolean done;
 	private boolean done2=false;
 	private List<Comentario> reportados = this.obtenerComentariosReportados() ;
+	private List<Comentario> comentarios = null;
 	
 	
 	
+	public List<Comentario> getComentarios() {
+		return comentarios;
+	}
+
+	public void setComentarios(List<Comentario> comentarios) {
+		this.comentarios = comentarios;
+	}
+
 	public List<Comentario> getReportados() {
 		return reportados;
 	}
@@ -100,20 +109,23 @@ public class ComentarioBean {
 	}
 	
 	public List<Comentario> obtenerComentarios(int id){
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/comentariosJuegos/" + id;
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-		Response response = target.request().get();
-		String response2 = response.readEntity(String.class);
-        Comentario[] c = null;
-        if(response2!=null && !response2.isEmpty()){
-        	c = new Gson().fromJson(response2, Comentario[].class);
-        }
-        List<Comentario> datos = null;
-        if(c!=null) {
-        	datos = Arrays.asList(c);
-        }
-		return datos;
+		if(comentarios==null) {
+			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/comentariosJuegos/" + id;
+			Client client = ClientBuilder.newClient();
+			WebTarget target= client.target(urlRestService);
+			Response response = target.request().get();
+			String response2 = response.readEntity(String.class);
+	        Comentario[] c = null;
+	        if(response2!=null && !response2.isEmpty()){
+	        	c = new Gson().fromJson(response2, Comentario[].class);
+	        }
+	        List<Comentario> datos = null;
+	        if(c!=null) {
+	        	datos = Arrays.asList(c);
+	        	comentarios=datos;
+	        }
+		}
+		return comentarios;
 	}
 	
 	public boolean juegoComprado(int id) {
