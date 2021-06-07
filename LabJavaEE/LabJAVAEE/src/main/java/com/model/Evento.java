@@ -1,11 +1,15 @@
 package com.model;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Evento {
 
 	private String nombre;
 	private Float descuento;
-	private String fecha_ini;
-	private String fecha_fin;
+	private Date fecha_ini;
+	private Date fecha_fin;
 	private int activo;
 	
 	public String getNombre() {
@@ -20,17 +24,18 @@ public class Evento {
 	public void setDescuento(Float descuento) {
 		this.descuento = descuento;
 	}
-	public String getFecha_ini() {
+	
+	public Date getFecha_ini() {
 		return fecha_ini;
 	}
-	public void setFecha_ini(String fecha_ini) {
-		this.fecha_ini = fecha_ini;
+	public void setFecha_ini(long fecha_ini_sec) {
+		this.fecha_ini = new Date(fecha_ini_sec);
 	}
-	public String getFecha_fin() {
+	public Date getFecha_fin() {
 		return fecha_fin;
 	}
-	public void setFecha_fin(String fecha_fin) {
-		this.fecha_fin = fecha_fin;
+	public void setFecha_fin(long fecha_fin_sec) {
+		this.fecha_fin = new Date(fecha_fin_sec);
 	}
 	public int getActivo() {
 		return activo;

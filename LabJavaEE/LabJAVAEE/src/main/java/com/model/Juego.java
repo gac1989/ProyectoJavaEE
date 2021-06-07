@@ -9,10 +9,19 @@ public class Juego {
 	private float nota;
 	private float precio_descuento;
 	private Evento evento;
+	private String estado;
 	
 	
 	
 	
+	
+	
+	public String getEstado() {
+		return estado;
+	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
 	public Evento getEvento() {
 		return evento;
 	}

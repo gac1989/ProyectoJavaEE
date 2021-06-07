@@ -143,12 +143,25 @@
  	<div class="container">
            <div class="row">
                <div class="col-lg-3">
-                   <h1 class="my-4">Steamindie</h1>
-                   <div class="list-group">
-                       <a class="list-group-item active" href="#!">Category 1</a>
-                       <a class="list-group-item" href="#!">Category 2</a>
-                       <a class="list-group-item" href="#!">Category 3</a>
-                   </div>
+                   <div class="my-4"><h1 class="titulo">Steamindie chat</h1></div>
+                   <div class="card">
+	                   	<div class="card-body">
+		                   <form>
+								<br/><br/>
+								<textarea id="chatRoomField" rows="10" cols="30" class="form-control"></textarea>
+								
+								<br/>
+								<div class="row g-2">
+									<div class="col-auto">
+										<input id="sendField" name="message" value="" type="text" class="form-control" />
+									</div>
+									<div class="col-auto">
+										<input id="sendButton" onclick="send_message();" value="Enviar" type="button" class="btn btn-primary" />
+									</div>
+								</div>
+							</form>
+            			</div>
+            		</div>
                </div>
                <div class="col-lg-9">
                    <div class="card mt-4">
@@ -165,7 +178,8 @@
                            		<input type='hidden' name='cancel_return' value="#{ComentarioBean.juegoComprado(perfil.id)}"></input>
 					    		<h:commandButton action="#{ComprarJuego.buscarJuego(perfil)}" value="Comprar" class="btn btn-primary" rendered="#{type == 'jugador' and  ComentarioBean.done2 eq false}"></h:commandButton>
 						    	<h:panelGroup layout="block" rendered="#{type == 'jugador' and  ComentarioBean.done eq true}" class="alert alert-success">Ya ha comprado este juego</h:panelGroup>
-					  		</h:form>
+					  			<h:commandButton  action="#{juegoBean.reportarJuego(perfil.id)}" value="Reportar" class="btn btn-warning" rendered="#{c.autor.nick!=user.nick}"/>
+				  			</h:form>
 					  		<div class="star-ratings">
 						      <div class="fill-ratings" style="width: #{perfil.nota*100/5}%;">
 						        <span>🟊🟊🟊🟊🟊</span>
@@ -185,11 +199,12 @@
                    <div class="card card-outline-secondary my-4">
                        <div class="card-header">Product Reviews</div>
                        <div class="card-body">
-                       
                     		<c:forEach items="#{ComentarioBean.obtenerComentarios(perfil.id)}" var="c">
-                    			<p>#{c.texto} - #{c.nota}</p>
-                          		<small class="text-muted">Posted by #{c.autor.nick}</small>
-                          		<hr />
+                    			<div jsf:rendered="#{c.estado!='BLOQUEADO'}">
+	                    			<p>#{c.texto} - #{c.nota}  <h:form><h:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" value="Reportar" class="btn btn-warning" rendered="#{c.autor.nick!=user.nick}"/></h:form></p>
+	                          		<small class="text-muted">Posted by #{c.autor.nick}</small>
+	                          		<hr />
+                          		</div>
                            </c:forEach>
                            <h:form>
 	                           <h:panelGroup rendered="#{type == 'jugador'}">
@@ -206,5 +221,17 @@
                </div>
            </div>
        </div>
+       <script>
+	       var username="#{user.nick}";
+	       var websocket = new WebSocket("ws://localhost:8080/LabJAVAEE/chatroom");
+	
+	       websocket.onmessage = function(evt) { 
+	       	document.getElementById("chatRoomField").innerHTML += evt.data + "\n";
+	       };
+	
+	       function send_message() {
+	           websocket.send(username + ": " + document.getElementById("sendField").value);
+	       }
+       </script>
 </h:body>
 </html>

@@ -13,6 +13,10 @@ import javax.servlet.ServletContext;
 
 import org.primefaces.model.file.UploadedFile;
 
+import com.model.Comentario;
+import com.model.DatosVenta;
+import com.model.Desarrollador;
+import com.model.DevStat;
 import com.model.JPAUtil;
 import com.model.Juego;
 
@@ -53,6 +57,23 @@ public class JuegoDAO {
 		entity.getTransaction().commit();
 	}
 
+	
+	public List<DatosVenta> obtenerVentas(int id){
+		 Query q = entity.createQuery("SELECT c.juego.id, c.juego.nombre, c.user.nick, c.precio FROM CompraJuego c JOIN c.juego j WHERE j.id='"+id+"'");
+		 List<Object[]> resultado= (List<Object[]>)q.getResultList();
+		 List<DatosVenta> datos = new ArrayList<DatosVenta>();
+	     for(Object[] dato: resultado){
+	    	 DatosVenta stat = new DatosVenta();
+	    	 stat.setId_juego((int)dato[0]);
+	    	 stat.setJuego((String)dato[1]);
+	    	 stat.setUser((String)dato[2]);
+	    	 double total = (Double)dato[3];
+	    	 stat.setPrecio(DesarrolladorDAO.round(total, 2));
+	    	 datos.add(stat);
+	     }
+		return datos;
+	}
+	
 	// obtener todos los juegos
 	public List<Juego> obtenerJuegos() {
 		List<Juego> listaJuegos = new ArrayList<>();
@@ -60,6 +81,14 @@ public class JuegoDAO {
 		listaJuegos = q.getResultList();
 		return listaJuegos;
 	}
+	
+	public List<Juego> obtenerJuegosReportados(){
+		List<Juego> lista = null;
+		Query q = entity.createQuery("select j from Juego j where j.estado='REPORTADO' or j.estado='BLOQUEADO'");
+		lista =  q.getResultList();
+		return lista;
+	}
+	
 	
 	public List<Juego> buscarJuegos(String busqueda){
 		List<Juego> listaJuegos = new ArrayList<>();

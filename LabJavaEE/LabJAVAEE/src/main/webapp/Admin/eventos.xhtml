@@ -87,8 +87,17 @@
 						                                	<tr>
 						                                		<td>#{evento.nombre}</td>
 						                                		<td>#{evento.descuento}</td>
-						                                		<td>#{evento.fecha_ini}</td>
-						                                		<td>#{evento.fecha_fin}</td>
+						                                		<td>
+						                                			<h:outputText value="#{evento.fecha_ini}">
+																	    <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+																	</h:outputText>
+						                                		</td>
+						                                		<td>
+						                                			<h:outputText value="#{evento.fecha_fin}">
+																	    <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+																	</h:outputText>
+						                                		</td>
+						                                		
 						                                		<td>#{evento.activo}</td>
 						                                		<td>
 						                                			<h:form>

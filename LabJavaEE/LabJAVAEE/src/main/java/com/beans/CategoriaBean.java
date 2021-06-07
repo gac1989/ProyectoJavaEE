@@ -43,8 +43,10 @@ public class CategoriaBean {
 
 	public List<SelectItem> getCategoriasList(){
 		 List<SelectItem> retVal = new ArrayList<SelectItem>();
-		 for(Categoria categoria : categorias) {
-			 retVal.add(new SelectItem(categoria.getNombre()));
+		 if(categorias!=null) {
+			 for(Categoria categoria : categorias) {
+				 retVal.add(new SelectItem(categoria.getNombre()));
+			 }
 		 }
 		 return retVal;
 	}
@@ -104,7 +106,10 @@ public class CategoriaBean {
         Response response = target.request().get();
         String response2 = response.readEntity(String.class);
         Categoria[] u = new Gson().fromJson(response2, Categoria[].class);
-        List<Categoria> datos = Arrays.asList(u);
+        List<Categoria> datos=null;
+        if(u!=null) {
+        	datos = Arrays.asList(u);
+        }
 		System.out.println("IMPRESION ");
         return datos;
 	}
@@ -118,7 +123,7 @@ public class CategoriaBean {
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         String response2 = response.readEntity(String.class);
         System.out.println("La respuesta es:  " + response2);
-        return "/faces/Admin/admin.xhtml";
+        return "/faces/Admin/categoria.xhtml?faces-redirect=true";
 	}
 	
 	public String editarCategoria(String nombre, String nuevoNombre) {
@@ -143,7 +148,7 @@ public class CategoriaBean {
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         String response2 = response.readEntity(String.class);
         System.out.println("La respuesta es:  " + response2);
-        return "/faces/Admin/categoria.xhtml";
+        return "/faces/Admin/categoria.xhtml?faces-redirect=true";
 	}
 	
 	public List<Categoria> getCategorias() {

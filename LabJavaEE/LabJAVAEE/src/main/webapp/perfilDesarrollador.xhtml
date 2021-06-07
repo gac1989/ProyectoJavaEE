@@ -153,7 +153,7 @@
 							                                			<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="#{juego.id}" jsf:rendered="#{juego.evento==null}" >Evento</button>
 							                                			<h:form>
 				                   											<p:commandButton action="#{EventoBean.quitarJuegoEvento(juego.id)}" value="Quitar" styleClass="ui-button-danger" rendered="#{juego.evento!=null}"/>
-				                   											<p:commandButton id="firstname2" value="Ventas" actionListener="#{DesarrolladorBean.setJuego(juego.id)}" update="out1" onclick="mostrar()"></p:commandButton>
+				                   											<p:commandButton id="firstname2" value="Ventas" actionListener="#{Dynamic.setJuego(juego.id)}" update="out1" onclick="mostrar()"></p:commandButton>
 				                   										</h:form>
 				                   									</td>
 							                                	</tr>
@@ -196,14 +196,14 @@
 											        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 											      </div>
 											      <div class="modal-body">
-											      	<h:dataTable value="#{(DesarrolladorBean.obtenerVentasJuego())}" var="Venta" class="table table-bordered" id="out1">
+											      	<h:dataTable value="#{(Dynamic.obtenerVentasJuego())}" var="Venta" class="table table-bordered" id="out1">
 														<h:column>
 															<f:facet name="header">Juego</f:facet>
-															<h:outputText value="#{Venta.juego.nombre}"></h:outputText>
+															<h:outputText value="#{Venta.juego}"></h:outputText>
 														</h:column>
 														<h:column>
 															<f:facet name="header">Usuario</f:facet>
-															<h:outputText value="#{Venta.user.nick}"></h:outputText>
+															<h:outputText value="#{Venta.user}"></h:outputText>
 														</h:column>
 														<h:column>
 															<f:facet name="header">Precio</f:facet>

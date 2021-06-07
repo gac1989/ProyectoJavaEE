@@ -31,6 +31,7 @@ import org.primefaces.model.file.UploadedFile;
 
 import com.google.gson.Gson;
 import com.login.SessionUtils;
+import com.model.Comentario;
 import com.model.Juego;
 
 @ManagedBean(name = "juegoBean")
@@ -47,9 +48,8 @@ public class JuegoBean implements Serializable{
 	private List<Juego> resultado = null;
 	private Juego prueba = null;
 	private String categoria = null;
-	
-	
-	
+
+
 	public List<Juego> getJuegosdesarrollador() {
 		if(juegosdesarrollador==null) {
 			juegosdesarrollador=this.obtenerJuegosDesarrollador();
@@ -285,5 +285,18 @@ public class JuegoBean implements Serializable{
 		return j;
 	}
 
+	
+	
+	public void reportarJuego(int id) {
+		System.out.println("LLEGUE A PUBLICAR ");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/reportarjuego";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("id", String.valueOf(id));
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        System.out.println("La respuesta es: " + response.getStatus());
+	}
+	
 	
 }

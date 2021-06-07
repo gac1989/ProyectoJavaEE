@@ -5,8 +5,18 @@ public class Comentario {
 	private int id;
 	private String texto;
 	private int nota;
+	private String estado;
 	private Jugador autor;
 
+	
+	
+	
+	public String getEstado() {
+		return estado;
+	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
 	public int getNota() {
 		return nota;
 	}

@@ -3,7 +3,6 @@ package com.model;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 @Entity
@@ -17,12 +16,20 @@ public class Comentario {
 	private String texto;
 	@Column
 	private int nota;
-	
+	@Enumerated(EnumType.STRING)
+	private Estado estado;
 	@ManyToOne
 	@JoinColumn(name="nick", foreignKey = @ForeignKey(name = "nick"))
 	private Jugador autor;
 	
-
+	
+	
+	public Estado getEstado() {
+		return estado;
+	}
+	public void setEstado(Estado estado) {
+		this.estado = estado;
+	}
 	public int getNota() {
 		return nota;
 	}

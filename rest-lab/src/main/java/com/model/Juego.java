@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -18,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.dao.ComentarioDAO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
@@ -54,10 +57,19 @@ public class Juego {
 	@OneToMany(mappedBy = "juego")
 	@JsonBackReference
 	private List<CompraJuego> ventas;
-	 
+	@Enumerated(EnumType.STRING)
+	private Estado estado;
 	
 	
 	
+	public Estado getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Estado estado) {
+		this.estado = estado;
+	}
+
 	public float getOferta() {
 		if(evento!=null) {
 			this.oferta=this.precio-((this.precio*evento.getDescuento())/100);
@@ -133,22 +145,24 @@ public class Juego {
 		this.comentarios = comentarios;
 	}
 	
-	private int replaceComentario(Comentario c1) {
+	private Comentario replaceComentario(Comentario c1) {
 		for(Iterator<Comentario> featureIterator = comentarios.iterator(); 
 		    featureIterator.hasNext(); ) {
 		    Comentario feature = featureIterator.next();
 		    if(feature.getAutor().getNick().equals(feature.getAutor().getNick())) {
 		    	System.out.println("El autor ya hizo un comentario");
-		    	return comentarios.indexOf(feature);
+		    	return feature;
 		    }
 		}
-		return -1;
+		return null;
 	}
 	
 	public void agregarComentario(Comentario c1) {
-		int valor = replaceComentario(c1);
-		if(valor!=-1) {
-			this.comentarios.set(valor, c1);
+		Comentario valor = replaceComentario(c1);
+		ComentarioDAO control = new ComentarioDAO();
+		if(valor!=null) {
+			valor.setNota(c1.getNota());
+			valor.setTexto(c1.getTexto());
 		}
 		else {
 			this.comentarios.add(c1);

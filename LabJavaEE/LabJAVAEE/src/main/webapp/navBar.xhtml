@@ -33,9 +33,11 @@
 	        <li class="nav-item dropdown">
 	         	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Registrarse </a>
 	         	<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-		            <li><h:link value = "Desarrollador" outcome = "#{UsuarioBean.nuevoDes}" class="nav-link"/></li>
-		            <li><h:link value = "Jugador" outcome = "#{UsuarioBean.nuevoJug}" class="nav-link"/></li>
-		            <li><h:link class="dropdown-divider"/></li>
+	         		<h:form>
+			            <li><h:link value = "Desarrollador" outcome = "#{UsuarioBean.nuevoDes}" class="nav-link"/></li>
+			            <li><h:link value = "Jugador" outcome = "#{UsuarioBean.nuevoJug}" class="nav-link"/></li>
+			            <li><h:link class="dropdown-divider"/></li>
+		            </h:form>
 	          </ul>
 	        </li>
         </h:panelGroup>

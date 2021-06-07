@@ -1,6 +1,7 @@
 package com.beans;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.login.SessionUtils;
 import com.model.Evento;
 
@@ -139,8 +141,12 @@ public class EventoBean {
 		WebTarget target= client.target(urlRestService);
         Response response = target.request().get();
         String response2 = response.readEntity(String.class);
-        Evento[] u = new Gson().fromJson(response2, Evento[].class);
-        List<Evento> datos = Arrays.asList(u);
+        Gson json = new GsonBuilder().registerTypeAdapter(Date.class, UnixEpochDateTypeAdapter.getUnixEpochDateTypeAdapter()).create();
+        Evento[] u = json.fromJson(response2, Evento[].class);
+        List<Evento> datos=null;
+        if(u!=null) {
+        	 datos = Arrays.asList(u);
+        }
 		System.out.println("IMPRESION ");
         return datos;
 	}

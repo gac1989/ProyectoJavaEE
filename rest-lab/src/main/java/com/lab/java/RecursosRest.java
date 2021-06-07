@@ -29,11 +29,13 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.dao.AdminDAO;
 import com.dao.CategoriaDAO;
+import com.dao.ComentarioDAO;
 import com.dao.CompraDAO;
 import com.dao.DesarrolladorDAO;
 import com.dao.EventoDAO;
 import com.dao.JuegoDAO;
 import com.dao.JugadorDAO;
+import com.dao.PublicacionDAO;
 import com.dao.UsuarioDAO;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -44,11 +46,14 @@ import com.model.Categoria;
 import com.model.Chart;
 import com.model.Comentario;
 import com.model.CompraJuego;
+import com.model.DatosVenta;
 import com.model.Desarrollador;
 import com.model.DevStat;
+import com.model.Estado;
 import com.model.Evento;
 import com.model.Juego;
 import com.model.Jugador;
+import com.model.Publicacion;
 import com.model.Usuario;
 
 
@@ -61,14 +66,9 @@ public class RecursosRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/saludo")
 	public Response saludar(@FormParam("nick")String nick) throws ParseException {
-		for(int i=0;i<100;i++) {
-			UsuarioDAO control = new UsuarioDAO();
-			Desarrollador datos = (Desarrollador)control.buscar("bruno540");
-			List<Juego> juegos = datos.getJuegos();
-			System.out.println(i + "----" + juegos.get(0).getNombre());
-			control.cerrar();
-		}
-		return Response.ok().build();
+		JuegoDAO control = new JuegoDAO();
+		List<Juego> lista = control.obtenerJuegosReportados();
+		return Response.ok(lista).build();
 	}
 	
 	//Imagen
@@ -249,7 +249,7 @@ public class RecursosRest {
 	public Response checkUsuario(@FormParam("nick") String nick, @FormParam("pass") String pass) {
 		UsuarioDAO controlus = new UsuarioDAO();
 		Usuario user = controlus.buscar(nick);
-		if(user!=null && user.getPassword().equals(pass)) {
+		if(user!=null) {
 			return Response.ok(user).build();
 		}
 		else {
@@ -400,6 +400,7 @@ public class RecursosRest {
 				c1.setTexto(texto);
 				c1.setAutor(j1);
 				c1.setNota(Integer.parseInt(nota));
+				c1.setEstado(Estado.ACTIVO);
 				j.agregarComentario(c1);
 				controlgm.guardar(j);
 				return Response.ok("SE AGREGO EL COMENTARIO").build();
@@ -440,12 +441,10 @@ public class RecursosRest {
 	@Path("/ventasjuego")
 	public Response obtenerVentasJuego(@FormParam("nick") String nick, @FormParam("juego") String juego) {
 		JuegoDAO controlgm = new JuegoDAO();
-		Juego j1 = controlgm.buscar(Integer.parseInt(juego));
-		if(j1 != null && j1.getDesarrollador().getNick().equals(nick) ) {
-			List<CompraJuego> ventas = j1.getVentas();
-			System.out.println("La primer venta es: " + ventas.get(0));
-			controlgm.cerrar();
-			return Response.ok(ventas).build(); 
+		List<DatosVenta> datos = controlgm.obtenerVentas(Integer.parseInt(juego));
+		if(datos!=null) {
+			
+			return Response.ok(datos).build(); 
 		}
 		else {
 			return Response.status(Response.Status.NOT_FOUND).build();
@@ -466,10 +465,12 @@ public class RecursosRest {
 			
 		}
 		if(d1!=null) {
-			List<Juego> juegos = d1.getJuegos();
-			System.out.println("El primer juego es: " + juegos.get(0));
+			List<Juego> lista = d1.getJuegos();
+			if(lista!=null && !lista.isEmpty()) {
+				System.out.println("El primer juego es: " + lista.get(0));
+			}
 			control.cerrar();
-			return Response.ok(juegos).build();
+			return Response.ok(lista).build();
 		}
 		else {
 			return Response.status(Response.Status.NOT_FOUND).build();
@@ -750,6 +751,64 @@ public class RecursosRest {
 		}
 	}
 	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/reportarjuego")
+	public Response reportarJuego(@FormParam("id") String id){
+		JuegoDAO controlgm = new JuegoDAO();
+		Juego j1 = controlgm.buscar(Integer.parseInt(id));
+		if(j1!=null) {
+			j1.setEstado(Estado.REPORTADO);
+			controlgm.editar(j1);
+			return Response.ok("Se reporto el juego").build();
+		}
+		return Response.status(Response.Status.BAD_REQUEST).build();
+	}
+	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/juegosreportados")
+	public Response getJuegosReportados() {
+		JuegoDAO control = new JuegoDAO();
+		List<Juego> lista = control.obtenerJuegosReportados();
+		if(!lista.isEmpty()) {
+			return Response.ok(lista).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/bloquearjuego")
+	public Response bloquearJuego(@FormParam("id") String id){
+		JuegoDAO controlcom = new JuegoDAO();
+		Juego j1 = controlcom.buscar(Integer.parseInt(id));
+		if(j1!=null) {
+			j1.setEstado(Estado.BLOQUEADO);
+			controlcom.editar(j1);
+			return Response.ok("Se bloqueo el juego").build();
+		}
+		return Response.status(Response.Status.BAD_REQUEST).build();
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/desbloquearjuego")
+	public Response desbloquearJuego(@FormParam("id") String id){
+		JuegoDAO controlcom = new JuegoDAO();
+		Juego j1 = controlcom.buscar(Integer.parseInt(id));
+		if(j1!=null) {
+			j1.setEstado(Estado.ACTIVO);
+			controlcom.editar(j1);
+			return Response.ok("Se bloqueo el juego").build();
+		}
+		return Response.status(Response.Status.BAD_REQUEST).build();
+	}
+	
+	
 	//Evento
 	
 	@POST
@@ -891,5 +950,100 @@ public class RecursosRest {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
+	
+	//Comentarios
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/reportarcomentario")
+	public Response reportarComentario(@FormParam("id") String id){
+		ComentarioDAO controlcom = new ComentarioDAO();
+		Comentario c1 = controlcom.buscar(Integer.parseInt(id));
+		if(c1!=null) {
+			c1.setEstado(Estado.REPORTADO);
+			controlcom.editar(c1);
+			return Response.ok("Se reporto el comentario").build();
+		}
+		return Response.status(Response.Status.BAD_REQUEST).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/comentariosreportados")
+	public Response getComentariosReportados() {
+		ComentarioDAO control = new ComentarioDAO();
+		List<Comentario> lista = control.obtenerComentariosReportados();
+		if(!lista.isEmpty()) {
+			return Response.ok(lista).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/bloquearcomentario")
+	public Response bloquearComentario(@FormParam("id") String id){
+		ComentarioDAO controlcom = new ComentarioDAO();
+		Comentario c1 = controlcom.buscar(Integer.parseInt(id));
+		if(c1!=null) {
+			c1.setEstado(Estado.BLOQUEADO);
+			controlcom.editar(c1);
+			return Response.ok("Se reporto el comentario").build();
+		}
+		return Response.status(Response.Status.BAD_REQUEST).build();
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/desbloquearcomentario")
+	public Response desbloquearComentario(@FormParam("id") String id){
+		ComentarioDAO controlcom = new ComentarioDAO();
+		Comentario c1 = controlcom.buscar(Integer.parseInt(id));
+		if(c1!=null) {
+			c1.setEstado(Estado.ACTIVO);
+			controlcom.editar(c1);
+			return Response.ok("Se reporto el comentario").build();
+		}
+		return Response.status(Response.Status.BAD_REQUEST).build();
+	}
+	
+	//Usuario
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/agregarpublicacion")
+	public Response agregarPublicacion(@FormParam("nick") String nick, @FormParam("texto") String texto, @FormParam("imagen") String imagen){
+		UsuarioDAO controlcom = new UsuarioDAO();
+		Usuario u1 = controlcom.buscar(nick);
+		if(u1!=null) {
+			PublicacionDAO controlpub = new PublicacionDAO();
+			Publicacion p1 = new Publicacion();
+			p1.setTexto(texto);
+			p1.setUser(u1);
+			p1.setImagen(imagen);
+			controlpub.editar(p1);
+			return Response.ok("Se reporto el comentario").build();
+		}
+		return Response.status(Response.Status.BAD_REQUEST).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/publicaciones/{nick}")
+	public Response getPublicaciones(@PathParam("nick") String nick) {
+		UsuarioDAO control = new UsuarioDAO();
+		Usuario u1 = control.buscar(nick);
+		List<Publicacion> lista = u1.getPublicaciones();
+		if(lista!= null && !lista.isEmpty()) {
+			System.out.println(lista.get(0).getTexto());
+			control.cerrar();
+			return Response.ok(lista).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
 }
 

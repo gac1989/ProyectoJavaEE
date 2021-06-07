@@ -2,13 +2,19 @@ package com.model;
 
 
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 
 
 @Entity
@@ -24,8 +30,22 @@ public class Usuario {
 	private String email;
 	@Column
 	private String rutaImg;
+	@OneToMany(mappedBy = "user")
+	@JsonBackReference
+	private List<Publicacion> publicaciones;
 	
+	public void agregarPublicacion(Publicacion p1) {
+		this.publicaciones.add(p1);
+	}
 	
+	public List<Publicacion> getPublicaciones() {
+		return publicaciones;
+	}
+
+	public void setPublicaciones(List<Publicacion> publicaciones) {
+		this.publicaciones = publicaciones;
+	}
+
 	public String getRutaImg() {
 		return rutaImg;
 	}

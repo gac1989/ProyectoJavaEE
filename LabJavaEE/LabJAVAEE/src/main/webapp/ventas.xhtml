@@ -15,30 +15,26 @@
 </h:head>
 <h:body>
 	<div class="card">
-    	<div class="ui-fluid p-formgrid p-grid">
-			<div class="p-field p-col-12 p-md-4">
-	             <p:selectOneMenu id="option" value="#{AdminBean.type}">
-	                 <f:selectItem itemLabel="Select One" itemValue=""/>
-	                 <f:selectItem itemLabel="Ordenar por juego" itemValue="Option1"/>
-	                 <f:selectItem itemLabel="Ordenar por desarrollador" itemValue="Option2"/>
-	             </p:selectOneMenu>
-           	</div>
-         </div>
-	</div>
-	<script>
-		function initDialog() {
-		 $("#idOfDialogPlaceHolder").dialog({
-		     modal: true,
-		     buttons: {
-		            SomeButton: function () {
-		                $("#justAButton").click();
-		            },
-		            Close: function () {
-		                $(this).dialog("close");
-		            }
-		     },
-		 });
-		}
-	</script>
+    <div class="row">
+        <div class="col-2"> <img src="https://i.imgur.com/xELPaag.jpg" width="70" class="rounded-circle mt-2"> </div>
+        <div class="col-10">
+            <div class="comment-box ml-2">
+                <h4>Add a comment</h4>
+                <div class="rating"> <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label> <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label> <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label> <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label> <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label> </div>
+                <div class="comment-area"> <textarea class="form-control" placeholder="what is your view?" rows="4"></textarea> </div>
+                <div class="comment-btns mt-2">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="pull-left"> <button class="btn btn-success btn-sm">Cancel</button> </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="pull-right"> <button class="btn btn-success send btn-sm">Send <i class="fa fa-long-arrow-right ml-1"></i></button> </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </h:body>
 </html>

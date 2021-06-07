@@ -9,6 +9,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.model.Usuario;
 import com.model.JPAUtil;
 
@@ -17,8 +19,24 @@ public class UsuarioDAO {
 	EntityManagerFactory factory = JPAUtil.getEntityManagerFactory();
 	EntityManager entity = factory.createEntityManager();
 
+	public String hash(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt(12));
+    }
+	public boolean verifyHash(String password, String hash) {
+		try {
+			System.out.println("La pass es: " + password + " El hash es: " + hash);
+		    return BCrypt.checkpw(password, hash);
+		}
+		catch(Exception e) {
+			System.out.println("Error en la verificacion de contraseña");
+		}
+		return false;
+    }
+	
 	// guardar Usuario
 	public void guardar(Usuario Usuario) {
+		String pass = hash(Usuario.getPassword());
+		Usuario.setPassword(pass);
 		entity.getTransaction().begin();
 		entity.persist(Usuario);
 		entity.getTransaction().commit();
@@ -39,6 +57,16 @@ public class UsuarioDAO {
 		c = entity.find(Usuario.class, nick);
 		return c;
 	}
+	
+	
+	public Usuario checkUser(String nick, String password) {
+		Usuario u = buscar(nick);
+		if(verifyHash(u.getPassword(),password)) {
+			return u;
+		}
+		return null;
+	}
+	
 
 	/// eliminar Usuario
 	public void eliminar(String nick) {

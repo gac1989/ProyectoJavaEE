@@ -29,7 +29,20 @@ public class AdminBean {
 	
 	private List<DevStat> statventas = this.obtenerStatsVentas();
 	
+	private List<Juego> reportados = null;
 	
+	
+	
+	
+	public List<Juego> getReportados() {
+		return reportados;
+	}
+
+
+	public void setReportados(List<Juego> reportados) {
+		this.reportados = reportados;
+	}
+
 	
 	public List<DevStat> getStatventas() {
 		return statventas;
@@ -137,5 +150,50 @@ public class AdminBean {
 		}
 		return stats;
 	}
+	
+	public List<Juego> obtenerJuegosReportados(){
+		List<Juego> datos = null;
+		if(reportados!=null) {
+			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosreportados";
+			Client client = ClientBuilder.newClient();
+			WebTarget target= client.target(urlRestService);
+			Response response = target.request().get();
+			String response2 = response.readEntity(String.class);
+	        Juego[] c = null;
+	        if(response2!=null && !response2.isEmpty()){
+	        	c = new Gson().fromJson(response2, Juego[].class);
+	        }
+	        
+	        if(c!=null) {
+	        	datos = Arrays.asList(c);
+	        }
+		}
+		return datos;
+	}
+	
+	public String bloquearJuego(int id) {
+		System.out.println("LLEGUE A PUBLICAR ");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/bloquearjuego";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("id", String.valueOf(id));
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        System.out.println("La respuesta es: " + response.getStatus());
+        return "/faces/Admin/juegos.xhtml?faces-redirect=true";
+	}
+	
+	public String desbloquearJuego(int id) {
+		System.out.println("LLEGUE A PUBLICAR ");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/desbloquearjuego";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("id", String.valueOf(id));
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        System.out.println("La respuesta es: " + response.getStatus());
+        return "/faces/Admin/juegos.xhtml?faces-redirect=true";
+	}
+	
 	
 }

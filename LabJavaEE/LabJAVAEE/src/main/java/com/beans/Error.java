@@ -40,27 +40,22 @@ public class Error {
 	}
 
 	public String getRutaBoton() {
-		System.out.println("ERRRRORRRR ");
 		HttpSession session = SessionUtils.getSession();
 		if(session==null) {
-			System.out.println("NULOOOOOOOO");
 			return null;
 		}
 		String type = (String)session.getAttribute("type");
-		System.out.println("El tipo en el error es: " + type);
 		
 		if(type==null || type.equals("visitante")) {
 			if(type==null) {
 				session.setAttribute("type", "visitante");
 			}
-			System.out.println("LINDOOOOOOO ");
 			return "login";
 		}
 		else {
 			if(type.equals("administrador")) {
 				return "/faces/Admin/admin.xhtml";
 			}
-			System.out.println("LINDOOOOOOO 222");
 			return "index";
 		}
 	}

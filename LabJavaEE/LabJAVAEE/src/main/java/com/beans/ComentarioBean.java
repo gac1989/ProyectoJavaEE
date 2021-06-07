@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -19,7 +18,6 @@ import javax.ws.rs.core.Response;
 import com.google.gson.Gson;
 import com.login.SessionUtils;
 import com.model.Comentario;
-import com.model.Juego;
 
 @ManagedBean(name = "ComentarioBean")
 @RequestScoped
@@ -28,9 +26,18 @@ public class ComentarioBean {
 	private int nota = 0;
 	private boolean done;
 	private boolean done2=false;
+	private List<Comentario> reportados = this.obtenerComentariosReportados() ;
+	
+	
+	
+	public List<Comentario> getReportados() {
+		return reportados;
+	}
 
-	
-	
+	public void setReportados(List<Comentario> reportados) {
+		this.reportados = reportados;
+	}
+
 	public boolean isDone2() {
 		return done2;
 	}
@@ -135,6 +142,62 @@ public class ComentarioBean {
 	        return respuesta.equals("true");
 		}
 		return false;
+	}
+	
+	public void reportarComentario(int id) {
+		System.out.println("LLEGUE A PUBLICAR ");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/reportarcomentario";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("id", String.valueOf(id));
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        System.out.println("La respuesta es: " + response.getStatus());
+	}
+	
+	public String bloquearComentario(int id) {
+		System.out.println("LLEGUE A PUBLICAR ");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/bloquearcomentario";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("id", String.valueOf(id));
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        System.out.println("La respuesta es: " + response.getStatus());
+        return "/faces/Admin/comentarios.xhtml?faces-redirect=true";
+	}
+	
+	public String desbloquearComentario(int id) {
+		System.out.println("LLEGUE A PUBLICAR ");
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/desbloquearcomentario";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("id", String.valueOf(id));
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        System.out.println("La respuesta es: " + response.getStatus());
+        return "/faces/Admin/comentarios.xhtml?faces-redirect=true";
+	}
+	
+	public List<Comentario> obtenerComentariosReportados(){
+		List<Comentario> datos = null;
+		if(this.reportados==null) {
+			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/comentariosreportados/";
+			Client client = ClientBuilder.newClient();
+			WebTarget target= client.target(urlRestService);
+			Response response = target.request().get();
+			String response2 = response.readEntity(String.class);
+	        Comentario[] c = null;
+	        if(response2!=null && !response2.isEmpty()){
+	        	c = new Gson().fromJson(response2, Comentario[].class);
+	        }
+	        
+	        if(c!=null) {
+	        	datos = Arrays.asList(c);
+	        }
+	        this.reportados=datos;
+		}
+		return datos;
 	}
 	
 	
