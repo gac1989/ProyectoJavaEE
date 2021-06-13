@@ -28,7 +28,7 @@ public class CategoriaBean {
 	private List<Juego> juegos = null;
 	private String nombreCat = null;
 	private String nueva = null;
-
+	private Gson json = GsonHelper.customGson;
 	
 	
 	public String getNueva() {
@@ -89,7 +89,7 @@ public class CategoriaBean {
         System.out.println("La respuesta es: " + response2);
         Juego[] u = null;
         if(response2 != null && !response2.isEmpty()) {
-        	u = new Gson().fromJson(response2, Juego[].class);
+        	u = json.fromJson(response2, Juego[].class);
         }
         List<Juego> datos = null;
         if(u!=null) {

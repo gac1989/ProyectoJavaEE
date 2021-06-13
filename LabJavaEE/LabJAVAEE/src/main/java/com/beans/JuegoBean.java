@@ -2,14 +2,18 @@ package com.beans;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
@@ -27,9 +31,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.FilesUploadEvent;
 import org.primefaces.model.file.UploadedFile;
+import org.primefaces.model.file.UploadedFiles;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.login.SessionUtils;
 import com.model.Comentario;
 import com.model.Juego;
@@ -43,12 +51,51 @@ public class JuegoBean implements Serializable{
 	private List<Juego> juegosdesarrollador = null;
 	private String listar = "/faces/paginasJuegos/listarJuego.xhtml";;
 	private UploadedFile file;
+	private UploadedFiles files;
 	private String busqueda;
 	private String nuevo1  = this.nuevo();
 	private List<Juego> resultado = null;
 	private Juego prueba = null;
-	private String categoria = null;
+	private List<String> categoria = null;
+	private static Gson json = new GsonBuilder().registerTypeAdapter(Date.class, UnixEpochDateTypeAdapter.getUnixEpochDateTypeAdapter()).create();
 
+	
+	
+	 public void upload() {
+	    if (file != null) {
+	        FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	    }
+	}
+	
+	public void uploadMultiple() {
+	    if (files != null) {
+	        for (UploadedFile f : files.getFiles()) {
+	            FacesMessage message = new FacesMessage("Successful", f.getFileName() + " is uploaded.");
+	            FacesContext.getCurrentInstance().addMessage(null, message);
+	        }
+	    }
+	}
+	
+	public void handleFileUpload(FileUploadEvent event) {
+	    FacesMessage message = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
+	    FacesContext.getCurrentInstance().addMessage(null, message);
+	}
+	
+	public void handleFilesUpload(FilesUploadEvent event) {
+	    for (UploadedFile f : event.getFiles().getFiles()) {
+	        FacesMessage message = new FacesMessage("Successful", f.getFileName() + " is uploaded.");
+	        FacesContext.getCurrentInstance().addMessage(null, message);
+	    }
+	}
+	
+	public UploadedFiles getFiles() {
+		return files;
+	}
+
+	public void setFiles(UploadedFiles files) {
+		this.files = files;
+	}
 
 	public List<Juego> getJuegosdesarrollador() {
 		if(juegosdesarrollador==null) {
@@ -56,7 +103,6 @@ public class JuegoBean implements Serializable{
 		}
 		return juegosdesarrollador;
 	}
-
 
 	public void setJuegosdesarrollador(List<Juego> juegosdesarrollador) {
 		this.juegosdesarrollador = juegosdesarrollador;
@@ -76,16 +122,16 @@ public class JuegoBean implements Serializable{
 	}
 
 
-	public String getCategoria() {
+	public List<String> getCategoria() {
 		return categoria;
 	}
 
 
-	public void setCategoria(String categoria) {
+	public void setCategoria(List<String> categoria) {
 		this.categoria = categoria;
 	}
 
-	
+
 	public Juego getPrueba() {
 		return prueba;
 	}
@@ -158,57 +204,45 @@ public class JuegoBean implements Serializable{
 		return  "/faces/paginasJuegos/nuevoJuego.xhtml";
 	}
 	
-	public void prueba() {
-	   URL directory = this.getClass().getResource("tmp.png");
-	   File archivo = new File(directory.getPath());
+	public void prueba() throws IOException {
+		Client client = ClientBuilder.newClient();
+        String urlRestService2 = "http://localhost:8080/rest-lab/api/ejemplo/saludo";
+        WebTarget target2= client.target(urlRestService2);
+        MultipartFormDataOutput mdo = new MultipartFormDataOutput();
+        List<InputStream> imagenes = new ArrayList<InputStream>();
+		mdo.addFormData("fichero", files.getFiles().get(0).getInputStream(), MediaType.APPLICATION_JSON_TYPE);
+		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(mdo) { };
+		Response response2 = target2.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+        String response3 = response2.readEntity(String.class);
+		System.out.println("La respuesta al subir el juego es: " + response2.getStatus());
 	}
 	
-	
 	public String guardar (Juego juego) throws IOException {
-		if (file != null) {
-            String message = "Successful " + file.getFileName() + " is uploaded.";
-            System.out.println(message);
-            juego.setRutaImg(file.getFileName());
+		if (files == null) {
+			System.out.println("LOS ARCHIVOS SON NULOS");
         }
 		HttpSession session = SessionUtils.getSession();
 		String nick = (String)session.getAttribute("username");
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/registrarJuego";
 		Client client = ClientBuilder.newClient();
-        Form form = new Form();
-        System.out.println("El juego es: " + juego.getNombre());
-        System.out.println("La imagen es: " + juego.getRutaImg());
-        System.out.println("La categorias es: " + this.categoria);
-        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        String path = servletContext.getContextPath();
-        System.out.println("El path es: " + System.getProperty("user.dir"));
-        form.param("nick", nick);
-        form.param("nombre", juego.getNombre());
-        form.param("descripcion", juego.getDescripcion());
-        form.param("rutaImg", juego.getRutaImg());
-        form.param("precio", String.valueOf(juego.getPrecio()));
-        form.param("categoria", this.categoria);
-        WebTarget target= client.target(urlRestService);
-        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
-        URL directory = this.getClass().getResource("tmp.png");
-        File archivo = new File(directory.getPath());
-        System.out.println("LA RUTA ES" + archivo.getAbsolutePath() + " Y EL ARCHIVO ES: " + archivo.getName());
-        try {
-			Files.copy(file.getInputStream(),archivo.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        //
-        String urlRestService2 = "http://localhost:8080/rest-lab/api/ejemplo/subir";
+        String urlRestService2 = "http://localhost:8080/rest-lab/api/ejemplo/registrarjuego";
         WebTarget target2= client.target(urlRestService2);
         MultipartFormDataOutput mdo = new MultipartFormDataOutput();
-		mdo.addFormData("fichero", archivo, MediaType.APPLICATION_OCTET_STREAM_TYPE);
-		mdo.addFormData("nombre", file.getFileName(), MediaType.TEXT_PLAIN_TYPE);
+        int cont=0;
+        if(files!=null) {
+	    	 for(UploadedFile img : files.getFiles()) {
+	         	String nombre = "fichero" + cont;
+	         	mdo.addFormData(nombre, img.getInputStream(), MediaType.APPLICATION_JSON_TYPE);
+	         	cont++;
+	         }
+        }
+		mdo.addFormData("nombre", nick, MediaType.TEXT_PLAIN_TYPE);
+		if(categoria!=null) {
+			mdo.addFormData("categoria", categoria, MediaType.APPLICATION_JSON_TYPE);
+		}
+		mdo.addFormData("juego", juego, MediaType.APPLICATION_JSON_TYPE);
 		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(mdo) { };
 		Response response2 = target2.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
-        String response3 = response.readEntity(String.class);
 		System.out.println("La respuesta al subir el juego es: " + response2.getStatus());
-  
 		return  "/faces/index.xhtml?faces-redirect=true";
 	}
 
@@ -219,7 +253,8 @@ public class JuegoBean implements Serializable{
 		WebTarget target= client.target(urlRestService);
         Response response = target.request().get();
         String response2 = response.readEntity(String.class);
-        Juego[] j = new Gson().fromJson(response2, Juego[].class);
+        Gson json2 = GsonHelper.customGson;
+        Juego[] j = json2.fromJson(response2, Juego[].class);
         List<Juego> datos = null;
         if(j!=null) {
         	datos = Arrays.asList(j);
@@ -237,7 +272,7 @@ public class JuegoBean implements Serializable{
         String response2 = response.readEntity(String.class);
         Juego[] j = null;
         if(response2!=null && !response2.isEmpty()) {
-        	 j = new Gson().fromJson(response2, Juego[].class);
+        	 j = json.fromJson(response2, Juego[].class);
         }
         List<Juego> datos = null;
         if(j!=null) {
@@ -256,7 +291,7 @@ public class JuegoBean implements Serializable{
         String response2 = response.readEntity(String.class);
         Juego[] j = null;
         if(response2!=null && !response2.isEmpty()) {
-        	 j = new Gson().fromJson(response2, Juego[].class);
+        	 j = json.fromJson(response2, Juego[].class);
         }
         List<Juego> datos = null;
         if(j!=null) {
@@ -281,7 +316,7 @@ public class JuegoBean implements Serializable{
         WebTarget target= client.target(urlRestService);
         Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         String response2 = response.readEntity(String.class);
-        Juego j = new Gson().fromJson(response2, Juego.class);
+        Juego j = json.fromJson(response2, Juego.class);
 		return j;
 	}
 

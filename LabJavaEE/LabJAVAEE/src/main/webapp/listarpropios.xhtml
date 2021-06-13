@@ -43,9 +43,9 @@
 	<ui:include src="./navBar.xhtml" />
 	
 	<h1>Mis juegos</h1>
-	<c:forEach items="#{juegoBean.juegosjugador}" var="juego">
+	<c:forEach items="#{juegoBean.juegosjugador}" var="juego" >
         <div class="card" style="width: 18rem;">
-		  <p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{juego.rutaImg}" class="card-img-top"/>
+		  <img src="data:image/png;base64, #{juego.imagenes.get(0).contenido}" class="card-img-top" />
 		  <div class="card-body">
 		  	<h:form>
 		  		<h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2>

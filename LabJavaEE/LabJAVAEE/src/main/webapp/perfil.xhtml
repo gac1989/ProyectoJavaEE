@@ -5,13 +5,13 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:o="http://omnifaces.org/ui">
 <h:head>
 	<meta charset="utf-8" name="viewport"
 		content="width=device-width, initial-scale=1"
 		http-equiv="X-UA-Conpatible" />
 	<title>Nuevo juego</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 	<script>
       $(document).ready(function() {
         // Gets the span width of the filled-ratings span
@@ -51,8 +51,7 @@
 	      }
     
 		img {
-			height: 250px;
-			width: 400px;
+			width: 100%;
 			object-fit: cover;
 		}
 			
@@ -136,6 +135,21 @@
 				color: #17a2b8;
 				text-decoration: none;
 			}
+			.ui-galleria{
+				width: 100% !important;
+			}
+			.ui-galleria-panel-wrapper{
+				width: 100% !important;
+			}
+			.ui-galleria-panel{
+				width: 100% !important;
+			}
+			
+			iframe{
+				width: 100%;
+				height: 25vw;
+			}
+			
     </style>
 </h:head>
 <h:body>
@@ -148,10 +162,9 @@
 	                   	<div class="card-body">
 		                   <form>
 								<br/><br/>
-								<textarea id="chatRoomField" rows="10" cols="30" class="form-control"></textarea>
-								
+								<textarea id="chatRoomField" rows="10" cols="30" class="form-control" readonly="true"></textarea>
 								<br/>
-								<div class="row g-2">
+								<div class="row g-2" jsf:rendered="#{user!=null}">
 									<div class="col-auto">
 										<input id="sendField" name="message" value="" type="text" class="form-control" />
 									</div>
@@ -165,11 +178,36 @@
                </div>
                <div class="col-lg-9">
                    <div class="card mt-4">
-                   <img class="img-fluid" src="http://localhost:8080/rest-lab/api/ejemplo/descarga/#{perfil.rutaImg}" alt="..." />
+                   <div class="card h-100">
+						<div class="card-body">
+							<nav>
+							  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+							    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Imagen</button>
+							    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Trailer</button>
+							  </div>
+							</nav>
+							<div class="tab-content" id="nav-tabContent">
+							  	<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+									<div>
+									    <div>
+										    <p:galleria value="#{perfil.imagenes}" var="imagen" panelHeight="600" >
+										        <img src="data:image/png;base64, #{imagen.contenido}" />
+										    </p:galleria>
+										</div>
+									</div>
+						  		</div>
+						  		<div class="tab-pane fade show" id="nav-profile" role="tabpanel" aria-labelledby="nav-home-tab">
+						  			<iframe width="420" height="315"
+									src="#{perfil.trailer}">
+									</iframe>
+						  		</div>
+						  	</div>
+					  	</div>
+				  	</div>
                        <div class="card-body">
                        	<h2 class="titulo">#{perfil.nombre}</h2>
                         <h5 class="oferta" jsf:rendered="#{perfil.evento!=null}">Oferta #{perfil.evento.nombre}!!</h5>
-					    <h6 jsf:rendered="#{perfil.evento==null}">Precio: #{perfil.precio}</h6>
+					    <h3 jsf:rendered="#{perfil.evento==null}">Precio: U$S #{perfil.precio}</h3>
 					    <h6 class="antes" jsf:rendered="#{perfil.evento!=null}">Precio antes: #{perfil.precio}</h6>
 					    <h6 class="despues" jsf:rendered="#{perfil.evento!=null}"> Precio en oferta!! U$S #{perfil.precio-(perfil.precio*perfil.evento.descuento)/100}</h6>
 				     	<h6 class="despues" jsf:rendered="#{perfil.evento!=null}">#{perfil.evento.descuento}% de descuento!</h6>
@@ -225,7 +263,7 @@
        </div>
        <script>
 	       var username="#{user.nick}";
-	       var websocket = new WebSocket("ws://localhost:8080/LabJAVAEE/chatroom");
+	       var websocket = new WebSocket("ws://localhost:8080/LabJAVAEE/chatroom/#{perfil.nombre}");
 	
 	       websocket.onmessage = function(evt) { 
 	       	document.getElementById("chatRoomField").innerHTML += evt.data + "\n";

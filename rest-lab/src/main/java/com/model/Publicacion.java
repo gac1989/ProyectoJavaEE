@@ -1,14 +1,16 @@
 package com.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name="publicacion")
@@ -17,14 +19,21 @@ public class Publicacion {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="user")
+	@JsonBackReference
 	private Usuario user;
 	@Column(length = 1000000)
 	private String texto;
-	@Column
-	private String imagen;
+	@Lob
+	private byte[] imagen;
 	
+	public byte[] getImagen() {
+		return imagen;
+	}
+	public void setImagen(byte[] imagen) {
+		this.imagen = imagen;
+	}
 	public int getId() {
 		return id;
 	}
@@ -43,11 +52,6 @@ public class Publicacion {
 	public void setTexto(String texto) {
 		this.texto = texto;
 	}
-	public String getImagen() {
-		return imagen;
-	}
-	public void setImagen(String imagen) {
-		this.imagen = imagen;
-	}
+
 	
 }

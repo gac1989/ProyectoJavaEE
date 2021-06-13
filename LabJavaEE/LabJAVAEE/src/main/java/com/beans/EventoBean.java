@@ -3,9 +3,11 @@ package com.beans;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -19,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.login.SessionUtils;
 import com.model.Evento;
+import com.model.Juego;
 
 @ManagedBean(name = "EventoBean")
 @RequestScoped
@@ -31,7 +34,8 @@ public class EventoBean {
 	private List<Evento> eventos = this.obtenerEventos();
 	private String seleccionado;
 	private String eventoseleccionado;
-	
+	private List<Juego> juegosEvento = null;
+	private static Gson json = new GsonBuilder().registerTypeAdapter(Date.class, UnixEpochDateTypeAdapter.getUnixEpochDateTypeAdapter()).create();
 	
 	public String getSeleccionado() {
 		return seleccionado;
@@ -87,6 +91,44 @@ public class EventoBean {
 
 	public void setEventos(List<Evento> eventos) {
 		this.eventos = eventos;
+	}
+	
+	public List<Juego> getJuegosEvento() {
+		if(juegosEvento==null) {
+			juegosEvento=this.obtenerJuegosEvento(nombre);
+		}
+		return juegosEvento;
+	}
+
+	public void setJuegosEvento(List<Juego> juegosEvento) {
+		this.juegosEvento = juegosEvento;
+	}
+	
+	
+	public List<Juego> obtenerJuegosEvento(String nombreEvento){
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosevento/" + nombreEvento;
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+        Response response = target.request().get();
+        String response2 = response.readEntity(String.class);
+        Juego[] j = null;
+        if(response2!=null && !response2.isEmpty()) {
+        	 j = json.fromJson(response2, Juego[].class);
+        }
+        List<Juego> datos = null;
+        if(j!=null) {
+        	datos = Arrays.asList(j);
+        }
+		//System.out.println("IMPRESION ");
+        return datos;
+	}
+	
+	public String listarJuegosEvento(String nombre) {
+		System.out.println("LISTARRRRR");
+		this.juegosEvento=this.obtenerJuegosEvento(nombre);
+		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+		sessionMap.put("Evento", nombre);
+		return "/faces/listarJuegoEvento.xhtml";
 	}
 	
 	public String finalizarEvento(String nombre) {

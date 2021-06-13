@@ -141,6 +141,17 @@ public class DesarrolladorBean {
 		return estadisticas;
 	}
 	
+	
+	public void solicitarDesbloqueo(int id){
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/solicitardesbloqueo";
+		Client client = ClientBuilder.newClient();
+		WebTarget target= client.target(urlRestService);
+		Form form = new Form();
+        form.param("id", String.valueOf(id));
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+	}
+	
+	
 	public int obtenerTotal() {
 		if(estadisticas!=null) {
 			double total = 0;

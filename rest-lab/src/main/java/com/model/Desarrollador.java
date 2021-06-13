@@ -26,7 +26,7 @@ public class Desarrollador extends Usuario {
 	private String direccion;
 	@Column
 	private String telefono;
-	@OneToMany(mappedBy = "desarrollador",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "desarrollador")
 	@JsonBackReference
 	private List<Juego> juegos;
 	

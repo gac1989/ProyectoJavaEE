@@ -23,18 +23,21 @@ import com.model.Juego;
 @RequestScoped
 public class AdminBean {
 	
-	private AdminStats stats = this.obtenerEstadisticas();
+	private AdminStats stats = null;
 	
-	private List<DevStat> specstat = this.obtenerStats();
+	private List<DevStat> specstat = null;
 	
-	private List<DevStat> statventas = this.obtenerStatsVentas();
+	private List<DevStat> statventas = null;
 	
 	private List<Juego> reportados = null;
 	
-	
+	private Gson json = GsonHelper.customGson;
 	
 	
 	public List<Juego> getReportados() {
+		if(reportados==null) {
+			reportados=this.obtenerJuegosReportados();
+		}
 		return reportados;
 	}
 
@@ -45,6 +48,9 @@ public class AdminBean {
 
 	
 	public List<DevStat> getStatventas() {
+		if(statventas==null) {
+			statventas=this.obtenerStatsVentas();
+		}
 		return statventas;
 	}
 
@@ -53,6 +59,9 @@ public class AdminBean {
 	}
 
 	public List<DevStat> getSpecstat() {
+		if(specstat==null) {
+			specstat=this.obtenerStats();
+		}
 		return specstat;
 	}
 
@@ -78,6 +87,9 @@ public class AdminBean {
 
 
 	public AdminStats getStats() {
+		if(stats==null) {
+			stats=this.obtenerEstadisticas();
+		}
 		return stats;
 	}
 
@@ -152,8 +164,8 @@ public class AdminBean {
 	}
 	
 	public List<Juego> obtenerJuegosReportados(){
-		List<Juego> datos = null;
-		if(reportados!=null) {
+		if(reportados==null) {
+			List<Juego> datos = null;
 			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosreportados";
 			Client client = ClientBuilder.newClient();
 			WebTarget target= client.target(urlRestService);
@@ -161,14 +173,15 @@ public class AdminBean {
 			String response2 = response.readEntity(String.class);
 	        Juego[] c = null;
 	        if(response2!=null && !response2.isEmpty()){
-	        	c = new Gson().fromJson(response2, Juego[].class);
+	        	c = json.fromJson(response2, Juego[].class);
 	        }
 	        
 	        if(c!=null) {
 	        	datos = Arrays.asList(c);
 	        }
+	        reportados=datos;
 		}
-		return datos;
+		return reportados;
 	}
 	
 	public String bloquearJuego(int id) {

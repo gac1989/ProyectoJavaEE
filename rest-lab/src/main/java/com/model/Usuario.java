@@ -2,8 +2,10 @@ package com.model;
 
 
 
+import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,25 +14,27 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
 
 @Entity
-@Table(name="usuario")
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @XmlRootElement
-public class Usuario {
+public abstract class Usuario implements Serializable {
 	@Id
 	private String nick;
 	@Column
+	@JsonIgnore
 	private String password;
 	@Column
 	private String email;
-	@Column
-	private String rutaImg;
-	@OneToMany(mappedBy = "user")
+	@Lob
+	private byte[] imagen;
+	@OneToMany(mappedBy = "user", cascade=CascadeType.ALL)
 	@JsonBackReference
 	private List<Publicacion> publicaciones;
 	
@@ -46,12 +50,12 @@ public class Usuario {
 		this.publicaciones = publicaciones;
 	}
 
-	public String getRutaImg() {
-		return rutaImg;
+	public byte[] getImagen() {
+		return imagen;
 	}
 
-	public void setRutaImg(String rutaImg) {
-		this.rutaImg = rutaImg;
+	public void setImagen(byte[] imagen) {
+		this.imagen = imagen;
 	}
 
 	public String getNick() {
@@ -80,8 +84,8 @@ public class Usuario {
 
 	@Override
 	public String toString() {
-		return "Cliente [id=" + nick + 
-				", email=" + email;
+		return "Usuario [id=" + nick + 
+				", email=" + email + "]";
 	}
 	
 }

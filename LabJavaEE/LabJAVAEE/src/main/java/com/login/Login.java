@@ -18,7 +18,10 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 
@@ -71,13 +74,18 @@ public class Login implements Serializable {
 
 	
 	public static Usuario checkUser(String nick, String pass) {
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/usuario/" + nick;
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/checkusuario";
 		Client client = ClientBuilder.newClient();
         WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
+        Form form = new Form();
+        form.param("nick", nick);
+        form.param("pass", pass);
+        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
         String response2 = response.readEntity(String.class);
-        
-        JsonObject convertedObject = new Gson().fromJson(response2, JsonObject.class);
+        JsonObject convertedObject = null;
+        if(response2 != null && !response2.isEmpty()) {
+        	convertedObject = new Gson().fromJson(response2, JsonObject.class);
+        }
         JsonElement type=null;
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         Usuario u = null;
@@ -123,7 +131,7 @@ public class Login implements Serializable {
 				return "faces/Admin/admin.xhtml?faces-redirect=true";
 			}
 			else {
-				return "faces/index.xhtml";
+				return "faces/index.xhtml?faces-redirect=true";
 			}
 		} else {
 			FacesContext.getCurrentInstance().addMessage(
@@ -131,7 +139,7 @@ public class Login implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_WARN,
 							"Incorrect Username and Passowrd",
 							"Please enter correct username and Password"));
-			return "login";
+			return "/faces/login.xhtml?faces-redirect=true";
 		}
 	}
 	//logout event, invalidate session

@@ -38,33 +38,43 @@
                         <h:form id="login-form" class="form" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="nick" class="text-info">Nick:</label><br></br>
-                                 <h:inputText id="nick" value="#{Jugador.nick}" class="form-control" required="true" requiredMessage="Debe ingresar un nick"></h:inputText>
-                                 <h:message for="nick" style="color:red"/>
+                                 <h:inputText id="nick" value="#{Jugador.nick}" class="form-control" required="true" requiredMessage="Debe ingresar un nick" validator="userValidator">
+                                 	<f:ajax render="@this message"/>
+                                 </h:inputText>
+                                 <p:message id="message" for="nick" style="display:block" />
                             </div>
                             <div class="form-group">
                                 <label for="email" class="text-info">Email:</label><br></br>
-                                 <h:inputText id="email" value="#{Jugador.email}" class="form-control" required="true" requiredMessage="Debe ingresar un email"></h:inputText>
-                                 <h:message for="email" style="color:red"/>
+                                 <h:inputText id="email" value="#{Jugador.email}" class="form-control" required="true" requiredMessage="Debe ingresar un email" validator="emailValidator" validatorMessage="Ingrese un correo valido, que no este registrado">
+                                 	 <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                                 	<f:ajax render="@this messagee"/>
+                                 </h:inputText>
+                                 <p:message id="messagee" for="email" style="display:block"/>
                             </div>
                             <div class="form-group">
                                 <label for="password" class="text-info">Password:</label><br></br>
-                                <h:inputSecret id="password" value="#{Jugador.pass}" class="form-control" required="true" requiredMessage="Debe ingresar un password"></h:inputSecret>
-                                <h:message for="password" style="color:red"/>
+                                <p:password id="password" value="#{Jugador.password}" match="repeated_password"  class="form-control" required="true" requiredMessage="Debe ingresar una contraseña" validatorMessage="Las contraseñas no coinciden" />
+                                <p:message for="password" style="display:block"/>
+                            </div>
+                             <div class="form-group">
+                                <label for="repeated_password" class="text-info"> Confirm Password:</label><br></br>
+                                <p:password id="repeated_password" value="#{Jugador.password}" class="form-control" required="true"  requiredMessage="Debe ingresar la confirmacion de contraseña" validatorMessage="Las contraseñas no coinciden"  />
+                                <p:message for="repeated_password" style="display:block"/>
                             </div>
                             <div class="form-group">
                                 <label for="nombre" class="text-info">Nombre:</label><br></br>
                                  <h:inputText id="nombre" value="#{Jugador.nombre}" class="form-control" required="true" requiredMessage="Debe ingresar un nombre"></h:inputText>
-                                 <h:message for="nombre" style="color:red"/>
+                                 <p:message for="nombre" style="display:block"/>
                             </div>
                             <div class="form-group">
                                 <label for="apellido" class="text-info">Apellido:</label><br></br>
                                  <h:inputText id="apellido" value="#{Jugador.apellido}" class="form-control" required="true" requiredMessage="Debe ingresar un apellido"></h:inputText>
-                                 <h:message for="apellido" style="color:red"/>
+                                 <p:message for="apellido" style="display:block"/>
                             </div>
                             <div class="form-group">
                                 <label for="nombre" class="text-info">Perfil:</label><br></br>
                                 <br></br>
-								<p:fileUpload value="#{UsuarioBean.file}" mode="simple" skinSimple="true" class="custom-file-input"/>
+								<p:fileUpload id="img" value="#{UsuarioBean.file}" mode="simple" skinSimple="true" class="custom-file-input" />
                             </div>
                             <br></br>
                             <div class="form-group">

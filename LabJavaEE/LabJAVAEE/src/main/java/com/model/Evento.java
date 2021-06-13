@@ -2,7 +2,6 @@ package com.model;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Evento {
 
@@ -11,7 +10,16 @@ public class Evento {
 	private Date fecha_ini;
 	private Date fecha_fin;
 	private int activo;
+	private String estado;
 	
+	
+	
+	public String getEstado() {
+		return estado;
+	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
 	public String getNombre() {
 		return nombre;
 	}

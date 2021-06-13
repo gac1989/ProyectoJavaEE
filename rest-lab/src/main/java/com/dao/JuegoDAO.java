@@ -47,7 +47,20 @@ public class JuegoDAO {
 		// JPAUtil.shutdown();
 		return j;
 	}
-
+	
+	
+	public Object buscarJuego(String nombre) {
+		entity.getTransaction().begin();
+		Query q = entity.createQuery("SELECT j.nombre FROM Juego j where j.nombre='" +nombre+"'");
+		entity.getTransaction().commit();
+		try {
+			return q.getSingleResult();
+		}
+		catch(Exception e){
+			return null;
+		}
+	}
+	
 	/// eliminar juego
 	public void eliminar(int id) {
 		Juego j = new Juego();
@@ -93,7 +106,7 @@ public class JuegoDAO {
 	public List<Juego> buscarJuegos(String busqueda){
 		List<Juego> listaJuegos = new ArrayList<>();
 		System.out.println("La busqueda es " + busqueda);
-		Query q = entity.createQuery("SELECT j FROM Juego j WHERE j.nombre like '%" + busqueda + "%'");
+		Query q = entity.createQuery("SELECT j FROM Juego j WHERE j.nombre like '%" + busqueda + "%' or j.tags like '%" + busqueda + "%'");
 		listaJuegos = q.getResultList();
 		return listaJuegos;
 	}

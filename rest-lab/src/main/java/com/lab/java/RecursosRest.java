@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -23,9 +25,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.dao.AdminDAO;
 import com.dao.CategoriaDAO;
@@ -40,6 +44,7 @@ import com.dao.UsuarioDAO;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.model.AdminStats;
 import com.model.Administrador;
 import com.model.Categoria;
@@ -51,6 +56,7 @@ import com.model.Desarrollador;
 import com.model.DevStat;
 import com.model.Estado;
 import com.model.Evento;
+import com.model.Imagen;
 import com.model.Juego;
 import com.model.Jugador;
 import com.model.Publicacion;
@@ -61,14 +67,14 @@ import com.model.Usuario;
 public class RecursosRest {
 	
 	final String UPLOAD_FILE_SERVER = "C:\\Users\\admin\\Desktop\\uploads\\";
+	InputStream img =  RecursosRest.class.getResourceAsStream("default.png");
 	
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces({"image/png", "image/jpg", "image/gif"})
 	@Path("/saludo")
-	public Response saludar(@FormParam("nick")String nick) throws ParseException {
-		JuegoDAO control = new JuegoDAO();
-		List<Juego> lista = control.obtenerJuegosReportados();
-		return Response.ok(lista).build();
+	public Response saludar() throws ParseException, IOException {
+		byte[] default_img = IOUtils.toByteArray(img);
+		return Response.ok(default_img).build();
 	}
 	
 	//Imagen
@@ -77,49 +83,138 @@ public class RecursosRest {
     @Path("/descarga/{imagen}")
     @Produces({"image/png", "image/jpg", "image/gif"})
     public Response downloadImageFile(@PathParam("imagen") String imagen) {
-        File file = new File(UPLOAD_FILE_SERVER + imagen);
+		File file = new File(UPLOAD_FILE_SERVER + imagen);
         Response.ResponseBuilder responseBuilder = Response.ok((Object) file);
         responseBuilder.header("Content-Disposition", "attachment; filename=\"" + imagen + "\"");
         return responseBuilder.build();
     }
 	
 	@POST
-    @Path("/subir")
+    @Path("/registrarjuego")
     @Consumes("multipart/form-data")
     public Response uploadFile(MultipartFormDataInput input) throws IOException {
 		System.out.print("LLEGUE A SUBIR ACA");
         String fileName = "";
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        List<InputPart> inputParts = uploadForm.get("fichero");
         List<InputPart> name = uploadForm.get("nombre");
+        List<InputPart> juego = uploadForm.get("juego");
+        List<InputPart> cat = uploadForm.get("categoria");
         fileName = name.get(0).getBodyAsString();
-        for (InputPart inputPart : inputParts) {
-	         try {
-	            InputStream inputStream = inputPart.getBody(InputStream.class,null);
-	            byte [] bytes = IOUtils.toByteArray(inputStream);
-	            //constructs upload file path
-	            fileName = UPLOAD_FILE_SERVER + fileName;
-	            writeFile(bytes,fileName);
-	            System.out.println("Done");
-	          } catch (IOException e) {
-	            e.printStackTrace();
-	          }
+        String categoria = "";
+        String[] categorias = null;
+        if(cat!=null) {
+        	categoria = cat.get(0).getBodyAsString();
+        	System.out.println("El string de categoira es: " + categoria );
+        	categorias = new Gson().fromJson(categoria, String[].class);
         }
+		 try {
+		    registroJuego(juego.get(0).getBodyAsString(),fileName,categorias,uploadForm);
+			System.out.println("Done");
+		  } catch (IOException e) {
+		    e.printStackTrace();
+		  }
+		System.out.println("El Archivo es: " + fileName + " El juego es: " + juego.get(0).getBodyAsString());
         return Response.status(200).entity("uploadFile is called, Uploaded file name : " + fileName).build();
-
     }
 	
-	 //save to somewhere
-    private void writeFile(byte[] content, String filename) throws IOException {
-        File file = new File(filename);
-        if (!file.exists()) {
-            file.createNewFile();
+	public void registroJuego(String json, String nick, String[] categoria, Map<String, List<InputPart>> uploadForm ) throws IOException {
+		UsuarioDAO controlus = new UsuarioDAO();
+		Desarrollador d1 = (Desarrollador)controlus.buscar(nick);
+		if(d1!=null) {
+			Juego j1 = new Juego();
+			j1 = new Gson().fromJson(json, Juego.class);
+			JuegoDAO controlgm = new JuegoDAO();
+			j1.setDesarrollador(d1);
+			j1.setEstado(Estado.ACTIVO);
+			j1.setDesbloqueo(false);
+			if(uploadForm!=null) {
+			    for (Map.Entry<String,List<InputPart>> entry : uploadForm.entrySet()) {
+		        	if(entry.getKey().matches("(.*)fichero(.*)")) {
+		        		InputStream inputStream = entry.getValue().get(0).getBody(InputStream.class,null);
+		     		    byte [] bytes = IOUtils.toByteArray(inputStream);
+		     		    Imagen img = new Imagen();
+		     		    img.setJuego(j1);
+		     		    img.setContenido(bytes);
+		     		    j1.agregarImagen(img);
+		        	}
+		        }
+			}
+			controlgm.guardar(j1);
+			if(categoria!=null) {
+				CategoriaDAO controlcat = new CategoriaDAO();
+				for(String cat : categoria) {
+					System.out.println("La categoria es: " + cat);
+					Categoria c1 = controlcat.buscar(cat);
+					if(c1!=null) {
+						c1.agregarJuego(j1);
+						controlcat.editar(c1);
+					}
+				}
+				controlcat.cerrar();
+			}
+			System.out.println("SE CREO EL JUEGO");
+		}
+		else {
+			System.out.println("ERROR AL CREAR EL JUEGO");
+		}
+	}
+	
+	@POST
+    @Path("/registrarse")
+    @Consumes("multipart/form-data")
+	@Produces(MediaType.APPLICATION_JSON)
+    public Response regitrarse(MultipartFormDataInput input) throws IOException {
+		System.out.print("LLEGUE A SUBIR ACA");
+        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+        List<InputPart> inputParts = uploadForm.get("fichero");
+        List<InputPart> user = uploadForm.get("usuario");
+        Usuario u1 = null;
+        try {
+        	byte [] bytes = IOUtils.toByteArray(img);
+        	if(inputParts!=null) {
+        		InputStream inputStream = inputParts.get(0).getBody(InputStream.class,null);
+        		if(inputStream != null && inputStream.available()!=0) {
+     		    	bytes = IOUtils.toByteArray(inputStream);
+     		    }
+        	}
+		    u1 = registro(user.get(0).getBodyAsString(),bytes);
+			System.out.println("Done");
+        } catch (IOException e) {
+		    e.printStackTrace();
         }
-        FileOutputStream fop = new FileOutputStream(file);
-        fop.write(content);
-        fop.flush();
-        fop.close();
+        return Response.ok(u1).build();
     }
+	
+	public Usuario registro(String json, byte[] imagen) {
+		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+		JsonPrimitive type = convertedObject.getAsJsonPrimitive("type");
+		String tipo = type.getAsString();
+		UsuarioDAO controlus = new UsuarioDAO();
+		Usuario u1 = null;
+		if(json!=null && !json.isEmpty()) {
+			switch(tipo) {
+				case "jugador":{
+					u1 = new Gson().fromJson(json, Jugador.class);
+					u1.setImagen(imagen);
+					controlus.guardar(u1);
+					break;
+				}
+				case "desarrollador":{
+					u1 = new Gson().fromJson(json, Desarrollador.class);
+					u1.setImagen(imagen);
+					controlus.guardar(u1);
+					break;
+				}
+				default:{
+					break;
+				}
+			}
+			return u1;
+		}
+		else {
+			return null;
+		}
+	}
 	
 	//Estadisticas
 	
@@ -207,11 +302,13 @@ public class RecursosRest {
 	@Path("/usuarios")
 	public Response getUsuarios() {
 		UsuarioDAO control = new UsuarioDAO();
-		List<Usuario> users = control.obtenerUsuarios();
-		if(!users.isEmpty()) {
+		List<Usuario> users = control.obtenerUsuariosDebiles();
+		if(users!=null && !users.isEmpty()) {
+			control.cerrar();
 			return Response.ok(users).build();
 		}
 		else {
+			control.cerrar();
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
@@ -223,32 +320,41 @@ public class RecursosRest {
 		UsuarioDAO control = new UsuarioDAO();
 		Usuario user = control.buscar(nick);
 		if(user!=null) {
-			if(user instanceof Jugador) {
-				Jugador j = (Jugador)user;
-				return Response.ok(j).build();
-			}
-			else {
-				if(user instanceof Desarrollador) {
-					Desarrollador d = (Desarrollador)user;
-					return Response.ok(d).build();
-				}
-				else {
-					Administrador a = (Administrador)user;
-					return Response.ok(a).build();
-				}
-			}
+			return Response.ok(user).build();
 		}
 		else {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
 	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ckusername/{nick}")
+	public Response checkUser(@PathParam("nick") String nick) {
+		return Response.ok((new UsuarioDAO().buscar(nick)!=null)).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ckjuego/{nombre}")
+	public Response checkJuego(@PathParam("nombre") String nombre) {
+		return Response.ok((new JuegoDAO().buscarJuego(nombre)!=null)).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ckemail/{email}")
+	public Response checkUserEmail(@PathParam("email") String email) {
+		return Response.ok((new UsuarioDAO().buscarEmail(email)!=null)).build();
+	}
+	
+	
 	@POST
 	@Path("/checkusuario")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response checkUsuario(@FormParam("nick") String nick, @FormParam("pass") String pass) {
 		UsuarioDAO controlus = new UsuarioDAO();
-		Usuario user = controlus.buscar(nick);
+		Usuario user = controlus.checkUser(nick, pass);
 		if(user!=null) {
 			return Response.ok(user).build();
 		}
@@ -257,48 +363,7 @@ public class RecursosRest {
 		}
 	}
 	
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/registrarse")
-	public Response registro(String json) {
-		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
-		JsonObject type = convertedObject.getAsJsonObject("entity");
-		JsonElement type1 = type.get("type");
-		System.out.println("El tipo es: " + type1.getAsString());
-		JsonElement tree = new Gson().toJsonTree(convertedObject);
-		JsonElement entity = tree.getAsJsonObject().getAsJsonObject("entity");
-		UsuarioDAO controlus = new UsuarioDAO();
-		if(entity!=null) {
-			switch(type1.getAsString()) {
-				case "jugador":{
-					Jugador u1 = new Gson().fromJson(entity.toString(), Jugador.class);
-					controlus.guardar(u1);
-					break;
-				}
-				case "desarrollador":{
-					Desarrollador u1 = new Gson().fromJson(entity.toString(), Desarrollador.class);
-					controlus.guardar(u1);
-					break;
-				}
-				case "administrador":{
-					Administrador u1 = new Gson().fromJson(entity.toString(), Administrador.class);
-					controlus.guardar(u1);
-					break;
-				}
-				default:{
-					Usuario u1 = new Gson().fromJson(entity.toString(), Usuario.class);
-					System.out.println("ENTREE al DEFAULT");
-					controlus.guardar(u1);
-					break;
-				}
-			}
-			return Response.ok("SE CREO CORRECTAMENTE EL USUARIO").build();
-		}
-		else {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
-	}
+	
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -308,31 +373,35 @@ public class RecursosRest {
 		JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
 		JsonObject type = convertedObject.getAsJsonObject("entity");
 		JsonElement type1 = type.get("type");
-		System.out.println("El tipo es: " + type1.getAsString());
+		/*System.out.println("El tipo es: " + type1.getAsString());
 		JsonElement tree = new Gson().toJsonTree(convertedObject);
-		JsonElement entity = tree.getAsJsonObject().getAsJsonObject("entity");
+		JsonElement entity = tree.getAsJsonObject().getAsJsonObject("entity");*/
 		UsuarioDAO controlus = new UsuarioDAO();
-		if(entity!=null) {
-			switch(type1.getAsString()) {
-				case "jugador":{
-					Jugador u1 = new Gson().fromJson(entity.toString(), Jugador.class);
-					controlus.editar(u1);
-					break;
+		String nick = type.get("nick").getAsString();
+		Usuario u1 = controlus.buscar(nick);
+		if(u1!=null) {
+			u1.setEmail(type.get("email").getAsString());
+			if(type1!=null) {
+				switch(type1.getAsString()) {
+					case "jugador":{
+						Jugador j1 = (Jugador)u1;
+						j1.setApellido(type.get("apellido").getAsString());
+						j1.setNombre(type.get("nombre").getAsString());
+						controlus.editar(u1);
+						break;
+					}
+					case "desarrollador":{
+						Desarrollador d1 = (Desarrollador)u1;
+						d1.setDireccion(type.get("direccion").getAsString());
+						d1.setNombre_empresa(type.get("nombre_empresa").getAsString());
+						d1.setTelefono(type.get("telefono").getAsString());
+						d1.setPais(type.get("pais").getAsString());
+						controlus.editar(u1);
+						break;
+					}
 				}
-				case "desarrollador":{
-					String datos = entity.toString();
-					System.out.println("El usuario es: " + datos);
-					Desarrollador u1 = new Gson().fromJson(datos, Desarrollador.class);
-					controlus.editar(u1);
-					break;
-				}
-				case "administrador":{
-					Administrador u1 = new Gson().fromJson(entity.toString(), Administrador.class);
-					controlus.editar(u1);
-					break;
-				}
+				return Response.ok("SE ACTUALIZO CORRECTAMENTE EL USUARIO").build();
 			}
-			return Response.ok("SE ACTUALIZO CORRECTAMENTE EL USUARIO").build();
 		}
 		return Response.status(Response.Status.NOT_FOUND).build();
 	}
@@ -354,6 +423,7 @@ public class RecursosRest {
 			return Response.ok(juegos).build();
 		}
 		else {
+			control.cerrar();
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
@@ -473,6 +543,7 @@ public class RecursosRest {
 			return Response.ok(lista).build();
 		}
 		else {
+			control.cerrar();
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
@@ -517,6 +588,8 @@ public class RecursosRest {
 				}
 			}
 		}
+		control.cerrar();
+		controlus.cerrar();
 		return Response.status(Response.Status.BAD_REQUEST).build();
 	}
 	
@@ -542,13 +615,31 @@ public class RecursosRest {
 				if(e1!=null && e1.getActivo()==1) {
 					j1.setEvento(null);
 					controlpy.editar(j1);
+					controlpy.cerrar();
 					return Response.ok("SE QUITO CORRECTAMENTE EL Juego al evento").build();
 				}
 			}
 		}
+		controlpy.cerrar();
 		return Response.status(Response.Status.BAD_REQUEST).build();
 	}
 	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/solicitardesbloqueo")
+	public Response solicitarDesbloqueo(@FormParam("id") String id_juego){
+		JuegoDAO controlpy = new JuegoDAO();
+		Juego j1 = controlpy.buscar(Integer.parseInt(id_juego));
+		if(j1!=null && j1.getEstado()==Estado.BLOQUEADO) {
+			j1.setDesbloqueo(true);
+			controlpy.editar(j1);
+			controlpy.cerrar();
+			return Response.ok("SE QUITO CORRECTAMENTE EL Juego al evento").build();
+		}
+		return Response.status(Response.Status.BAD_REQUEST).build();
+	}
+	
+
 	//Categoria
 	
 	@GET
@@ -566,6 +657,7 @@ public class RecursosRest {
 			return Response.ok(lista).build();
 		}
 		else {
+			controlcat.cerrar();
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
@@ -709,47 +801,12 @@ public class RecursosRest {
 			return Response.ok(coments).build();
 		}
 		else {
+			controlgm.cerrar();
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
 	
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/registrarJuego")
-	public Response registroJuego(@FormParam("nick") String nick, @FormParam("nombre") String nombre, @FormParam("descripcion") String descripcion, @FormParam("rutaImg") String rutaImg, @FormParam("precio") String precio, @FormParam("categoria") String categoria) {
-		if(nick!=null && !nick.isEmpty() && nombre!=null && !nombre.equals("") && descripcion!=null && !descripcion.equals("")&& rutaImg!=null && !rutaImg.equals("")&& precio!=null && !precio.equals("")) {
-			Desarrollador d1 = null;
-			UsuarioDAO controlus = new UsuarioDAO();
-			CategoriaDAO controlcat = new CategoriaDAO();
-			try {
-				d1 = (Desarrollador)controlus.buscar(nick);
-			}
-			catch(Exception e) {
-				
-			}
-			if(d1!=null) {
-				Juego j = new Juego();
-				j.setNombre(nombre);
-				j.setDescripcion(descripcion);
-				j.setRutaImg(rutaImg);
-				j.setPrecio(Float.parseFloat(precio));
-				j.setDesarrollador(d1);
-				d1.agregarJuego(j);
-				controlus.editar(d1);
-				Categoria c1 = controlcat.buscar(categoria);
-				c1.agregarJuego(j);
-				controlcat.guardar(c1);
-				return Response.ok("SE CREO CORRECTAMENTE EL Juego").build();
-			}
-			else {
-				return Response.status(Response.Status.NOT_FOUND).build();
-			}
-			
-		}
-		else {
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		}
-	}
+	
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -801,6 +858,7 @@ public class RecursosRest {
 		JuegoDAO controlcom = new JuegoDAO();
 		Juego j1 = controlcom.buscar(Integer.parseInt(id));
 		if(j1!=null) {
+			j1.setDesbloqueo(false);
 			j1.setEstado(Estado.ACTIVO);
 			controlcom.editar(j1);
 			return Response.ok("Se bloqueo el juego").build();
@@ -882,6 +940,7 @@ public class RecursosRest {
 			return Response.ok(lista).build();
 		}
 		else {
+			controlev.cerrar();
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}
@@ -1010,10 +1069,41 @@ public class RecursosRest {
 	
 	//Usuario
 	
+	
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/agregarpublicacion")
-	public Response agregarPublicacion(@FormParam("nick") String nick, @FormParam("texto") String texto, @FormParam("imagen") String imagen){
+    @Path("/agregarpublicacion")
+    @Consumes("multipart/form-data")
+    public Response uploadPublicacion(MultipartFormDataInput input) throws IOException {
+		System.out.print("LLEGUE A SUBIR ACA");
+        String fileName = "";
+        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+        List<InputPart> nick = uploadForm.get("nick");
+        List<InputPart> texto = uploadForm.get("texto");
+        List<InputPart> img = uploadForm.get("imagen");
+        fileName = nick.get(0).getBodyAsString();
+        UsuarioDAO control = new UsuarioDAO();
+        Usuario u1 = control.buscar(fileName);
+        if(u1!=null) {
+        	PublicacionDAO controlpub = new PublicacionDAO();
+			Publicacion p1 = new Publicacion();
+        	if(img!=null) {
+        		InputStream inputStream = img.get(0).getBody(InputStream.class,null);
+        		 byte [] bytes = IOUtils.toByteArray(inputStream);
+        		 p1.setImagen(bytes);
+        	}
+			p1.setTexto(texto.get(0).getBodyAsString());
+			p1.setUser(u1);
+			controlpub.editar(p1);
+			controlpub.cerrar();
+			control.cerrar();
+			return Response.ok("Se realizo la publicacion").build();
+		}
+		control.cerrar();
+        return Response.status(404).entity("uploadFile is called, Uploaded file name : " + fileName).build();
+    }
+	
+	
+	/*public Response agregarPublicacion(@FormParam("nick") String nick, @FormParam("texto") String texto, @FormParam("imagen") String imagen){
 		UsuarioDAO controlcom = new UsuarioDAO();
 		Usuario u1 = controlcom.buscar(nick);
 		if(u1!=null) {
@@ -1026,7 +1116,7 @@ public class RecursosRest {
 			return Response.ok("Se reporto el comentario").build();
 		}
 		return Response.status(Response.Status.BAD_REQUEST).build();
-	}
+	}*/
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -1037,10 +1127,12 @@ public class RecursosRest {
 		List<Publicacion> lista = u1.getPublicaciones();
 		if(lista!= null && !lista.isEmpty()) {
 			System.out.println(lista.get(0).getTexto());
+			Collections.reverse(lista);
 			control.cerrar();
 			return Response.ok(lista).build();
 		}
 		else {
+			control.cerrar();
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 	}

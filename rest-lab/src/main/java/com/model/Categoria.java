@@ -28,7 +28,7 @@ public class Categoria {
 		this.nombre = nombre;
 	}
 	
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name="categoriajuego", joinColumns = @JoinColumn(name = "nombre_cat"),
     inverseJoinColumns = @JoinColumn(name = "juego_id") )
 	@JsonBackReference

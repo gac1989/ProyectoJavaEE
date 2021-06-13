@@ -53,24 +53,35 @@ public class UsuarioDAO {
 
 	// buscar Usuario
 	public Usuario buscar(String nick) {
-		Usuario c = new Usuario();
+		Usuario c;
 		c = entity.find(Usuario.class, nick);
 		return c;
+	}
+	
+	public Object buscarEmail(String email) {
+		entity.getTransaction().begin();
+		Query q = entity.createQuery("SELECT c.email FROM Usuario c where c.email='" +email+"'");
+		entity.getTransaction().commit();
+		try {
+			return q.getSingleResult();
+		}
+		catch(Exception e){
+			return null;
+		}
 	}
 	
 	
 	public Usuario checkUser(String nick, String password) {
 		Usuario u = buscar(nick);
-		if(verifyHash(u.getPassword(),password)) {
+		if(u!=null && verifyHash(password, u.getPassword())) {
 			return u;
 		}
 		return null;
 	}
-	
 
 	/// eliminar Usuario
 	public void eliminar(String nick) {
-		Usuario c = new Usuario();
+		Usuario c;
 		c = entity.find(Usuario.class, nick);
 		entity.getTransaction().begin();
 		entity.remove(c);
@@ -94,6 +105,16 @@ public class UsuarioDAO {
 		entity.getTransaction().commit();
 		return listaUsuarios;
 	}
+	
+	public List<Usuario> obtenerUsuariosDebiles() {
+		entity.getTransaction().begin();
+		List<Usuario> listaUsuarios = new ArrayList<Usuario>();
+		Query q = entity.createQuery("SELECT c FROM Usuario c where type(c) != com.model.Administrador");
+		listaUsuarios = q.getResultList();
+		entity.getTransaction().commit();
+		return listaUsuarios;
+	}
+	
 	
 	public void cerrar() {
 		entity.close();

@@ -18,6 +18,7 @@ import com.model.Juego;
 public class BusquedaBean {
 	private String busqueda = null;
 	private List<Juego> resultado= null;
+	private Gson json = GsonHelper.customGson;
 	
 	public String getBusqueda() {
 		return busqueda;
@@ -33,8 +34,9 @@ public class BusquedaBean {
 	}
 	
 	public List<Juego> buscadorJuego(String busqueda){
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscadorJuegos/" + busqueda;
-		System.out.println("ACA ESTAMOS Y LA BUSQUEDA ES: " + busqueda);
+		String busquedaok = busqueda.replaceAll("[^A-Za-z0-9]","");
+		System.out.println("ACA ESTAMOS Y LA BUSQUEDA ES: " + busquedaok);
+		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscadorJuegos/" + busquedaok;
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
         Response response = target.request().get();
@@ -42,7 +44,7 @@ public class BusquedaBean {
         Juego[] j = null;
         System.out.println("RESPUESTA: " + response2);
         if(response2!=null && !response2.isEmpty()){
-        	j = new Gson().fromJson(response2, Juego[].class);
+        	j = json.fromJson(response2, Juego[].class);
         }
         List<Juego> datos = null;
         if(j!=null) {

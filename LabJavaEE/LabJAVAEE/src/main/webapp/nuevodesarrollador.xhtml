@@ -23,6 +23,7 @@
         <p:menuitem>
 			<h:graphicImage value="img/indie2.jpg"></h:graphicImage>
 		</p:menuitem>
+		
 		<br></br>
 		
 		<h3>Steamindie</h3>
@@ -32,38 +33,48 @@
                         <h:form id="login-form" class="form" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="nick" class="text-info">Nick:</label><br></br>
-                                <h:inputText id="nick" value="#{Desarrollador.nick}" class="form-control" required="true" requiredMessage="Debe ingresar un nickname"></h:inputText>
-                           		<h:message for="nick" style="color:red"/>
+                                 <h:inputText id="nick" value="#{Desarrollador.nick}" class="form-control" required="true" requiredMessage="Debe ingresar un nick" validator="userValidator">
+                                 	<f:ajax render="@this message"/>
+                                 </h:inputText>
+                                 <p:message id="message" for="nick" style="display:block" />
                             </div>
-                            <div class="form-group">
+                           <div class="form-group">
                                 <label for="email" class="text-info">Email:</label><br></br>
-                                 <h:inputText id="email" value="#{Desarrollador.email}" class="form-control"  required="true" requiredMessage="Debe ingresar un email"></h:inputText>
-                                 <h:message for="email" style="color:red"/>
+                                 <h:inputText id="email" value="#{Desarrollador.email}" class="form-control" required="true" requiredMessage="Debe ingresar un email" validator="emailValidator" validatorMessage="Ingrese un correo valido, que no este registrado">
+                                 	<f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                                 	<f:ajax render="@this messagee"/>
+                                 </h:inputText>
+                                 <p:message id="messagee" for="email" style="display:block"/>
                             </div>
                             <div class="form-group">
                                 <label for="password" class="text-info">Password:</label><br></br>
-                                <h:inputSecret id="password" value="#{Desarrollador.pass}" class="form-control" required="true" requiredMessage="Debe ingresar un password"></h:inputSecret>
-                                <h:message for="password" style="color:red"/>
+                                <p:password id="password" value="#{Desarrollador.password}" match="repeated_password"  class="form-control" required="true" requiredMessage="Debe ingresar una contraseña" validatorMessage="Las contraseñas no coinciden" />
+                                <p:message for="password" style="display:block"/>
+                            </div>
+                             <div class="form-group">
+                                <label for="repeated_password" class="text-info"> Confirm Password:</label><br></br>
+                                <p:password id="repeated_password" value="#{Desarrollador.password}" class="form-control" required="true"  requiredMessage="Debe ingresar la confirmacion de contraseña" validatorMessage="Las contraseñas no coinciden"  />
+                                <p:message for="repeated_password" style="display:block"/>
                             </div>
                             <div class="form-group">
                                 <label for="empresa" class="text-info">Empresa:</label><br></br>
                                  <h:inputText id="empresa" value="#{Desarrollador.nombre_empresa}" class="form-control" required="true" requiredMessage="Debe ingresar una empresa"></h:inputText>
-                                 <h:message for="empresa" style="color:red"/>
+                                 <p:message for="empresa" style="display:block"/>
                             </div>
                             <div class="form-group">
                                 <label for="direccion" class="text-info">Direccion:</label><br></br>
                                  <h:inputText id="direccion" value="#{Desarrollador.direccion}" class="form-control" required="true" requiredMessage="Debe ingresar una direccion"></h:inputText>
-                                 <h:message for="direccion" style="color:red"/>
+                                 <p:message for="direccion" style="display:block"/>
                             </div>
                             <div class="form-group">
                                 <label for="Pais" class="text-info">Pais:</label><br></br>
                                  <h:inputText id="pais" value="#{Desarrollador.pais}" class="form-control" required="true" requiredMessage="Debe ingresar un pais"></h:inputText>
-                                 <h:message for="pais" style="color:red"/>
+                                 <p:message for="pais" style="display:block"/>
                             </div>
                             <div class="form-group">
                                 <label for="telefono" class="text-info">Telefono:</label><br></br>
                                  <h:inputText id="telefono" value="#{Desarrollador.telefono}" class="form-control" required="true" requiredMessage="Debe ingresar un telefono"></h:inputText>
-                                 <h:message for="telefono" style="color:red"/>
+                                 <p:message for="telefono" style="display:block"/>
                             </div>
                             <div class="form-group">
 	                                <label for="nombre" class="text-info">Perfil:</label><br></br>

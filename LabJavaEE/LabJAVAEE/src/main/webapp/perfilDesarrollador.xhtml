@@ -12,77 +12,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-		<style>
-			body {
-			    margin: 0;
-			    color: #2e323c;
-			    background: #f5f6fa;
-			    position: relative;
-			    height: 100%;
-			}
-			.account-settings .user-profile {
-			    margin: 0 0 1rem 0;
-			    padding-bottom: 1rem;
-			    text-align: center;
-			}
-			.account-settings .user-profile .user-avatar {
-			    margin: 0 0 1rem 0;
-			}
-			.account-settings .user-profile .user-avatar img {
-			    width: 90px;
-			    height: 90px;
-			    -webkit-border-radius: 100px;
-			    -moz-border-radius: 100px;
-			    border-radius: 100px;
-			    object-fit: cover;
-			    border: #17a2b8 3px solid;
-			}
-			.account-settings .user-profile h5.user-name {
-			    margin: 0 0 0.5rem 0;
-			}
-			.account-settings .user-profile h6.user-email {
-			    margin: 0;
-			    font-size: 0.8rem;
-			    font-weight: 400;
-			    color: #9fa8b9;
-			}
-			.account-settings .about {
-			    margin: 2rem 0 0 0;
-			    text-align: center;
-			}
-			.account-settings .about h5 {
-			    margin: 0 0 15px 0;
-			    color: #007ae1;
-			}
-			.account-settings .about p {
-			    font-size: 0.825rem;
-			}
-			.form-control {
-			    border: 1px solid #cfd1d8;
-			    -webkit-border-radius: 2px;
-			    -moz-border-radius: 2px;
-			    border-radius: 2px;
-			    font-size: .825rem;
-			    background: #ffffff;
-			    color: #2e323c;
-			}
-			
-			.card {
-			    background: #ffffff;
-			    -webkit-border-radius: 5px;
-			    -moz-border-radius: 5px;
-			    border-radius: 5px;
-			    border: 0;
-			    margin-bottom: 1rem;
-			}
-			.thead-dark{
-				background-color: rgb(52,58,64);
-				border-top: rgb(52,58,64) 3px solid;
-			}
-			.thead-dark th{
-				color: white;
-			}
-		</style>
+		<link type = "text/css" rel = "stylesheet" href = "resources/perfil.css" /> 
 	</h:head>
 	<h:body>
 		<ui:include src="./navBar.xhtml" />
@@ -95,7 +25,7 @@
 							<div class="account-settings">
 								<div class="user-profile">
 									<div class="user-avatar">
-										<p:graphicImage value = "http://localhost:8080/rest-lab/api/ejemplo/descarga/#{user.rutaImg}"/>
+										 <img src="data:image/png;base64, #{user.imagen}"/>
 									</div>
 									<h5 class="user-name">#{user.nick}</h5>
 									<h6 class="user-email">#{user.email}</h6>
@@ -116,6 +46,7 @@
 							    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
 							    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
 							    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Ventas</button>
+							    <button class="nav-link" id="nav-muro-tab" data-bs-toggle="tab" data-bs-target="#nav-muro" type="button" role="tab" aria-controls="nav-muro" aria-selected="false">Muro</button>
 							  </div>
 							</nav>
 							<div class="tab-content" id="nav-tabContent">
@@ -132,6 +63,7 @@
 							                                    <th>Nombre</th>
 							                                    <th>Descripcion</th>
 							                                    <th>Precio</th>
+							                                    <th>Estado</th>
 							                                    <th>Calificacion</th>
 							                                    <th>Evento</th>
 							                                    <th>Accion</th>
@@ -147,6 +79,11 @@
 							                                		<td>#{juego.nombre}</td>
 							                                		<td>#{juego.descripcion.length() gt 50 ? juego.descripcion.substring(0,57).concat('...') : juego.descripcion}</td>
 							                                		<td>#{juego.precio}</td>
+							                                		<td>#{juego.estado} 
+							                                		<h:form>
+							                                			<p:commandButton action="#{DesarrolladorBean.solicitarDesbloqueo(juego.id)}" icon="pi pi-bell" styleClass="rounded-button ui-button-warning" rendered="#{juego.estado=='BLOQUEADO'}"/>
+							                                		</h:form>
+							                                		</td>
 							                                		<td>#{juego.nota}</td>
 							                                		<td>#{juego.evento.nombre}</td>
 							                                		<td>
@@ -320,6 +257,54 @@
 							                    </div>
 								            </div>
 								  		</div>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="nav-muro" role="tabpanel" aria-labelledby="nav-muro-tab">
+									<div class="card">
+										<div class="card-body">
+										    <div class="row">
+										        <div class="col-2"> <img src="data:image/png;base64, #{user.imagen}" width="70" class="rounded-circle mt-2" /> </div>
+										        <div class="col-10">
+										            <div class="comment-box ml-2">
+											            <h:form enctype="multipart/form-data">
+											                <h4 class="titulo">Agregar publicacion</h4>
+											                <div class="comment-area"> <textarea class="form-control" placeholder="En que estas pensando?" jsf:value="#{UsuarioBean.texto}" rows="4"></textarea> </div>
+											                <br/>
+											                <p:fileUpload value="#{UsuarioBean.file}" mode="simple" skinSimple="true" class="custom-file-input"/>
+											                <div class="comment-btns mt-2">
+											                    <div class="row">
+											                        <div class="col-6">
+											                            <div class="pull-right"> <h:commandButton action="#{UsuarioBean.agregarPublicacion(UsuarioBean.texto, user)}" value="Agregar" class="btn btn-success" /></div>
+											                        </div>
+											                    </div>
+											                </div>
+										                </h:form>
+										            </div>
+										        </div>
+										    </div>
+									    </div>
+									    <hr/>
+									    <div class="container" style="overflow-y: scroll; height: 40em;">
+									    	<div class="row">
+										    	<c:forEach items="#{PublicacionBean.obtenerPublicaciones(user)}" var="stat">
+									    			<div class="col-md-8">
+												        <div class="media g-mb-30 media-comment">
+												        	<img src="data:image/png;base64, #{user.imagen}"  width="70" class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" />
+												            <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+												              <div class="g-mb-15">
+												                <h5 class="h5 g-color-gray-dark-v1 mb-0">#{user.nick}</h5>
+												                <span class="g-color-gray-dark-v4 g-font-size-12">5 days ago</span>
+												              </div>
+												              <p>#{stat.texto}</p>
+												               <c:if test="#{stat.imagen!=null and !stat.imagen.isEmpty()}">
+											                	  <img src="data:image/png;base64, #{stat.imagen}"  id="pub" />
+									                	   	  </c:if>
+												            </div>
+												        </div>
+											        </div>
+				                                </c:forEach>
+			                                </div>
+		                                </div>
 									</div>
 								</div>
 							</div>

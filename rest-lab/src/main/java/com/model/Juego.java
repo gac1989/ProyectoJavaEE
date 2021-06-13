@@ -1,5 +1,6 @@
 package com.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -35,7 +37,9 @@ public class Juego {
 	@Column(length = 1000000)
 	private String descripcion;
 	@Column
-	private String rutaImg;
+	private boolean desbloqueo;
+	@Column
+	private String trailer;
 	@Column
 	private float precio;
 	@Column
@@ -59,9 +63,64 @@ public class Juego {
 	private List<CompraJuego> ventas;
 	@Enumerated(EnumType.STRING)
 	private Estado estado;
+    @ManyToMany(mappedBy="juegos")
+    @JsonBackReference
+    private List<Categoria> categorias = new ArrayList<Categoria>();
+	@Lob
+    private byte[] imagen;
+    @Column
+    private String tags;
+    @OneToMany(mappedBy = "juego", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private List<Imagen> imagenes = new ArrayList<Imagen>();
 	
+    public List<Imagen> getImagenes() {
+		return imagenes;
+	}
+
+	public void setImagenes(List<Imagen> imagenes) {
+		this.imagenes = imagenes;
+	}
 	
-	
+	public void agregarImagen(Imagen i1) {
+		this.imagenes.add(i1);
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	public byte[] getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(byte[] imagen) {
+		this.imagen = imagen;
+	}
+
+	public void agregarCategoria(Categoria c1) {
+    	this.categorias.add(c1);
+    }
+    
+	public List<Categoria> getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(List<Categoria> categorias) {
+		this.categorias = categorias;
+	}
+
+	public String getTrailer() {
+		return trailer;
+	}
+
+	public void setTrailer(String trailer) {
+		this.trailer = trailer;
+	}
+
 	public Estado getEstado() {
 		return estado;
 	}
@@ -125,12 +184,15 @@ public class Juego {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	public String getRutaImg() {
-		return rutaImg;
+
+	public boolean isDesbloqueo() {
+		return desbloqueo;
 	}
-	public void setRutaImg(String rutaImg) {
-		this.rutaImg = rutaImg;
+
+	public void setDesbloqueo(boolean desbloqueo) {
+		this.desbloqueo = desbloqueo;
 	}
+
 	public float getPrecio() {
 		return precio;
 	}
@@ -182,7 +244,7 @@ public class Juego {
 	
 	@Override
 	public String toString() {
-		return "Juego [nombre=" + nombre + ", descripcion=" + descripcion + ", rutaImg=" + rutaImg + ", precio="
+		return "Juego [nombre=" + nombre + ", descripcion=" + descripcion + ", " + ", precio="
 				+ precio + "]";
 	}
 	

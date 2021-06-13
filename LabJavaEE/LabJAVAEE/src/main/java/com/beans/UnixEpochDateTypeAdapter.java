@@ -21,8 +21,8 @@ final class UnixEpochDateTypeAdapter extends TypeAdapter<Date> {
 	@Override
 	public Date read(final JsonReader in)
 	    throws IOException {
-	// this is where the conversion is performed
-	return new Date(in.nextLong());
+		// this is where the conversion is performed
+		return new Date(in.nextLong());
 	}
 	
 	@Override
