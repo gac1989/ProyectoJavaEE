@@ -1,0 +1,85 @@
+
+<ui:composition
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	<style>
+		body{
+			background-color: rgb(244,246,250) !important;
+		}
+		.navbar .navbar-expand-lg .navbar-light .bg-light{
+			background-color: black;
+		}
+	</style>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+	<link href="/LabJAVAEE/faces/resources/bootstrap.min.css" rel="stylesheet" />
+	<link type = "text/css" rel = "stylesheet" href = "/LabJAVAEE/faces/resources/styles.css" /> 
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <h:link value = "SteamIndie" outcome = "/faces/index.xhtml" class="navbar-brand"/>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <h:link value = "Home" outcome = "/faces/index.xhtml" class="nav-link active"/>
+        </li>
+        <li class="nav-item">
+        	 <h:link value = "Juegos" outcome = "#{juegoBean.listar}" class="nav-link"/>
+        </li>
+        <li class="nav-item">
+        	 <h:link value = "Usuarios" outcome = "#{(UsuarioBean.listarUsuarios())}" class="nav-link"/>
+        </li>
+        <li class="nav-item dropdown">
+         	<h:link value = "Categorias" outcome = "/faces/mostrarCategorias.xhtml" class="nav-link" />
+        </li>
+        <li class="nav-item dropdown">
+         	<h:link value = "Login" outcome = "/faces/login.xhtml" class="nav-link" rendered="#{type==null or type == 'visitante'}" />
+        </li>
+        <h:panelGroup rendered="#{type==null or type == 'visitante'}">
+	        <li class="nav-item dropdown">
+	         	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Registrarse </a>
+	         	<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+	         		<h:form>
+			            <li><h:link value = "Desarrollador" outcome = "#{(UsuarioBean.nuevoDesarrollador())}" class="nav-link"/></li>
+			            <li><h:link value = "Jugador" outcome = "#{(UsuarioBean.nuevoJugador())}" class="nav-link"/></li>
+			            <li><h:link class="dropdown-divider"/></li>
+		            </h:form>
+	          </ul>
+	        </li>
+        </h:panelGroup>
+         <li class="nav-item dropdown">
+         	<h:link value = "Agregar juego" outcome = "#{juegoBean.nuevo1}" class="nav-link" rendered="#{type == 'desarrollador'}"/>
+        </li>
+        <li class="nav-item dropdown">
+         	<h:link value = "Biblioteca" outcome = "/faces/listarpropios.xhtml" class="nav-link" rendered="#{type == 'jugador'}"/>
+        </li>
+      </ul>
+      <h:form class="d-flex">
+      	<h:inputText value="#{BusquedaBean.busqueda}" class="form-control me-2" placeholder="Buscar" required="true"></h:inputText>
+      	<h:commandButton action="#{BusquedaBean.resultadoBusqueda(BusquedaBean.busqueda)}" value="Buscar" class="btn btn-outline-success"></h:commandButton>
+      </h:form>
+      <ul class="nav navbar-nav ml-auto">
+        	<h:panelGroup rendered="#{type!=null and type != 'visitante'}">
+		        <li class="nav-item dropdown">
+		         	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">#{user.nick} </a>
+		         	<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+			            <li><h:link value = "Perfil" outcome = "/faces/perfilDesarrollador" class="nav-link" rendered="#{type == 'desarrollador'}"/></li>
+		             	<li><h:link value = "Perfil" outcome = "/faces/perfilJugador" class="nav-link" rendered="#{type == 'jugador'}"/></li>
+			            <li><h:link class="dropdown-divider"/></li>
+			             <h:form>
+			           		 <h:commandLink value = "Logout" action="#{login.logout}" class="nav-link" rendered="#{type == 'desarrollador' or type == 'jugador'}" />
+			           	</h:form>
+		          </ul>
+		        </li>
+	        </h:panelGroup>
+       </ul>
+    </div>
+  </div>
+</nav>
+</ui:composition>

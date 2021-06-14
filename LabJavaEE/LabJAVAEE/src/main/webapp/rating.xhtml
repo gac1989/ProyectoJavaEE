@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>Nuevo Usuario</title>
+	<script>
+      $(document).ready(function() {
+        // Gets the span width of the filled-ratings span
+        // this will be the same for each rating
+        var star_rating_width = $('.fill-ratings span').width();
+        // Sets the container of the ratings to span width
+        // thus the percentages in mobile will never be wrong
+        $('.star-ratings').width(star_rating_width);
+      });
+    </script>
+    <style>
+      .star-ratings {
+        unicode-bidi: bidi-override;
+        color: #ccc;
+        font-size: 64px;
+        position: relative;
+        margin: 0;
+        padding: 0;
+      }
+      .fill-ratings {
+        color: #e7711b;
+        padding: 0;
+        position: absolute;
+        z-index: 1;
+        display: block;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+      }
+      span {
+        display: inline-block;
+      }
+      .empty-ratings {
+        padding: 0;
+        display: block;
+        z-index: 0;
+      }
+    </style>
+</h:head>
+	<h:body>
+		<div class="star-ratings">
+	      <div class="fill-ratings" style="width: 32%;">
+	        <span>🟊🟊🟊🟊🟊</span>
+	      </div>
+	      <div class="empty-ratings">
+	        <span>🟊🟊🟊🟊🟊</span>
+	      </div>
+	    </div>
+	</h:body>
+
+</html>

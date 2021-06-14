@@ -1,0 +1,347 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	<h:head>
+	  	<title>Bootstrap Example</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+		<link type = "text/css" rel = "stylesheet" href = "resources/perfil.css" /> 
+	</h:head>
+	<h:body>
+		<ui:include src="./navBar.xhtml" />
+		<br></br>
+		<div class="container">
+			<div class="row gutters">
+				<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+					<div class="card h-100">
+						<div class="card-body">
+							<div class="account-settings">
+								<div class="user-profile">
+									<div class="user-avatar">
+										 <img src="data:image/png;base64, #{user.imagen}"/>
+									</div>
+									<h5 class="user-name">#{user.nick}</h5>
+									<h6 class="user-email">#{user.email}</h6>
+								</div>
+								<div class="about">
+									<h5 class="mb-2 text-info">#{user.type}</h5>
+									<h:link value = "Agregar juego" outcome = "#{juegoBean.nuevo1}" class="btn btn-outline-success"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+					<div class="card h-100">
+						<div class="card-body">
+							<nav>
+							  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+							    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
+							    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
+							    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Ventas</button>
+							    <button class="nav-link" id="nav-muro-tab" data-bs-toggle="tab" data-bs-target="#nav-muro" type="button" role="tab" aria-controls="nav-muro" aria-selected="false">Muro</button>
+							  </div>
+							</nav>
+							<div class="tab-content" id="nav-tabContent">
+							  	<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+								  	<br/>
+								  	<h6 class="mb-2 text-info">Mis juegos</h6>
+				                    <div class="card-body">
+								        <div class="container-fluid">
+								            <div class="card mb-4">
+							                    <div class="table-responsive">
+							                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							                            <thead class="thead-dark">
+							                                <tr>
+							                                    <th>Nombre</th>
+							                                    <th>Descripcion</th>
+							                                    <th>Precio</th>
+							                                    <th>Estado</th>
+							                                    <th>Calificacion</th>
+							                                    <th>Evento</th>
+							                                    <th>Accion</th>
+							                                </tr>
+							                            </thead>
+							                            <tfoot>
+							                                <tr>
+							                                </tr>
+							                            </tfoot>
+							                            <tbody>
+							                                <c:forEach items="#{juegoBean.juegosdesarrollador}" var="juego">
+							                                	<tr>
+							                                		<td>#{juego.nombre}</td>
+							                                		<td>#{juego.descripcion.length() gt 50 ? juego.descripcion.substring(0,57).concat('...') : juego.descripcion}</td>
+							                                		<td>#{juego.precio}</td>
+							                                		<td>#{juego.estado} 
+							                                		<h:form>
+							                                			<p:commandButton action="#{DesarrolladorBean.solicitarDesbloqueo(juego.id)}" icon="pi pi-bell" styleClass="rounded-button ui-button-warning" rendered="#{juego.estado=='BLOQUEADO'}"/>
+							                                		</h:form>
+							                                		</td>
+							                                		<td>#{juego.nota}</td>
+							                                		<td>#{juego.evento.nombre}</td>
+							                                		<td>
+							                                			<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="#{juego.id}" jsf:rendered="#{juego.evento==null}" >Evento</button>
+							                                			<h:form>
+				                   											<p:commandButton action="#{EventoBean.quitarJuegoEvento(juego.id)}" value="Quitar" styleClass="ui-button-danger" rendered="#{juego.evento!=null}"/>
+				                   											<p:commandButton id="firstname2" value="Ventas" actionListener="#{Dynamic.setJuego(juego.id)}" update="out1" onclick="mostrar()"></p:commandButton>
+				                   										</h:form>
+				                   									</td>
+							                                	</tr>
+							                                </c:forEach>
+							                            </tbody>
+							                        </table>
+							                    </div>
+								            </div>
+								            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+											  <div class="modal-dialog">
+											    <div class="modal-content">
+											      <div class="modal-header">
+											        <h5 class="modal-title" id="exampleModalLabel">Eventos disponibles</h5>
+											        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											      </div>
+											      <h:form>
+											      <div class="modal-body">
+											      <input type="hidden" jsf:value="#{EventoBean.seleccionado}" class="form-control" id="recipient-name"/>
+											      	<h:selectOneRadio value = "#{EventoBean.eventoseleccionado}" layout="pageDirection"> 
+													    <c:forEach items="#{EventoBean.eventos}" var="evento">
+														    <c:if test="#{evento.activo==1}">
+														    	<f:selectItem itemValue = "#{evento.nombre}" itemLabel = "#{evento.nombre}" itemDisabled="#{evento.activo==0}" />
+															</c:if>
+						                                </c:forEach>
+													</h:selectOneRadio>  
+											      </div>
+											      <div class="modal-footer">
+											        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+											        <h:commandButton action="#{EventoBean.agregarJuegoEvento(EventoBean.eventoseleccionado, EventoBean.seleccionado)}" value="Guardar" class="btn btn-primary" />
+											      </div>
+											      </h:form>
+											    </div>
+											  </div>
+											</div>
+											<div class="modal" id="ventas" tabindex="-1">
+											  <div class="modal-dialog">
+											    <div class="modal-content">
+											      <div class="modal-header">
+											        <h5 class="modal-title">Ventas</h5>
+											        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											      </div>
+											      <div class="modal-body">
+											      	<h:dataTable value="#{(Dynamic.obtenerVentasJuego())}" var="Venta" class="table table-bordered" id="out1">
+														<h:column>
+															<f:facet name="header">Juego</f:facet>
+															<h:outputText value="#{Venta.juego}"></h:outputText>
+														</h:column>
+														<h:column>
+															<f:facet name="header">Usuario</f:facet>
+															<h:outputText value="#{Venta.user}"></h:outputText>
+														</h:column>
+														<h:column>
+															<f:facet name="header">Precio</f:facet>
+															<h:outputText value="#{Venta.precio}">
+																<f:convertNumber type="number" groupingUsed="true" minFractionDigits="2" pattern="#0.00"/>
+															</h:outputText>
+														</h:column>
+													  </h:dataTable>
+											      </div>
+											      <div class="modal-footer">
+											      </div>
+											    </div>
+											  </div>
+											</div>
+								        </div>
+							        </div>
+								</div>
+							  	<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+							  		<h:form>
+										<div class="row gutters">
+											<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+												<h6 class="mb-2 text-info">Detalles</h6>
+											</div>
+											<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+												<label for="nick">Nick:</label><br></br>
+						                        <h:inputText id="nick" value="#{user.nick}" class="form-control" required="true" readonly="true"></h:inputText>
+						                   		<h:message for="nick" style="color:red"/>
+											</div>
+											<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+												<div class="form-group">
+													<label for="email" >Email:</label><br></br>
+						                            <h:inputText id="email" value="#{user.email}" class="form-control"  required="true" requiredMessage="Debe ingresar un email"></h:inputText>
+						                            <h:message for="email" style="color:red"/>
+												</div>
+											</div>
+											<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+												<div class="form-group">
+													 <label for="Pais" >Pais:</label><br></br>
+						                             <h:inputText id="pais" value="#{user.pais}" class="form-control" required="true" requiredMessage="Debe ingresar un pais"></h:inputText>
+						                             <h:message for="pais" style="color:red"/>
+												</div>
+											</div>
+										</div>
+										<div class="row gutters">
+											<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+												<h6 class="mt-3 mb-2 text-info">Empresa</h6>
+											</div>
+											<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+												<div class="form-group">
+													<label for="empresa" >Empresa:</label><br></br>
+							                        <h:inputText id="empresa" value="#{user.nombre_empresa}" class="form-control" required="true" requiredMessage="Debe ingresar una empresa"></h:inputText>
+							                        <h:message for="empresa" style="color:red"/>
+												</div>
+											</div>
+											<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+												<div class="form-group">
+													<label for="direccion">Direccion:</label><br></br>
+						                            <h:inputText id="direccion" value="#{user.direccion}" class="form-control" required="true" requiredMessage="Debe ingresar una direccion"></h:inputText>
+						                            <h:message for="direccion" style="color:red"/>
+												</div>
+											</div>
+											<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+												<div class="form-group">
+													<label for="telefono">Telefono:</label><br></br>
+						                            <h:inputText id="telefono" value="#{user.telefono}" class="form-control" required="true" requiredMessage="Debe ingresar un telefono"></h:inputText>
+						                            <h:message for="telefono" style="color:red"/>
+												</div>
+											</div>
+										</div>
+										<div class="row gutters">
+											<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+												<div class="text-right">
+													<br></br>
+													<h:commandButton action="#{UsuarioBean.actualizar(user)}" value="Guardar" class="btn btn-primary" />
+												</div>
+											</div>
+										</div>
+									</h:form>
+								  </div>
+								  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+								   	<br/>
+								  	<h6 class="mb-2 text-info">Mis juegos</h6>
+					                <div class="card-body">
+							        	<div class="container-fluid">
+								  			<div class="card mb-4">
+							                    <div class="table-responsive">
+							                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+							                            <thead class="thead-dark">
+							                                <tr>
+							                                    <th>Juego</th>
+							                                    <th>Ventas</th>
+							                                    <th>Monto total</th>
+							                                </tr>
+							                            </thead>
+							                            
+							                            <tbody>
+							                                <c:forEach items="#{DesarrolladorBean.obtenerEstadisticas()}" var="stat">
+							                                	<tr>
+							                                		<td>#{stat.nombre}</td>
+						                                			<td>#{stat.ventas}</td>
+							                                		<td>U$S #{stat.total}</td>
+							                                	</tr>
+							                                </c:forEach>
+							                                <tfoot>
+							                                <tr>
+							                                	<td>Total</td>
+						                                		<td>#{DesarrolladorBean.obtenerTotal()}</td>
+						                                		<td>U$S #{DesarrolladorBean.total}</td>
+							                                </tr>
+							                            </tfoot>
+							                            </tbody>
+							                        </table>
+							                    </div>
+								            </div>
+								  		</div>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="nav-muro" role="tabpanel" aria-labelledby="nav-muro-tab">
+									<div class="card">
+										<div class="card-body">
+										    <div class="row">
+										        <div class="col-2"> <img src="data:image/png;base64, #{user.imagen}" width="70" class="rounded-circle mt-2" /> </div>
+										        <div class="col-10">
+										            <div class="comment-box ml-2">
+											            <h:form enctype="multipart/form-data">
+											                <h4 class="titulo">Agregar publicacion</h4>
+											                <div class="comment-area"> <textarea class="form-control" placeholder="En que estas pensando?" jsf:value="#{UsuarioBean.texto}" rows="4"></textarea> </div>
+											                <br/>
+											                <p:fileUpload value="#{UsuarioBean.file}" mode="simple" skinSimple="true" class="custom-file-input"/>
+											                <div class="comment-btns mt-2">
+											                    <div class="row">
+											                        <div class="col-6">
+											                            <div class="pull-right"> <h:commandButton action="#{UsuarioBean.agregarPublicacion(UsuarioBean.texto, user)}" value="Agregar" class="btn btn-success" /></div>
+											                        </div>
+											                    </div>
+											                </div>
+										                </h:form>
+										            </div>
+										        </div>
+										    </div>
+									    </div>
+									    <hr/>
+									    <div class="container" style="overflow-y: scroll; height: 40em;">
+									    	<div class="row">
+										    	<c:forEach items="#{PublicacionBean.obtenerPublicaciones(user)}" var="stat">
+									    			<div class="col-md-8">
+												        <div class="media g-mb-30 media-comment">
+												        	<img src="data:image/png;base64, #{user.imagen}"  width="70" class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" />
+												            <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+												              <div class="g-mb-15">
+												                <h5 class="h5 g-color-gray-dark-v1 mb-0">#{user.nick}</h5>
+												                <span class="g-color-gray-dark-v4 g-font-size-12">5 days ago</span>
+												              </div>
+												              <p>#{stat.texto}</p>
+												               <c:if test="#{stat.imagen!=null and !stat.imagen.isEmpty()}">
+											                	  <img src="data:image/png;base64, #{stat.imagen}"  id="pub" />
+									                	   	  </c:if>
+												            </div>
+												        </div>
+											        </div>
+				                                </c:forEach>
+			                                </div>
+		                                </div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			function mostrar(){
+				$("#ventas").modal("show");
+				
+			}
+		</script>
+		<script>
+		  var exampleModal = document.getElementById('exampleModal')
+		  exampleModal.addEventListener('show.bs.modal', function (event) {
+		    // Button that triggered the modal
+		    var button = event.relatedTarget
+		    // Extract info from data-bs-* attributes
+		    var recipient = button.getAttribute('data-bs-whatever')
+		    // If necessary, you could initiate an AJAX request here
+		    // and then do the updating in a callback.
+		    //
+		    // Update the modal's content.
+		    var modalTitle = exampleModal.querySelector('.modal-title')
+		    var modalBodyInput = exampleModal.querySelector('.modal-body input')
+		
+		    modalTitle.textContent = 'New message to ' + recipient
+		    modalBodyInput.value = recipient
+		  })
+		</script>
+		<script>
+			if (window.history.replaceState) { // verificamos disponibilidad
+			    window.history.replaceState(null, null, window.location.href);
+			}
+		</script>
+		<ui:include src="./footer.xhtml" />
+	</h:body>
+</html>
+                                                      

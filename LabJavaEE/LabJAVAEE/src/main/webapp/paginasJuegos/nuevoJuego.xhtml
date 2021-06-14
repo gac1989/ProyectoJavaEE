@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>Nuevo juego</title>
+	<link type = "text/css" rel = "stylesheet" href = "../resources/style2.css" /> 
+   	<script>
+           function myFunction() {
+               var str = $("[id='login-form:trailer']").val();
+               var res = str.split("=");
+               var embeddedUrl="";
+               try{
+            	   var res2 = res[1].split("&amp;");
+                   embeddedUrl = "https://www.youtube.com/embed/"+res2[0];
+                   var video = document.getElementById("login-form:trailer");
+                   video.value=embeddedUrl;
+               }
+               catch(error){
+                   console.log("Cago fuego");
+               }
+               var video = document.getElementById("login-form:trailer").value;
+               //alert("pruebaaa" + embeddedUrl+" El definitivo es: " + video);
+               return true;
+           }
+      </script>
+</h:head>
+<h:body>
+	<ui:include src="../navBar.xhtml" />	
+	<br/>
+		<div id="login">
+	        <div class="container">
+	        <p:menuitem>
+				<h:graphicImage value="../img/indie2.jpg"></h:graphicImage>
+			</p:menuitem>
+			<br></br>
+			
+			<h3>Steamindie</h3>
+	            <div id="login-row" class="row justify-content-center align-items-center">
+	                <div id="login-column" class="col-md-6">
+	                    <div id="login-box" class="col-md-12">
+	                        <h:form id="login-form" class="form" enctype="multipart/form-data" onsubmit="return myFunction()">
+	                            <h3 class="text-center text-info">Nuevo Juego</h3>
+	                            <div class="form-group">
+	                                <label for="nombre" class="text-info">Nombre del juego:</label><br></br>
+	                                 <h:inputText id="nombre" value="#{juego.nombre}" class="form-control" required="true" requiredMessage="Debe ingresar un nombre" validator="juegoValidator">
+	                                 	<f:ajax render="@this message"/>
+	                                 </h:inputText>
+	                                 <p:message id="message" for="nombre"/>
+	                            </div>
+	                            <div class="form-group">
+	                                <label for="descripcion" class="text-info">Descripcion:</label><br></br>
+	                                <h:inputText id="descripcion" value="#{juego.descripcion}" class="form-control" required="true" requiredMessage="Debe ingresar una descripcion"></h:inputText>
+	                                <p:message for="descripcion"/>
+	                            </div>
+                             	<div class="form-group">
+	                                <label for="Precio" class="text-info">Precio:</label><br></br>
+	                                <h:inputText id="precio" value="#{juego.precio}" class="form-control" required="true" requiredMessage="Debe ingresar un precio" validatorMessage="Debe ingresar un numero"></h:inputText>
+	                                <p:message for="precio"/>
+	                                <br></br>
+	                            </div>
+	                             <div class="form-group">
+	                                <label for="trailer" class="text-info">Trailer:</label><br></br>
+	                                <h:inputText id="trailer" value="#{juego.trailer}" class="form-control" required="true" requiredMessage="Debe ingresar un video"></h:inputText>
+	                                <p:message for="trailer" />
+	                            </div>
+                                 <div class="form-group">
+	                                <label for="tags" class="text-info">Tags:</label><br></br>
+	                                <h:inputText id="tags" value="#{juego.tags}" class="form-control"></h:inputText>
+	                            </div>
+	                            <br/>
+	                            <div class="form-group">
+							        <p:selectManyMenu id="cat" value="#{juegoBean.categoria}" scrollHeight="125" required="true" requiredMessage="Debe ingresar al menos una categoria">
+ 										<f:selectItems value="#{CategoriaBean.getCategoriasList()}" />							
+							        </p:selectManyMenu>
+							        <p:message for="cat" />
+	                            </div>
+	                             <br></br>
+	                             <div class="form-group">
+	                                <label for="nombre" class="text-info">Portada:</label><br></br>
+	                                <br></br>
+									<p:fileUpload id="img" value="#{juegoBean.files}" skinSimple="true" multiple="true" mode="simple" required="true" requiredMessage="Debe ingresar al menos una imagen del juego" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" fileLimit="3" validator="fileValidator" />
+									<p:message for="img" />
+	                            </div>
+	                             <br></br>
+	                            <div class="form-group">
+									<h:commandButton action="#{juegoBean.guardar(juego)}" value="Guardar" class="btn btn-info btn-md"></h:commandButton>
+	                            </div>
+	                        </h:form>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <ui:include src="../footer.xhtml" />
+</h:body>
+</html>

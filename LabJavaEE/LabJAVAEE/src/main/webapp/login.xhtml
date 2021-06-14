@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+<h:head>
+	<link type = "text/css" rel = "stylesheet" href = "resources/style2.css" /> 
+</h:head>
+<h:body>
+	<ui:include src="navBar.xhtml" />
+	<br/>
+	<br/>
+	<div id="login">
+        <div class="container">
+        <p:menuitem>
+			<h:graphicImage value="img/indie2.jpg"></h:graphicImage>
+		</p:menuitem>
+		<br></br>
+		<h3>Steamindie</h3>
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+                        <h:form id="login-form" class="form">
+                            <h3 class="text-center text-info">Login</h3>
+                            <div class="form-group">
+                                <label for="username" class="text-info">Username:</label><br></br>
+                                 <h:inputText id="username" value="#{login.user}" class="form-control" required="true"></h:inputText>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="text-info">Password:</label><br></br>
+                                <h:inputSecret id="password" value="#{login.pwd}" class="form-control" required="true"></h:inputSecret>
+                                <br></br>
+                            </div>
+                            <div class="form-group">
+                                <h:commandButton action="#{login.validateUsernamePassword}" value="Login" class="btn btn-info btn-md"></h:commandButton>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<ui:include src="./footer.xhtml" />
+</h:body>
+</html>

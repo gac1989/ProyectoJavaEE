@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>SteamIndie</title>
+	<style>
+	
+	 	body
+	    {
+	        background:#f2f2f2;
+	    }
+	
+	    .payment
+		{
+			border:1px solid #f2f2f2;
+	        border-radius:20px;
+	        background:#fff;
+	        padding-bottom: 20px;
+		}
+	   .payment_header
+	   {
+		   background:#21aea2;
+		   padding:20px;
+	       border-radius:20px 20px 0px 0px;
+		   
+	   }
+	   
+	   .check
+	   {
+		   margin:0px auto;
+		   width:50px;
+		   height:50px;
+		   border-radius:100%;
+		   background:#fff;
+		   text-align:center;
+	   }
+	   
+	   .check i
+	   {
+		   vertical-align:middle;
+		   line-height:50px;
+		   font-size:30px;
+	   }
+	
+	    .content 
+	    {
+	        text-align:center;
+	    }
+	
+	    .content  h1
+	    {
+	        font-size:25px;
+	        padding-top:25px;
+	    }
+	
+	    .content a
+	    {
+	        width:200px;
+	        height:35px;
+	        color:#fff;
+	        border-radius:30px;
+	        padding:5px 10px;
+	        background:#21aea2;
+	        transition:all ease-in-out 0.3s;
+	    }
+	
+	  	.ui-button{
+	  		background-color:#21aea2 !important;
+	  		border:0px !important;
+	  	}
+	    
+	    .content a:hover
+	    {
+	        text-decoration:none;
+	        background:#000;
+	    }
+	
+	</style>
+
+</h:head>
+<h:body>
+	<ui:include src="./navBar.xhtml" />
+	<div class="container">
+   <div class="row">
+      <div class="col-md-6 mx-auto mt-5">
+         <div class="payment">
+            <div class="payment_header">
+               <div class="check"><i class="fa fa-check" aria-hidden="true"></i></div>
+            </div>
+            <div class="content">
+               <h1>Compra realizada con exito!</h1>
+               <h:form>
+	               <p>El link de descara de su juego es el siguiente: http://steamindie.uy/download/game/#{id}#{param['id']} </p>
+	               <p:commandButton value="Biblioteca" icon="pi pi-book" styleClass="rounded-button ui-button-info" action = "/faces/listarpropios.xhtml?faces-redirect=true"/>
+	               <br />
+	               <br />
+					<p:commandButton value="Factura" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);"
+				            icon="pi pi-arrow-down" styleClass="rounded-button ui-button-info" rendered="#{param['precio']!=0.0}">
+				    	<p:fileDownload value="#{factura}"/>
+				 	</p:commandButton>
+			    </h:form>
+            </div>
+            
+         </div>
+      </div>
+   </div>
+</div>
+<ui:include src="./footer.xhtml" />
+</h:body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<link type = "text/css" rel = "stylesheet" href = "resources/style2.css" /> 
+	<title>Nuevo Usuario</title>
+	
+</h:head>
+<h:body>
+	<ui:include src="navBar.xhtml" />
+	<br></br>
+	<h3>Nuevo Desarrollador</h3>
+	
+	
+	<div id="login">
+        <div class="container">
+        <p:menuitem>
+			<h:graphicImage value="img/indie2.jpg"></h:graphicImage>
+		</p:menuitem>
+		
+		<br></br>
+		
+		<h3>Steamindie</h3>
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                	<div id="login-box" class="col-md-12">
+                        <h:form id="login-form" class="form" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="nick" class="text-info">Nick:</label><br></br>
+                                 <h:inputText id="nick" value="#{Desarrollador.nick}" class="form-control" required="true" requiredMessage="Debe ingresar un nick" validator="userValidator">
+                                 	<f:ajax render="@this message"/>
+                                 </h:inputText>
+                                 <p:message id="message" for="nick" style="display:block" />
+                            </div>
+                           <div class="form-group">
+                                <label for="email" class="text-info">Email:</label><br></br>
+                                 <h:inputText id="email" value="#{Desarrollador.email}" class="form-control" required="true" requiredMessage="Debe ingresar un email" validator="emailValidator" validatorMessage="Ingrese un correo valido, que no este registrado">
+                                 	<f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                                 	<f:ajax render="@this messagee"/>
+                                 </h:inputText>
+                                 <p:message id="messagee" for="email" style="display:block"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="text-info">Password:</label><br></br>
+                                <p:password id="password" value="#{Desarrollador.password}" match="repeated_password"  class="form-control" required="true" requiredMessage="Debe ingresar una contraseña" validatorMessage="Las contraseñas no coinciden" />
+                                <p:message for="password" style="display:block"/>
+                            </div>
+                             <div class="form-group">
+                                <label for="repeated_password" class="text-info"> Confirm Password:</label><br></br>
+                                <p:password id="repeated_password" value="#{Desarrollador.password}" class="form-control" required="true"  requiredMessage="Debe ingresar la confirmacion de contraseña" validatorMessage="Las contraseñas no coinciden"  />
+                                <p:message for="repeated_password" style="display:block"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="empresa" class="text-info">Empresa:</label><br></br>
+                                 <h:inputText id="empresa" value="#{Desarrollador.nombre_empresa}" class="form-control" required="true" requiredMessage="Debe ingresar una empresa"></h:inputText>
+                                 <p:message for="empresa" style="display:block"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="direccion" class="text-info">Direccion:</label><br></br>
+                                 <h:inputText id="direccion" value="#{Desarrollador.direccion}" class="form-control" required="true" requiredMessage="Debe ingresar una direccion"></h:inputText>
+                                 <p:message for="direccion" style="display:block"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="Pais" class="text-info">Pais:</label><br></br>
+                                 <h:inputText id="pais" value="#{Desarrollador.pais}" class="form-control" required="true" requiredMessage="Debe ingresar un pais"></h:inputText>
+                                 <p:message for="pais" style="display:block"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono" class="text-info">Telefono:</label><br></br>
+                                 <h:inputText id="telefono" value="#{Desarrollador.telefono}" class="form-control" required="true" requiredMessage="Debe ingresar un telefono"></h:inputText>
+                                 <p:message for="telefono" style="display:block"/>
+                            </div>
+                            <div class="form-group">
+	                                <label for="nombre" class="text-info">Perfil:</label><br></br>
+	                                <br></br>
+									<p:fileUpload value="#{UsuarioBean.file}" mode="simple" skinSimple="true" class="custom-file-input"/>
+	                            </div>
+                            <br></br>
+                            <div class="form-group">
+                                <h:commandButton  action="#{UsuarioBean.guardar(Desarrollador)}" value="Guardar" class="btn btn-info btn-md"/>
+                            </div>
+                           	
+                        </h:form>
+                        <br></br>
+                          <br></br>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<ui:include src="./footer.xhtml" />
+</h:body>
+</html>
