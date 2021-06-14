@@ -190,16 +190,14 @@
 							  	<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 									<div>
 									    <div>
-										    <p:galleria value="#{perfil.imagenes}" var="imagen" panelHeight="600" >
-										        <img src="data:image/png;base64, #{imagen.contenido}" />
+										    <p:galleria value="#{juegoBean.obtenerImagenesJuego(perfil)}" var="imagen" panelHeight="600" >
+										        <img src="data:image/png;base64, #{imagen.contenido}" loading="lazy" />
 										    </p:galleria>
 										</div>
 									</div>
 						  		</div>
 						  		<div class="tab-pane fade show" id="nav-profile" role="tabpanel" aria-labelledby="nav-home-tab">
-						  			<iframe width="420" height="315"
-									src="#{perfil.trailer}">
-									</iframe>
+						  			<iframe src="#{perfil.trailer}" title="Game trailer" ></iframe>
 						  		</div>
 						  	</div>
 					  	</div>
@@ -207,11 +205,12 @@
                        <div class="card-body">
                        	<h2 class="titulo">#{perfil.nombre}</h2>
                         <h5 class="oferta" jsf:rendered="#{perfil.evento!=null}">Oferta #{perfil.evento.nombre}!!</h5>
-					    <h3 jsf:rendered="#{perfil.evento==null}">Precio: U$S #{perfil.precio}</h3>
+					    <h3 jsf:rendered="#{perfil.evento==null and perfil.precio!=0}">Precio: U$S #{perfil.precio}</h3>
+					    <h3 jsf:rendered="#{perfil.precio==0}" class="despues">FREE</h3>
 					    <h6 class="antes" jsf:rendered="#{perfil.evento!=null}">Precio antes: #{perfil.precio}</h6>
 					    <h6 class="despues" jsf:rendered="#{perfil.evento!=null}"> Precio en oferta!! U$S #{perfil.precio-(perfil.precio*perfil.evento.descuento)/100}</h6>
 				     	<h6 class="despues" jsf:rendered="#{perfil.evento!=null}">#{perfil.evento.descuento}% de descuento!</h6>
-			     	  	
+			     	  	<hr/>
                            <h:form>
                            		<input type='hidden' name='cancel_return' value="#{ComentarioBean.juegoComprado(perfil.id)}"></input>
 					    		<h:commandButton action="#{ComprarJuego.buscarJuego(perfil)}" value="Comprar" class="btn btn-primary" rendered="#{type == 'jugador' and  ComentarioBean.done2 eq false}"></h:commandButton>
@@ -273,5 +272,6 @@
 	           websocket.send(username + ": " + document.getElementById("sendField").value);
 	       }
        </script>
+       <ui:include src="./footer.xhtml" />
 </h:body>
 </html>

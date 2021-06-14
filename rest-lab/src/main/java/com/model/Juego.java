@@ -70,7 +70,8 @@ public class Juego {
     private byte[] imagen;
     @Column
     private String tags;
-    @OneToMany(mappedBy = "juego", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "juego", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @JsonBackReference
 	private List<Imagen> imagenes = new ArrayList<Imagen>();
 	
     public List<Imagen> getImagenes() {

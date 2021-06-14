@@ -128,16 +128,21 @@ public class RecursosRest {
 			j1.setEstado(Estado.ACTIVO);
 			j1.setDesbloqueo(false);
 			if(uploadForm!=null) {
+				List<InputPart> portada = uploadForm.get("portada");
+			    InputStream inputStream = portada.get(0).getBody(InputStream.class,null);
+     		    byte [] bytes = IOUtils.toByteArray(inputStream);
+     		    j1.setImagen(bytes);
 			    for (Map.Entry<String,List<InputPart>> entry : uploadForm.entrySet()) {
 		        	if(entry.getKey().matches("(.*)fichero(.*)")) {
-		        		InputStream inputStream = entry.getValue().get(0).getBody(InputStream.class,null);
-		     		    byte [] bytes = IOUtils.toByteArray(inputStream);
+		        		InputStream fichero = entry.getValue().get(0).getBody(InputStream.class,null);
+		     		    byte [] fich = IOUtils.toByteArray(fichero);
 		     		    Imagen img = new Imagen();
 		     		    img.setJuego(j1);
-		     		    img.setContenido(bytes);
+		     		    img.setContenido(fich);
 		     		    j1.agregarImagen(img);
 		        	}
 		        }
+			   
 			}
 			controlgm.guardar(j1);
 			if(categoria!=null) {
@@ -747,6 +752,35 @@ public class RecursosRest {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/juegosoferta")
+	public Response getJuegosOferta() {
+		JuegoDAO controlgm = new JuegoDAO();
+		List<Juego> games = controlgm.obtenerJuegosOferta();
+		if(!games.isEmpty()) {
+			return Response.ok(games).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ultimosjuegos")
+	public Response getUltimosJuegos() {
+		JuegoDAO controlgm = new JuegoDAO();
+		List<Juego> games = controlgm.obtenerUltimosJuegos();
+		if(!games.isEmpty()) {
+			return Response.ok(games).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/juegos")
 	public Response getJuegos() {
 		JuegoDAO controlgm = new JuegoDAO();
@@ -837,6 +871,28 @@ public class RecursosRest {
 		}
 	}
 	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/imagenesjuego/{id}")
+	public Response getImagenesJuegos(@PathParam("id") String id) {
+		JuegoDAO control = new JuegoDAO();
+		Juego j1 = control.buscar(Integer.parseInt(id));
+		if(j1!=null) {
+			List<Imagen> imagenes = j1.getImagenes();
+			if(imagenes!=null && !imagenes.isEmpty()) {
+				System.out.println("La primera imagen es: " + imagenes.get(0).getJuego().getDescripcion());
+			}
+			control.cerrar();
+			return Response.ok(imagenes).build();
+		}
+		else {
+			control.cerrar();
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
+	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/bloquearjuego")
@@ -865,6 +921,9 @@ public class RecursosRest {
 		}
 		return Response.status(Response.Status.BAD_REQUEST).build();
 	}
+	
+	
+	
 	
 	
 	//Evento
@@ -978,7 +1037,7 @@ public class RecursosRest {
 	    	  }
 	    	  System.out.println("La hora es: " + fechaInicio.toString());
 	       }
-  		Date fechaFin = null;
+		Date fechaFin = null;
 	      if(fecha_fin!=null){
 	    	  try {
 	    		  fechaFin = formato.parse(fecha_fin);
@@ -1002,7 +1061,13 @@ public class RecursosRest {
 			long restante = fechaInicio.getTime() - new Date().getTime();
 			Timer t = new Timer();
 			IniciarEvento mTask = new IniciarEvento(nombre);
-		    t.schedule(mTask, restante);
+			if(restante<=0) {
+				System.out.println("La fecha de inicio ya  ha pasado");
+				mTask.run();
+			}
+			else {
+				t.schedule(mTask, restante);
+			}
 			return Response.ok("SE CREO CORRECTAMENTE EL evento").build();
 		}
 		else {

@@ -32,22 +32,32 @@
 			width: 250px;
 			object-fit: cover;
 		}
+		
+		.titulo{
+			color: #17a2b8;
+			text-decoration: none;
+		}
 				
 	</style>
 	
 </h:head>
 <h:body>
 	<ui:include src="./navBar.xhtml" />
-	<h1>Lista de juegos</h1>
-	<c:forEach items="#{CategoriaBean.juegos}" var="juego" >
-        <div class="card" style="width: 18rem;" jsf:rendered="#{juego.estado!='BLOQUEADO'}">
-		 <img src="data:image/png;base64, #{juego.imagenes.get(0).contenido}" class="card-img-top" />
-		 <div class="card-body">
-		    <h5 class="card-title">#{juego.nombre}</h5>
-		    <h5 class="card-title">#{juego.id}</h5>
-		    <h6> U$S #{juego.precio}</h6>
-	 	 </div>
-	</div>
-    </c:forEach>
+	<br/>
+	<br/>
+	<div class="row row-cols-1 row-cols-md-4 g-4" style="margin-left: 40px">
+		<c:forEach items="#{CategoriaBean.obtenerJuegosCategoria(param['nombre'])}" var="juego" >
+	        <div class="card" style="width: 18rem;" jsf:rendered="#{juego.estado!='BLOQUEADO'}">
+				 <img src="data:image/png;base64, #{juego.imagen}" class="card-img-top" />
+				 <div class="card-body">
+				    <h:form>
+				    	<h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2>
+				    </h:form>
+				    <h6> U$S #{juego.precio}</h6>
+			 	 </div>
+			</div>
+	    </c:forEach>
+    </div>
+    <ui:include src="./footer.xhtml" />
 </h:body>
 </html>

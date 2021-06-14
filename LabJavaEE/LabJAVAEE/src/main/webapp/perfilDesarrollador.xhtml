@@ -166,7 +166,7 @@
 											</div>
 											<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
 												<label for="nick">Nick:</label><br></br>
-						                        <h:inputText id="nick" value="#{user.nick}" class="form-control" required="true" requiredMessage="Debe ingresar un nickname"></h:inputText>
+						                        <h:inputText id="nick" value="#{user.nick}" class="form-control" required="true" readonly="true"></h:inputText>
 						                   		<h:message for="nick" style="color:red"/>
 											</div>
 											<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -214,7 +214,6 @@
 											<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 												<div class="text-right">
 													<br></br>
-													<h:commandButton action="/" value="Cancelar" class="btn btn-secondary" />
 													<h:commandButton action="#{UsuarioBean.actualizar(user)}" value="Guardar" class="btn btn-primary" />
 												</div>
 											</div>
@@ -337,6 +336,12 @@
 		    modalBodyInput.value = recipient
 		  })
 		</script>
+		<script>
+			if (window.history.replaceState) { // verificamos disponibilidad
+			    window.history.replaceState(null, null, window.location.href);
+			}
+		</script>
+		<ui:include src="./footer.xhtml" />
 	</h:body>
 </html>
                                                       

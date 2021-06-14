@@ -192,9 +192,7 @@ public class UsuarioBean {
 		HttpSession session = SessionUtils.getSession();
 		String nick = (String)session.getAttribute("username");
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosusuario/" + nick;
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
+        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
         String response2 = response.readEntity(String.class);
         Juego[] j = null;
         if(response2!=null && !response2.isEmpty()) {
@@ -209,9 +207,7 @@ public class UsuarioBean {
 	
 	public List<Usuario> obtenerUsuarios(){
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/usuarios";
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
+        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
         String response2 = response.readEntity(String.class);
         Usuario[] j = null;
         if(response2!=null && !response2.isEmpty()) {
@@ -221,75 +217,52 @@ public class UsuarioBean {
         if(j!=null) {
         	datos = Arrays.asList(j);
         }
-		//System.out.println("IMPRESION ");
         return datos;
 	}
 	
 	public String listarUsuarios() {
-		//System.out.println("LISTARRRRR");
 		return "/faces/mostrarTodosUsuarios.xhtml";
 	}
 	
 	public static Usuario obtenerUsuario(String nick) {
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/usuario/" + nick;
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-		Response response = target.request().get();
+		Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
 		String response2 = response.readEntity(String.class);
         Usuario u = new Gson().fromJson(response2, Usuario.class);
 		return u;
 	}
 	
 	public String editar(String Usuario) {
-		
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/usuario/" + Usuario;
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-		Response response = target.request().get();
-        String response2 = response.readEntity(String.class);
-        Usuario u = new Gson().fromJson(response2, Usuario.class);
+        Usuario u = obtenerUsuario(Usuario);
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("Usuario", u);
 		return "/faces/editar.xhtml";
 	}
 
 	public String actualizar(Usuario Usuario) {
-		
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/editar";
 		Client client = ClientBuilder.newClient();
 		WebTarget target= client.target(urlRestService);
-		/*Form form = new Form();
-        form.param("nick", Usuario.getNick());
-        form.param("email", Usuario.getEmail());
-        form.param("pass", Usuario.getPass());*/
         Response response = target.request().post(Entity.entity(Entity.json(Usuario), MediaType.APPLICATION_JSON));
         System.out.println("LA RESPUESTA ES: " + response.getStatus());
-		return "/faces/index.xhtml";
+		return "/faces/perfilDesarrollador.xhtml?faces-redirect=true";
 	}
-	
-	// eliminar un Usuario
-	public String eliminar(String nick) {
-		System.out.println("Usuario eliminado..");
-		return "/faces/index.xhtml";
-	}
-	
-	
 	
 	public String agregarPublicacion(String texto, Usuario u) throws IOException {
 		String urlRestService2 = "http://localhost:8080/rest-lab/api/ejemplo/agregarpublicacion";
-		Client client = ClientBuilder.newClient();
-		String nick = u.getNick();
-        WebTarget target2= client.target(urlRestService2);
         MultipartFormDataOutput mdo = new MultipartFormDataOutput();
-        mdo.addFormData("nick", nick, MediaType.TEXT_PLAIN_TYPE);
+        mdo.addFormData("nick", u.getNick(), MediaType.TEXT_PLAIN_TYPE);
  		mdo.addFormData("texto", texto, MediaType.TEXT_PLAIN_TYPE);
  		if(file!=null) {
  			mdo.addFormData("imagen", file.getInputStream(), MediaType.APPLICATION_OCTET_STREAM_TYPE);
  		}
- 		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(mdo) { };
- 		Response response3 = target2.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
- 		System.out.println("La respuesta al subir la publicacion es: " + response3.getStatus());
+ 		Response response = new ClientControl().realizarPeticionMultiple(urlRestService2, mdo);
+ 		System.out.println("La respuesta al subir la publicacion es: " + response.getStatus());
         return perfil(u);
 	}
+	
+	
+	
+	
 	
 }

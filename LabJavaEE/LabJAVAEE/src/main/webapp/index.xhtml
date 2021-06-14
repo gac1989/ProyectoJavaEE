@@ -144,41 +144,25 @@
 				text-transform: uppercase;
 				font-size:15pt;
 			}
-			
-			.nav-link {
-			  color: #02CFC5   ;
-			  text-decoration: none;
-			}
-			
-			.nav-link:visited {
-			  color: #000000;
-			}
-			
-			.nav-link:active {
-			  color: #000000;
-			}
-			
-			.nav-link:hover {
-			  color: #424242;
-			}
-						 
+		
     </style>
 
 </h:head>
 <h:body>
 	<ui:include src="./navBar.xhtml" />
+	<br/>
 	<div class="row justify-content-start">
 	<ui:include src="./left_bar.xhtml" />
 	    <div class="col-10">
 			<h:form id="form">
 			    <div class="card">
-			        <p:carousel value="#{juegoBean.juegos}" var="juego" responsive="true">
+			    	<h1 class="titulo" style="color:rgb(33,37,41);">ULTIMOS JUEGOS</h1>
+			        <p:carousel value="#{juegoBean.obtenerUltimosJuegos()}" var="juego" responsive="true" >
 			            <div class="product" jsf:rendered="#{juego.estado!='BLOQUEADO'}">
 			                <div class="product-grid-item p-p-5">
-			               
 			                    <div class="product-grid-item-content">
-		                     	 	<img src="data:image/png;base64, #{juego.imagenes.get(0).contenido}" class="card-img-top" />
-			                        <div class="product-name"><b class="transformacion3">#{juego.nombre}</b></div>
+		                     	 	<img src="data:image/png;base64, #{juego.imagen}" class="card-img-top" />
+							    	<h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2>
 			                        <div class="product-description">#{juego.descripcion.length() gt 50 ? juego.descripcion.substring(0,57).concat('...') : juego.descripcion}</div>
 					                <h5 class="oferta" jsf:rendered="#{juego.evento!=null}">Oferta #{juego.evento.nombre}!!</h5>
 								    <h6 jsf:rendered="#{juego.evento==null}">Precio: #{juego.precio}</h6>
@@ -194,9 +178,33 @@
 								        <span>🟊🟊🟊🟊🟊</span>
 								      </div>
 								    </div>
-								    
 			                    </div>
+			                </div>
+			            </div>
+			        </p:carousel>
+			        <h1 class="titulo" style="color:rgb(33,37,41);">OFERTAS</h1>
+			        <p:carousel value="#{EventoBean.obtenerJuegosOferta()}" var="juego" responsive="true" >
+			            <div class="product" jsf:rendered="#{juego.estado!='BLOQUEADO'}">
+			                <div class="product-grid-item p-p-5">
+			                    <div class="product-grid-item-content">
+		                     	 	<img src="data:image/png;base64, #{juego.imagen}" class="card-img-top" />
+							    	<h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2>
+			                        <div class="product-description">#{juego.descripcion.length() gt 50 ? juego.descripcion.substring(0,57).concat('...') : juego.descripcion}</div>
+					                <h5 class="oferta" jsf:rendered="#{juego.evento!=null}">Oferta #{juego.evento.nombre}!!</h5>
+								    <h6 jsf:rendered="#{juego.evento==null}">Precio: #{juego.precio}</h6>
+								    <h6 class="antes" jsf:rendered="#{juego.evento!=null}">Precio antes: #{juego.precio}</h6>
+								    <h6 class="despues" jsf:rendered="#{juego.evento!=null}"> Precio en oferta!! U$S #{juego.precio-(juego.precio*juego.evento.descuento)/100}</h6>
+								    <h6 class="despues" jsf:rendered="#{juego.evento!=null}">#{juego.evento.descuento}% de descuento!</h6>
 		
+			                        <div class="star-ratings">
+								      <div class="fill-ratings" style="width: #{juego.nota*100/5}%;">
+								        <span>🟊🟊🟊🟊🟊</span>
+								      </div>
+								      <div class="empty-ratings">
+								        <span>🟊🟊🟊🟊🟊</span>
+								      </div>
+								    </div>
+			                    </div>
 			                </div>
 			            </div>
 			        </p:carousel>
@@ -204,5 +212,6 @@
 			</h:form>
 	    </div>
   </div>
+  <ui:include src="./footer.xhtml" />
 </h:body>
 </html>

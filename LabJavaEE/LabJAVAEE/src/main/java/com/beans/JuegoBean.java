@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.login.SessionUtils;
 import com.model.Comentario;
+import com.model.Imagen;
 import com.model.Juego;
 
 @ManagedBean(name = "juegoBean")
@@ -55,13 +56,23 @@ public class JuegoBean implements Serializable{
 	private String busqueda;
 	private String nuevo1  = this.nuevo();
 	private List<Juego> resultado = null;
+	private List<Juego> ultimos = null;
 	private Juego prueba = null;
 	private List<String> categoria = null;
 	private static Gson json = new GsonBuilder().registerTypeAdapter(Date.class, UnixEpochDateTypeAdapter.getUnixEpochDateTypeAdapter()).create();
 
 	
 	
-	 public void upload() {
+	
+	 public List<Juego> getUltimos() {
+		return ultimos;
+	}
+
+	public void setUltimos(List<Juego> ultimos) {
+		this.ultimos = ultimos;
+	}
+
+	public void upload() {
 	    if (file != null) {
 	        FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
 	        FacesContext.getCurrentInstance().addMessage(null, message);
@@ -230,9 +241,15 @@ public class JuegoBean implements Serializable{
         int cont=0;
         if(files!=null) {
 	    	 for(UploadedFile img : files.getFiles()) {
-	         	String nombre = "fichero" + cont;
-	         	mdo.addFormData(nombre, img.getInputStream(), MediaType.APPLICATION_JSON_TYPE);
-	         	cont++;
+	    		 String nombre = "";
+	    		 if(cont==0) {
+	    			 nombre = "portada";
+	    		 }
+	    		 else {
+	    			 nombre = "fichero" + cont; 
+	    		 }
+	         	 mdo.addFormData(nombre, img.getInputStream(), MediaType.APPLICATION_JSON_TYPE);
+	         	 cont++;
 	         }
         }
 		mdo.addFormData("nombre", nick, MediaType.TEXT_PLAIN_TYPE);
@@ -245,6 +262,28 @@ public class JuegoBean implements Serializable{
 		System.out.println("La respuesta al subir el juego es: " + response2.getStatus());
 		return  "/faces/index.xhtml?faces-redirect=true";
 	}
+	
+	
+	public List<Juego> obtenerUltimosJuegos(){
+		if(ultimos==null) {
+			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/ultimosjuegos";
+	        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
+	        String response2 = response.readEntity(String.class);
+	        Juego[] j = null;
+	        if(response2!=null && !response2.isEmpty()) {
+	        	 j = json.fromJson(response2, Juego[].class);
+	        }
+	        List<Juego> datos = null;
+	        if(j!=null) {
+	        	datos = Arrays.asList(j);
+	        }
+			//System.out.println("IMPRESION ");
+	        ultimos=datos;
+		}
+		return ultimos;
+	}
+	
+	
 
 	public List<Juego> obtenerJuegos(){
 		System.out.println("LaLALALALlalalLALALAL EENTREEEEEE");
@@ -320,7 +359,26 @@ public class JuegoBean implements Serializable{
 		return j;
 	}
 
-	
+	public List<Imagen> obtenerImagenesJuego(Juego j1){
+		if(j1!=null) {
+			System.out.println("El identificador es: " + j1.getId());
+			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/imagenesjuego/" + j1.getId();
+			Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
+			String string = response.readEntity(String.class);
+			Imagen[] imagenes = null;
+			if(string!=null && !string.isEmpty()) {
+				 imagenes = json.fromJson(string,Imagen[].class);
+			}
+			if(imagenes!=null) {
+				List<Imagen> lista = new ArrayList<Imagen>(Arrays.asList(imagenes));
+				Imagen portada = new Imagen();
+				portada.setContenido(j1.getImagen());
+				lista.add(0, portada);
+				return lista;
+			}
+		}
+		return null;
+	}
 	
 	public void reportarJuego(int id) {
 		System.out.println("LLEGUE A PUBLICAR ");

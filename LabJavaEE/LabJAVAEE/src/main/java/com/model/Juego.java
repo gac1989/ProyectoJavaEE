@@ -15,11 +15,18 @@ public class Juego {
 	private boolean desbloqueo;
 	private String trailer;
 	private String tags;
+	private String imagen;
 	private List<Imagen> imagenes;
 	
 	
 	
 	
+	public String getImagen() {
+		return imagen;
+	}
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
+	}
 	public boolean isDesbloqueo() {
 		return desbloqueo;
 	}

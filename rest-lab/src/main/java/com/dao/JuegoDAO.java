@@ -102,6 +102,20 @@ public class JuegoDAO {
 		return lista;
 	}
 	
+	public List<Juego> obtenerJuegosOferta(){
+		List<Juego> lista = null;
+		Query q = entity.createQuery("select j from Juego j where j.evento!=null");
+		lista =  q.getResultList();
+		return lista;
+	}
+	
+	public List<Juego> obtenerUltimosJuegos(){
+		List<Juego> lista = null;
+		Query q = entity.createQuery("select j from Juego j order by j.id desc").setMaxResults(6);
+		lista =  q.getResultList();
+		return lista;
+	}
+	
 	
 	public List<Juego> buscarJuegos(String busqueda){
 		List<Juego> listaJuegos = new ArrayList<>();

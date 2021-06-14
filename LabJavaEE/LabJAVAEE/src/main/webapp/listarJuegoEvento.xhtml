@@ -53,24 +53,25 @@
 </h:head>
 <h:body>
 	<ui:include src="./navBar.xhtml" />
-	
-	<h1>Lista de juegos de #{Evento}</h1>
-	<div class="row">
-		<div class="row row-cols-1 row-cols-md-4 g-4">
-			<c:forEach items="#{EventoBean.juegosEvento}" var="juego">
-		        <div class="card" style="width: 18rem;" jsf:rendered="#{juego.estado!='BLOQUEADO'}">
-				  <img src="data:image/png;base64, #{juego.imagenes.get(0).contenido}" class="card-img-top" />
-				  <div class="card-body">
-					<h5 class="oferta" jsf:rendered="#{juego.evento!=null}">Oferta #{juego.evento.nombre}!!</h5>
-				    <h6 jsf:rendered="#{juego.evento==null}">Precio: #{juego.precio}</h6>
-				    <h6 class="antes" jsf:rendered="#{juego.evento!=null}">Precio antes: #{juego.precio}</h6>
-				    <h6 class="despues" jsf:rendered="#{juego.evento!=null}"> Precio en oferta!! U$S #{juego.precio-(juego.precio*juego.evento.descuento)/100}</h6>
-				    <h6 class="despues" jsf:rendered="#{juego.evento!=null}">#{juego.evento.descuento}% de descuento!</h6>
-			 	 </div>
-			</div>
-		    </c:forEach>
-   		</div> 
-	</div>   
-    
+	<br/>
+	<br/>
+	<div class="row row-cols-1 row-cols-md-4 g-4" style="margin-left: 40px">
+		<c:forEach items="#{EventoBean.obtenerJuegosEvento(param['nombre'])}" var="juego">
+	        <div class="card" style="width: 18rem;" jsf:rendered="#{juego.estado!='BLOQUEADO'}">
+			  <img src="data:image/png;base64, #{juego.imagen}" class="card-img-top" />
+			  <div class="card-body">
+			   	<h:form>
+			    	<h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2>
+			    </h:form>
+				<h5 class="oferta" jsf:rendered="#{juego.evento!=null}">Oferta #{juego.evento.nombre}!!</h5>
+			    <h6 jsf:rendered="#{juego.evento==null}">Precio: #{juego.precio}</h6>
+			    <h6 class="antes" jsf:rendered="#{juego.evento!=null}">Precio antes: #{juego.precio}</h6>
+			    <h6 class="despues" jsf:rendered="#{juego.evento!=null}"> Precio en oferta!! U$S #{juego.precio-(juego.precio*juego.evento.descuento)/100}</h6>
+			    <h6 class="despues" jsf:rendered="#{juego.evento!=null}">#{juego.evento.descuento}% de descuento!</h6>
+		 	 </div>
+		</div>
+	    </c:forEach>
+	</div>
+    <ui:include src="./footer.xhtml" />
 </h:body>
 </html>

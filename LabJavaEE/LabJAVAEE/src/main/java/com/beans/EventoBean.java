@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -35,8 +37,19 @@ public class EventoBean {
 	private String seleccionado;
 	private String eventoseleccionado;
 	private List<Juego> juegosEvento = null;
+	private List<Juego> juegosOferta = null;
 	private static Gson json = new GsonBuilder().registerTypeAdapter(Date.class, UnixEpochDateTypeAdapter.getUnixEpochDateTypeAdapter()).create();
 	
+	
+	
+	public List<Juego> getJuegosOferta() {
+		return juegosOferta;
+	}
+
+	public void setJuegosOferta(List<Juego> juegosOferta) {
+		this.juegosOferta = juegosOferta;
+	}
+
 	public String getSeleccionado() {
 		return seleccionado;
 	}
@@ -94,9 +107,6 @@ public class EventoBean {
 	}
 	
 	public List<Juego> getJuegosEvento() {
-		if(juegosEvento==null) {
-			juegosEvento=this.obtenerJuegosEvento(nombre);
-		}
 		return juegosEvento;
 	}
 
@@ -106,29 +116,48 @@ public class EventoBean {
 	
 	
 	public List<Juego> obtenerJuegosEvento(String nombreEvento){
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosevento/" + nombreEvento;
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
-        String response2 = response.readEntity(String.class);
-        Juego[] j = null;
-        if(response2!=null && !response2.isEmpty()) {
-        	 j = json.fromJson(response2, Juego[].class);
-        }
-        List<Juego> datos = null;
-        if(j!=null) {
-        	datos = Arrays.asList(j);
-        }
-		//System.out.println("IMPRESION ");
-        return datos;
+		if(juegosEvento==null) {
+			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosevento/" + nombreEvento;
+			Client client = ClientBuilder.newClient();
+			WebTarget target= client.target(urlRestService);
+	        Response response = target.request().get();
+	        String response2 = response.readEntity(String.class);
+	        Juego[] j = null;
+	        if(response2!=null && !response2.isEmpty()) {
+	        	 j = json.fromJson(response2, Juego[].class);
+	        }
+	        List<Juego> datos = null;
+	        if(j!=null) {
+	        	datos = Arrays.asList(j);
+	        }
+			//System.out.println("IMPRESION ");
+	        juegosEvento=datos;
+		}
+		return juegosEvento;
 	}
 	
+	public List<Juego> obtenerJuegosOferta(){
+		if(juegosOferta==null) {
+			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosoferta";
+	        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
+	        String response2 = response.readEntity(String.class);
+	        Juego[] j = null;
+	        if(response2!=null && !response2.isEmpty()) {
+	        	 j = json.fromJson(response2, Juego[].class);
+	        }
+	        List<Juego> datos = null;
+	        if(j!=null) {
+	        	datos = Arrays.asList(j);
+	        }
+			//System.out.println("IMPRESION ");
+	        juegosOferta=datos;
+		}
+		return juegosOferta;
+	}
+	
+	
 	public String listarJuegosEvento(String nombre) {
-		System.out.println("LISTARRRRR");
-		this.juegosEvento=this.obtenerJuegosEvento(nombre);
-		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-		sessionMap.put("Evento", nombre);
-		return "/faces/listarJuegoEvento.xhtml";
+		return "/faces/listarJuegoEvento.xhtml?faces-redirect=true&nombre=" + nombre;
 	}
 	
 	public String finalizarEvento(String nombre) {
@@ -212,6 +241,7 @@ public class EventoBean {
 		}
 		return "";
 	}
+	
 	public String quitarJuegoEvento(String juego) {
 		System.out.println("el juego es: " + juego);
 		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/quitarjuegoevento";

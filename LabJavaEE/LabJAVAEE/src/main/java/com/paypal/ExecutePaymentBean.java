@@ -92,10 +92,10 @@ public class ExecutePaymentBean {
             Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
     		sessionMap.put("payer",payerInfo);
     		this.fileDownload=InvoiceGenerator.createPDF(payerInfo,transaction);
-    		sessionMap.put("transaction", transaction);
     		sessionMap.put("factura", fileDownload);
+    		sessionMap.put("transaction", transaction);
     		sessionMap.put("id", transaction.getCustom());
-    		return "/faces/confirmar.xhtml";
+    		return "/faces/confirmar.xhtml?faces-redirect=true";
         } catch (PayPalRESTException ex) {
             ex.printStackTrace();
             return "ERROR";

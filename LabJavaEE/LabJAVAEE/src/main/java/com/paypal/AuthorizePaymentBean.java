@@ -7,8 +7,13 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
+import org.omnifaces.util.Faces;
+
+import com.beans.ComprarJuego;
 import com.beans.JuegoBean;
+import com.login.SessionUtils;
 import com.model.Juego;
 import com.paypal.base.rest.PayPalRESTException;
 
@@ -22,9 +27,15 @@ public class AuthorizePaymentBean {
 		Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 		String id = params.get("id");
 		Juego j = JuegoBean.buscarJuego(Integer.parseInt(id));
-		
+		HttpSession session = SessionUtils.getSession();
+		String nick = (String)session.getAttribute("username");
 		if(j!=null) {
 			String preciodescuento="";
+			if(j.getPrecio()==0) {
+				System.out.println("El juego es gratuito");
+				ComprarJuego.comprar(id, nick);
+				return "/faces/confirmar.xhtml?faces-redirect=true&precio=" + j.getPrecio() +"&id=" + j.getId();
+			}
 			if(j.getEvento()!=null && j.getEvento().getActivo()==1) {
 				preciodescuento=String.valueOf(j.getPrecio()-(j.getPrecio()*j.getEvento().getDescuento()/100));
 			}

@@ -24,7 +24,7 @@ public class LoginFilter implements Filter {
 	}
 	
 	public boolean publico(String url) {
-		if(url.equals("/LabJAVAEE/faces/paginasJuegos/listarJuego.xhtml")|| url.equals("/LabJAVAEE/") || url.equals("/LabJAVAEE/faces/error.xhtml")|| url.indexOf("/public/") >= 0 || url.contains("javax.faces.resource")|| url.equals("/LabJAVAEE/faces/listarBusqueda.xhtml") || url.equals("/LabJAVAEE/faces/mostrarCategorias.xhtml") || url.equals("/LabJAVAEE/faces/listarJuegosCat.xhtml") || url.equals("/LabJAVAEE/faces/perfil.xhtml") || url.equals("/LabJAVAEE/faces/perfilVisitanteDev.xhtml") ||  url.equals("/LabJAVAEE/faces/perfilVisitantePlay.xhtml") || url.equals("/LabJAVAEE/faces/listarJuegoEvento.xhtml") || url.equals("/LabJAVAEE/faces/mostrarTodosUsuarios.xhtml")) {
+		if(url.equals("/LabJAVAEE/faces/paginasJuegos/listarJuego.xhtml")|| url.equals("/LabJAVAEE/") || url.equals("/LabJAVAEE/faces/error.xhtml")|| url.indexOf("/public/") >= 0 || url.contains("javax.faces.resource")|| url.equals("/LabJAVAEE/faces/listarBusqueda.xhtml") || url.equals("/LabJAVAEE/faces/mostrarCategorias.xhtml") || url.equals("/LabJAVAEE/faces/listarJuegosCat.xhtml") || url.equals("/LabJAVAEE/faces/perfil.xhtml") || url.equals("/LabJAVAEE/faces/perfilVisitanteDev.xhtml") ||  url.equals("/LabJAVAEE/faces/perfilVisitantePlay.xhtml") || url.equals("/LabJAVAEE/faces/listarJuegoEvento.xhtml") || url.equals("/LabJAVAEE/faces/mostrarTodosUsuarios.xhtml") || url.equals("/LabJAVAEE/faces/index.xhtml")) {
 			return true;
 		}
 		return false;
@@ -49,7 +49,7 @@ public class LoginFilter implements Filter {
 				case "jugador":{
 					System.out.println("LLegue al jugador: " + type);
 					System.out.println("La ruta jugador es: " + reqURI);
-					if (this.publico(reqURI) || reqURI.equals("/LabJAVAEE/faces/paginasJuegos/comprarJuego.xhtml") || reqURI.equals("/LabJAVAEE/faces/index.xhtml")||reqURI.equals("/LabJAVAEE/faces/admin.xhtml") || reqURI.equals("/LabJAVAEE/faces/listarpropios.xhtml") || reqURI.equals("/LabJAVAEE/faces/confirmar.xhtml")|| reqURI.equals("/LabJAVAEE/faces/perfilJugador.xhtml")) {
+					if (this.publico(reqURI) || reqURI.equals("/LabJAVAEE/faces/paginasJuegos/comprarJuego.xhtml") ||reqURI.equals("/LabJAVAEE/faces/admin.xhtml") || reqURI.equals("/LabJAVAEE/faces/listarpropios.xhtml") || reqURI.equals("/LabJAVAEE/faces/confirmar.xhtml")|| reqURI.equals("/LabJAVAEE/faces/perfilJugador.xhtml")||reqURI.equals("/LabJAVAEE/faces/comprar.xhtml")) {
 						chain.doFilter(request, response);
 						return;
 					}

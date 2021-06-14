@@ -61,9 +61,6 @@ public class CategoriaBean {
 	}
 
 	public List<Juego> getJuegos() {
-		if(juegos==null) {
-			juegos=this.obtenerJuegosCategoria(nombreCat);
-		}
 		return juegos;
 	}
 
@@ -76,26 +73,28 @@ public class CategoriaBean {
 	}
 	
 	public String listarJuegos(String nombre) {
-		this.juegos = this.obtenerJuegosCategoria(nombre);
-		return "/faces/listarJuegosCat.xhtml";
+		return "/faces/listarJuegosCat.xhtml?faces-redirect=true&nombre=" + nombre;
 	}
 	
 	public List<Juego> obtenerJuegosCategoria(String nombre){
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegoscategoria/" + nombre;
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
-        String response2 = response.readEntity(String.class);
-        System.out.println("La respuesta es: " + response2);
-        Juego[] u = null;
-        if(response2 != null && !response2.isEmpty()) {
-        	u = json.fromJson(response2, Juego[].class);
-        }
-        List<Juego> datos = null;
-        if(u!=null) {
-        	 datos = Arrays.asList(u);
-        }
-        return datos;
+		if(juegos==null) {
+			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegoscategoria/" + nombre;
+			Client client = ClientBuilder.newClient();
+			WebTarget target= client.target(urlRestService);
+	        Response response = target.request().get();
+	        String response2 = response.readEntity(String.class);
+	        System.out.println("La respuesta es: " + response2);
+	        Juego[] u = null;
+	        if(response2 != null && !response2.isEmpty()) {
+	        	u = json.fromJson(response2, Juego[].class);
+	        }
+	        List<Juego> datos = null;
+	        if(u!=null) {
+	        	 datos = Arrays.asList(u);
+	        }
+	        juegos=datos;
+		}
+		return juegos;
 	}
 	
 	public List<Categoria> obtenerCategorias() {

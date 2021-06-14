@@ -62,23 +62,18 @@ public class AdminDAO {
 		 AdminStats stats = new AdminStats();
 		 Query q = entity.createQuery("SELECT j.nombre, sum(c.precio), count(c.juego) FROM Juego j JOIN j.ventas c  group by j.nombre");
 		 List<Object[]> resultado= (List<Object[]>)q.getResultList();
-		 List<DevStat> datos = new ArrayList<DevStat>();
 		 double montototal = 0;
 		 long ventastotal = 0;
 	     for(Object[] dato: resultado){
-	    	 DevStat stat = new DevStat();
-	    	 stat.setNombre((String)dato[0]);
 	    	 double total = DesarrolladorDAO.round((double)dato[1],2);
 	    	 long ventas = (long)dato[2];
 	    	 montototal+=total;
 	    	 ventastotal+=ventas;
-	    	 stat.setTotal(total);
-	    	 stat.setVentas(ventas);
-	    	 datos.add(stat);
 	     }
+	     montototal = DesarrolladorDAO.round(montototal,2);
 	     stats.setTotal(montototal);
 	     stats.setTotalventas(ventastotal);
-	     stats.setTotalneto(montototal*0.1);
+	     stats.setTotalneto(DesarrolladorDAO.round(montototal*0.1,2));
 	     return stats;
 	}
 	
