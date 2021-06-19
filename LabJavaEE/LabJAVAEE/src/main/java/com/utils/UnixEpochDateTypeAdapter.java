@@ -1,4 +1,4 @@
-package com.beans;
+package com.utils;
 
 import java.io.IOException;
 import java.util.Date;

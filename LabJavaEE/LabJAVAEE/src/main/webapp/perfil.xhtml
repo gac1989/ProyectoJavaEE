@@ -191,7 +191,7 @@
 									<div>
 									    <div>
 										    <p:galleria value="#{juegoBean.obtenerImagenesJuego(perfil)}" var="imagen" panelHeight="600" >
-										        <img src="data:image/png;base64, #{imagen.contenido}" loading="lazy" />
+										        <img src="data:image/png;base64, #{imagen.contenido}" />
 										    </p:galleria>
 										</div>
 									</div>
@@ -239,7 +239,7 @@
                    		 	<h:form>
                     		<c:forEach items="#{ComentarioBean.obtenerComentarios(perfil.id)}" var="c">
                     			<div jsf:rendered="#{c.estado!='BLOQUEADO'}">
-	                    			<p>#{c.texto} - #{c.nota}  <h:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" value="Reportar" class="btn btn-warning" rendered="#{c.autor.nick!=user.nick}"/></p>
+	                    			<p>#{c.texto} - #{c.nota}  <p:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" icon="pi pi-bell" styleClass="rounded-button ui-button-warning" rendered="#{c.autor.nick!=user.nick}"/></p>
 	                          		<small class="text-muted">Posted by <h:commandLink action="#{PublicacionBean.mostrarPerfil(c.autor.nick)}" value="#{c.autor.nick}"></h:commandLink></small>
 	                          		<hr />
                           		</div>

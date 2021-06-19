@@ -2,10 +2,7 @@ package com.paypal;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -15,8 +12,6 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.FontSelector;
@@ -24,7 +19,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.paypal.api.payments.Address;
-import com.paypal.api.payments.Payer;
 import com.paypal.api.payments.PayerInfo;
 import com.paypal.api.payments.Transaction;
 
@@ -66,6 +60,7 @@ public class InvoiceGenerator {
 			name.setIndentationLeft(20);
 			Paragraph contact = new Paragraph(payer.getPhone());
 			contact.setIndentationLeft(20);
+			@SuppressWarnings("deprecation")
 			Address dir = payer.getShippingAddress();
 			Paragraph address = new Paragraph(dir.getCity() + " " + dir.getCountryCode() + " " + dir.getPostalCode());
 			address.setIndentationLeft(20);

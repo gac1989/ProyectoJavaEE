@@ -3,7 +3,6 @@ package com.login;
 import java.io.Serializable;
 import java.util.Map;
 
-import com.beans.UsuarioBean;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,6 +36,7 @@ public class Login implements Serializable {
 	private String msg;
 	private String user;
 	private Usuario usuario;
+	@SuppressWarnings("unused")
 	private String validateUsernamePassword = this.validateUsernamePassword();
 	
 	
@@ -74,7 +74,7 @@ public class Login implements Serializable {
 
 	
 	public static Usuario checkUser(String nick, String pass) {
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/checkusuario";
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/checkusuario";
 		Client client = ClientBuilder.newClient();
         WebTarget target= client.target(urlRestService);
         Form form = new Form();

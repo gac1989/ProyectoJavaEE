@@ -1,47 +1,30 @@
 package com.beans;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.FilesUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.file.UploadedFiles;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.login.SessionUtils;
-import com.model.Comentario;
 import com.model.Imagen;
 import com.model.Juego;
+import com.utils.ClientControl;
+import com.utils.GsonHelper;
 
 @ManagedBean(name = "juegoBean")
 @RequestScoped
@@ -59,12 +42,9 @@ public class JuegoBean implements Serializable{
 	private List<Juego> ultimos = null;
 	private Juego prueba = null;
 	private List<String> categoria = null;
-	private static Gson json = new GsonBuilder().registerTypeAdapter(Date.class, UnixEpochDateTypeAdapter.getUnixEpochDateTypeAdapter()).create();
+	private static Gson json = GsonHelper.customGson;
 
-	
-	
-	
-	 public List<Juego> getUltimos() {
+	public List<Juego> getUltimos() {
 		return ultimos;
 	}
 
@@ -72,34 +52,6 @@ public class JuegoBean implements Serializable{
 		this.ultimos = ultimos;
 	}
 
-	public void upload() {
-	    if (file != null) {
-	        FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
-	        FacesContext.getCurrentInstance().addMessage(null, message);
-	    }
-	}
-	
-	public void uploadMultiple() {
-	    if (files != null) {
-	        for (UploadedFile f : files.getFiles()) {
-	            FacesMessage message = new FacesMessage("Successful", f.getFileName() + " is uploaded.");
-	            FacesContext.getCurrentInstance().addMessage(null, message);
-	        }
-	    }
-	}
-	
-	public void handleFileUpload(FileUploadEvent event) {
-	    FacesMessage message = new FacesMessage("Successful", event.getFile().getFileName() + " is uploaded.");
-	    FacesContext.getCurrentInstance().addMessage(null, message);
-	}
-	
-	public void handleFilesUpload(FilesUploadEvent event) {
-	    for (UploadedFile f : event.getFiles().getFiles()) {
-	        FacesMessage message = new FacesMessage("Successful", f.getFileName() + " is uploaded.");
-	        FacesContext.getCurrentInstance().addMessage(null, message);
-	    }
-	}
-	
 	public UploadedFiles getFiles() {
 		return files;
 	}
@@ -119,7 +71,6 @@ public class JuegoBean implements Serializable{
 		this.juegosdesarrollador = juegosdesarrollador;
 	}
 
-
 	public List<Juego> getJuegosjugador() {
 		if(juegosjugador==null) {
 			juegosjugador=this.obtenerJuegosJugador();
@@ -127,11 +78,9 @@ public class JuegoBean implements Serializable{
 		return juegosjugador;
 	}
 
-
 	public void setJuegosjugador(List<Juego> juegosjugador) {
 		this.juegosjugador = juegosjugador;
 	}
-
 
 	public List<String> getCategoria() {
 		return categoria;
@@ -141,7 +90,6 @@ public class JuegoBean implements Serializable{
 	public void setCategoria(List<String> categoria) {
 		this.categoria = categoria;
 	}
-
 
 	public Juego getPrueba() {
 		return prueba;
@@ -215,28 +163,10 @@ public class JuegoBean implements Serializable{
 		return  "/faces/paginasJuegos/nuevoJuego.xhtml";
 	}
 	
-	public void prueba() throws IOException {
-		Client client = ClientBuilder.newClient();
-        String urlRestService2 = "http://localhost:8080/rest-lab/api/ejemplo/saludo";
-        WebTarget target2= client.target(urlRestService2);
-        MultipartFormDataOutput mdo = new MultipartFormDataOutput();
-        List<InputStream> imagenes = new ArrayList<InputStream>();
-		mdo.addFormData("fichero", files.getFiles().get(0).getInputStream(), MediaType.APPLICATION_JSON_TYPE);
-		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(mdo) { };
-		Response response2 = target2.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
-        String response3 = response2.readEntity(String.class);
-		System.out.println("La respuesta al subir el juego es: " + response2.getStatus());
-	}
-	
 	public String guardar (Juego juego) throws IOException {
-		if (files == null) {
-			System.out.println("LOS ARCHIVOS SON NULOS");
-        }
 		HttpSession session = SessionUtils.getSession();
 		String nick = (String)session.getAttribute("username");
-		Client client = ClientBuilder.newClient();
-        String urlRestService2 = "http://localhost:8080/rest-lab/api/ejemplo/registrarjuego";
-        WebTarget target2= client.target(urlRestService2);
+        String urlRestService2 = "http://localhost:8080/rest-lab/api/recursos/registrarjuego";
         MultipartFormDataOutput mdo = new MultipartFormDataOutput();
         int cont=0;
         if(files!=null) {
@@ -257,16 +187,14 @@ public class JuegoBean implements Serializable{
 			mdo.addFormData("categoria", categoria, MediaType.APPLICATION_JSON_TYPE);
 		}
 		mdo.addFormData("juego", juego, MediaType.APPLICATION_JSON_TYPE);
-		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(mdo) { };
-		Response response2 = target2.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
-		System.out.println("La respuesta al subir el juego es: " + response2.getStatus());
+		new ClientControl().realizarPeticionMultiple(urlRestService2, mdo);
 		return  "/faces/index.xhtml?faces-redirect=true";
 	}
 	
 	
 	public List<Juego> obtenerUltimosJuegos(){
 		if(ultimos==null) {
-			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/ultimosjuegos";
+			String urlRestService = "http://localhost:8080/rest-lab/api/recursos/ultimosjuegos";
 	        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
 	        String response2 = response.readEntity(String.class);
 	        Juego[] j = null;
@@ -277,7 +205,6 @@ public class JuegoBean implements Serializable{
 	        if(j!=null) {
 	        	datos = Arrays.asList(j);
 	        }
-			//System.out.println("IMPRESION ");
 	        ultimos=datos;
 		}
 		return ultimos;
@@ -286,11 +213,8 @@ public class JuegoBean implements Serializable{
 	
 
 	public List<Juego> obtenerJuegos(){
-		System.out.println("LaLALALALlalalLALALAL EENTREEEEEE");
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegos";
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/juegos";
+        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
         String response2 = response.readEntity(String.class);
         Gson json2 = GsonHelper.customGson;
         Juego[] j = json2.fromJson(response2, Juego[].class);
@@ -304,10 +228,8 @@ public class JuegoBean implements Serializable{
 	public List<Juego> obtenerJuegosJugador(){
 		HttpSession session = SessionUtils.getSession();
 		String nick = (String)session.getAttribute("username");
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosusuario/" + nick;
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/juegosusuario/" + nick;
+        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
         String response2 = response.readEntity(String.class);
         Juego[] j = null;
         if(response2!=null && !response2.isEmpty()) {
@@ -323,10 +245,8 @@ public class JuegoBean implements Serializable{
 	public List<Juego> obtenerJuegosDesarrollador(){
 		HttpSession session = SessionUtils.getSession();
 		String nick = (String)session.getAttribute("username");
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegosdesarrollador/" + nick;
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/juegosdesarrollador/" + nick;
+        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
         String response2 = response.readEntity(String.class);
         Juego[] j = null;
         if(response2!=null && !response2.isEmpty()) {
@@ -336,24 +256,19 @@ public class JuegoBean implements Serializable{
         if(j!=null) {
         	datos = Arrays.asList(j);
         }
-        System.out.println("La respuesta es: " + response.getStatus());
         return datos;
 	}
 	
 	public String listarJuegos() {
-		System.out.println("LISTARRRRR");
 		this.juegos=this.obtenerJuegos();
 		return "/faces/paginasJuegos/listarJuego.xhtml";
 	}
 	
 	public static Juego buscarJuego(int id) {
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/buscarJuego";
-		Client client = ClientBuilder.newClient();
-		System.out.println("El identificador es: " + id);
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/buscarJuego";
         Form form = new Form();
         form.param("id", String.valueOf(id));
-        WebTarget target= client.target(urlRestService);
-        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+        Response response = new ClientControl().realizarPeticion(urlRestService, "POST", form);
         String response2 = response.readEntity(String.class);
         Juego j = json.fromJson(response2, Juego.class);
 		return j;
@@ -361,8 +276,7 @@ public class JuegoBean implements Serializable{
 
 	public List<Imagen> obtenerImagenesJuego(Juego j1){
 		if(j1!=null) {
-			System.out.println("El identificador es: " + j1.getId());
-			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/imagenesjuego/" + j1.getId();
+			String urlRestService = "http://localhost:8080/rest-lab/api/recursos/imagenesjuego/" + j1.getId();
 			Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
 			String string = response.readEntity(String.class);
 			Imagen[] imagenes = null;
@@ -381,14 +295,10 @@ public class JuegoBean implements Serializable{
 	}
 	
 	public void reportarJuego(int id) {
-		System.out.println("LLEGUE A PUBLICAR ");
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/reportarjuego";
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/reportarjuego";
 		Form form = new Form();
         form.param("id", String.valueOf(id));
-        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
-        System.out.println("La respuesta es: " + response.getStatus());
+        new ClientControl().realizarPeticion(urlRestService, "POST", form);
 	}
 	
 	

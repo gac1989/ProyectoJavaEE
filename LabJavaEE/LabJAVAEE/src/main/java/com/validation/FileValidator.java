@@ -8,7 +8,6 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
 import org.primefaces.model.file.UploadedFiles;
-import org.primefaces.model.file.UploadedFilesWrapper;
 
 
 @FacesValidator("fileValidator")

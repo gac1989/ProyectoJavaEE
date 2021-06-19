@@ -1,6 +1,5 @@
 package com.chat;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -12,13 +11,12 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 
 @ServerEndpoint("/chatroom/{roomName}")
 public class ChatEndpoint {
 	
-	private static final Map<String, Set<Session>> rooms = new ConcurrentHashMap();
+	private static final Map<String, Set<Session>> rooms = new ConcurrentHashMap<String, Set<Session>>();
 	 
 	
 	@OnOpen

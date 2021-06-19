@@ -2,13 +2,8 @@ package com.paypal;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
@@ -22,12 +17,6 @@ import org.primefaces.model.StreamedContent;
 import com.beans.ComprarJuego;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfCopy;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.login.SessionUtils;
 import com.paypal.api.payments.PayerInfo;
 import com.paypal.api.payments.Payment;
@@ -54,8 +43,6 @@ public class ExecutePaymentBean {
     try {       
         Document pdf = new Document(PageSize.LETTER);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PdfWriter writer;
-        writer = PdfWriter.getInstance(pdf, baos);
         if (!pdf.isOpen()) {
             pdf.open();
         }

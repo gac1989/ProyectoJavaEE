@@ -8,13 +8,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import org.primefaces.model.chart.Axis;
-import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -26,14 +21,15 @@ import org.primefaces.model.charts.optionconfig.title.Title;
 
 import com.google.gson.Gson;
 import com.model.Chart;
-import com.model.Comentario;
+import com.utils.ClientControl;
 
 @ManagedBean(name="ChartsBean")
 @RequestScoped
 public class ChartsBean implements Serializable {
 
-  
-    private BarChartModel barModel2;
+	private static final long serialVersionUID = 1L;
+	
+	private BarChartModel barModel2;
 
     @PostConstruct
     public void init() {
@@ -41,10 +37,8 @@ public class ChartsBean implements Serializable {
     }
 
     public List<Chart> obtenerDatosFecha(){
-    	String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/datosfecha";
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-		Response response = target.request().get();
+    	String urlRestService = "http://localhost:8080/rest-lab/api/recursos/datosfecha";
+		Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
 		String response2 = response.readEntity(String.class);
         Chart[] c = null;
         if(response2!=null && !response2.isEmpty()){

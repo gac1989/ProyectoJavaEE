@@ -7,7 +7,8 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-import com.beans.ClientControl;
+import com.utils.ClientControl;
+
 
 @FacesValidator("juegoValidator")
 public class JuegoValidator implements Validator {
@@ -21,7 +22,7 @@ public class JuegoValidator implements Validator {
     }
 
     private boolean usernameExists(String juego) {
-    	String urlRestService2 = "http://localhost:8080/rest-lab/api/ejemplo/ckjuego/" + juego;
+    	String urlRestService2 = "http://localhost:8080/rest-lab/api/recursos/ckjuego/" + juego;
     	return (new ClientControl().realizarPeticion(urlRestService2, "GET", null).readEntity(String.class).equals("true"));
     }
 }

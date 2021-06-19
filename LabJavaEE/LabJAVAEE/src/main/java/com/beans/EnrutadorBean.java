@@ -3,8 +3,6 @@ package com.beans;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
-import com.sun.xml.bind.v2.model.core.Element;
-
 @ManagedBean(name = "enrutador")
 @RequestScoped
 public class EnrutadorBean {

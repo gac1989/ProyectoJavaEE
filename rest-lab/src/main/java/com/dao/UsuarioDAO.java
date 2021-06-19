@@ -70,7 +70,6 @@ public class UsuarioDAO {
 		}
 	}
 	
-	
 	public Usuario checkUser(String nick, String password) {
 		Usuario u = buscar(nick);
 		if(u!=null && verifyHash(password, u.getPassword())) {

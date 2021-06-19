@@ -1,22 +1,12 @@
 package com.dao;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.servlet.ServletContext;
 
-import org.primefaces.model.file.UploadedFile;
-
-import com.model.Comentario;
 import com.model.DatosVenta;
-import com.model.Desarrollador;
-import com.model.DevStat;
 import com.model.JPAUtil;
 import com.model.Juego;
 
@@ -123,22 +113,6 @@ public class JuegoDAO {
 		Query q = entity.createQuery("SELECT j FROM Juego j WHERE j.nombre like '%" + busqueda + "%' or j.tags like '%" + busqueda + "%'");
 		listaJuegos = q.getResultList();
 		return listaJuegos;
-	}
-	
-	public void copiarImagenServidor(UploadedFile file) {
-		//String ubicaciooImagen = null;
-		ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-		//String path = servletContext.getRealPath("") + "resources" + File.separatorChar + "img" + File.separatorChar + file.getFileName();
-		//String path = servletContext.getContextPath();
-		String path= "C:\\Users\\Surface\\Desktop\\pablo\\tecnologo\\quinto semestre\\Taller Java\\Laboratorio\\ProyectoJavaEE-Bruno\\rest-lab\\src\\main\\webapp\\img";
-		File archivo = new File(path,file.getFileName());
-		try {
-			Files.copy(file.getInputStream(),archivo.toPath());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(path);
 	}
 	
 	public void cerrar() {

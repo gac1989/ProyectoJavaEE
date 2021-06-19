@@ -2,7 +2,12 @@ package com.model;
 import java.io.Serializable;
 
 public class CompraJuegoId implements Serializable {
-    private String user;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private String user;
     private int juego;
     
     

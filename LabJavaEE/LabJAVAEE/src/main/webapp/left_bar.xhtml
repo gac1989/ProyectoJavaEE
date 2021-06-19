@@ -11,6 +11,9 @@
 			color: rgb(23,162,184);
 		}
 			
+		hr{
+			color: rgb(23,162,184);
+		}
 		.nav-link {
 		  color: #02CFC5   ;
 		  text-decoration: none;
@@ -27,14 +30,17 @@
 		.fa-gamepad{
 			background: white;
 		}
+		#bar{
+			border:2px  rgb(23,162,184) solid;
+		}
 		
 	</style>
 	
-	 <div class="card col-2" style="background: rgb(33,37,41);">
+	 <div id="bar" class="card col-2" style="background: rgb(33,37,41);">
+	     <br></br>
 	     <ul class="nav flex-column">
-		  <br></br>
-		  <h4 style="margin-left: 15px"><i class="fas fa-gamepad" style="background:white;"></i> Explorar por genero</h4>
-		  <hr/>
+		  <li><h4 style="margin-left: 15px"><i class="fas fa-gamepad" style="background:white;"></i> Explorar por genero</h4></li>
+		  <li><hr/></li>
 		  <ui:repeat value="#{CategoriaBean.categorias}" var="item">
 			  <li class="nav-item">
 			  <h:form>
@@ -45,12 +51,11 @@
 	  </ul>
 	  
 	  <ul class="nav flex-column">
-	   	  <br></br>
-	   	  <hr/>
-		  <h4 style="margin-left: 15px"><i class="fas fa-percent"></i> Eventos de oferta</h4>
-		  <hr/>
+	   	  <li><br></br></li>
+	   	  <li><hr/></li>
+		  <li><h4 style="margin-left: 15px"><i class="fas fa-percent"></i> Eventos de oferta</h4></li>
+		  <li><hr/></li>
 		  <c:forEach items="#{EventoBean.eventos}" var="item">
-		  <!-- hay que filtrar por eventos activos -->
 		  <c:if test="#{item.activo == 1}"> 
 			  <li class="nav-item">
 				  <h:form>

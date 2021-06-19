@@ -7,9 +7,6 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
@@ -19,6 +16,7 @@ import com.model.Desarrollador;
 import com.model.Jugador;
 import com.model.Publicacion;
 import com.model.Usuario;
+import com.utils.ClientControl;
 
 @ManagedBean(name = "PublicacionBean", eager = true)
 @RequestScoped
@@ -37,10 +35,8 @@ private List<Publicacion> publicaciones = null;
 	public List<Publicacion> obtenerPublicaciones(Usuario user){
 		if(this.publicaciones==null) {
 			List<Publicacion> datos = null;
-			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/publicaciones/"+user.getNick();
-			Client client = ClientBuilder.newClient();
-			WebTarget target= client.target(urlRestService);
-			Response response = target.request().get();
+			String urlRestService = "http://localhost:8080/rest-lab/api/recursos/publicaciones/"+user.getNick();
+			Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
 	        String response2 = response.readEntity(String.class);
 	        Publicacion[] u = null;
 	        if(response2!=null && !response2.isEmpty()) {
@@ -56,10 +52,8 @@ private List<Publicacion> publicaciones = null;
 	}
 	
 	public String mostrarPerfil(String nick) {
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/usuario/" + nick;
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-		Response response = target.request().get();
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/usuario/" + nick;
+		Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
         String response2 = response.readEntity(String.class);
         if(response2!=null && !response2.isEmpty()) {
         	Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();

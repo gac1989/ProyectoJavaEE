@@ -9,8 +9,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import org.omnifaces.util.Faces;
-
 import com.beans.ComprarJuego;
 import com.beans.JuegoBean;
 import com.login.SessionUtils;

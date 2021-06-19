@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +21,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.dao.ComentarioDAO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
@@ -54,7 +52,7 @@ public class Juego {
 	private Evento evento;
 	@Column
 	private float nota = 0;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "desarrollador_id")
 	@JsonBackReference
 	private Desarrollador desarrollador;
@@ -212,7 +210,7 @@ public class Juego {
 		for(Iterator<Comentario> featureIterator = comentarios.iterator(); 
 		    featureIterator.hasNext(); ) {
 		    Comentario feature = featureIterator.next();
-		    if(feature.getAutor().getNick().equals(feature.getAutor().getNick())) {
+		    if(feature.getAutor().getNick().equals(c1.getAutor().getNick())) {
 		    	System.out.println("El autor ya hizo un comentario");
 		    	return feature;
 		    }
@@ -222,7 +220,6 @@ public class Juego {
 	
 	public void agregarComentario(Comentario c1) {
 		Comentario valor = replaceComentario(c1);
-		ComentarioDAO control = new ComentarioDAO();
 		if(valor!=null) {
 			valor.setNota(c1.getNota());
 			valor.setTexto(c1.getTexto());

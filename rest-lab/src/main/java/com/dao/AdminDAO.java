@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 import com.model.AdminStats;
@@ -16,9 +15,10 @@ import com.model.JPAUtil;
 import com.model.Juego;
 
 public class AdminDAO {
+	
+	
 	EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
-	EntityTransaction trans = entity.getTransaction();
-	// guardar Administrador
+    // guardar Administrador
 	public void guardar(Administrador Administrador) {
 		entity.getTransaction().begin();
 		entity.persist(Administrador);
@@ -145,6 +145,11 @@ public class AdminDAO {
 		listaAdministradors = q.getResultList();
 		entity.close();
 		return listaAdministradors;
+	}
+	
+	@Override
+	public void finalize() {
+		entity.close();
 	}
 	
 	public void cerrar() {

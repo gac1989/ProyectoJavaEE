@@ -2,12 +2,8 @@ package com.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -18,6 +14,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name="desarrollador")
 @PrimaryKeyJoinColumn(name="nick")
 public class Desarrollador extends Usuario {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Column
 	private String nombre_empresa;
 	@Column

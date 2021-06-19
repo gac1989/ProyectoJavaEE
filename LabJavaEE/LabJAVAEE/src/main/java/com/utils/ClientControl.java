@@ -1,4 +1,4 @@
-package com.beans;
+package com.utils;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -21,7 +21,7 @@ public class ClientControl {
 			return target.request().get();
 		}
 		else {
-			return target.request().post(Entity.entity(datos, MediaType.APPLICATION_JSON));
+			return target.request().post(Entity.entity(datos, MediaType.APPLICATION_FORM_URLENCODED));
 		}
 	}
 	
@@ -30,5 +30,7 @@ public class ClientControl {
 		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(datos) { };
  		return target.request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
 	}
+	
+	
 	
 }

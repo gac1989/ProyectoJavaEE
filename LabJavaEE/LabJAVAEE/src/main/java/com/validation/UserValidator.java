@@ -8,7 +8,8 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-import com.beans.ClientControl;
+import com.utils.ClientControl;
+
 
 @FacesValidator("userValidator")
 public class UserValidator implements Validator {
@@ -22,7 +23,7 @@ public class UserValidator implements Validator {
     }
 
     private boolean usernameExists(String username) {
-    	String urlRestService2 = "http://localhost:8080/rest-lab/api/ejemplo/ckusername/" + username;
+    	String urlRestService2 = "http://localhost:8080/rest-lab/api/recursos/ckusername/" + username;
     	return (new ClientControl().realizarPeticion(urlRestService2, "GET", null).readEntity(String.class).equals("true"));
     }
 }

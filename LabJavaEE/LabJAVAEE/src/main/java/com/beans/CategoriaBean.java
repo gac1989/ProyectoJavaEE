@@ -5,21 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import javax.faces.model.SelectItem;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.model.Categoria;
 import com.model.Juego;
+import com.utils.ClientControl;
+import com.utils.GsonHelper;
 
 @ManagedBean(name = "CategoriaBean")
 @RequestScoped
@@ -78,12 +73,9 @@ public class CategoriaBean {
 	
 	public List<Juego> obtenerJuegosCategoria(String nombre){
 		if(juegos==null) {
-			String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/juegoscategoria/" + nombre;
-			Client client = ClientBuilder.newClient();
-			WebTarget target= client.target(urlRestService);
-	        Response response = target.request().get();
+			String urlRestService = "http://localhost:8080/rest-lab/api/recursos/juegoscategoria/" + nombre;
+	        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
 	        String response2 = response.readEntity(String.class);
-	        System.out.println("La respuesta es: " + response2);
 	        Juego[] u = null;
 	        if(response2 != null && !response2.isEmpty()) {
 	        	u = json.fromJson(response2, Juego[].class);
@@ -98,55 +90,39 @@ public class CategoriaBean {
 	}
 	
 	public List<Categoria> obtenerCategorias() {
-		
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/categorias";
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
-        Response response = target.request().get();
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/categorias";
+        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
         String response2 = response.readEntity(String.class);
         Categoria[] u = new Gson().fromJson(response2, Categoria[].class);
         List<Categoria> datos=null;
         if(u!=null) {
         	datos = Arrays.asList(u);
         }
-		System.out.println("IMPRESION ");
         return datos;
 	}
 
 	public String crearCategoria(String nombre) {
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/crearCategoria";
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/crearCategoria";
 		Form form = new Form();
         form.param("nombre", nombre);
-        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
-        String response2 = response.readEntity(String.class);
-        System.out.println("La respuesta es:  " + response2);
+        new ClientControl().realizarPeticion(urlRestService, "POST", form);
         return "/faces/Admin/categoria.xhtml?faces-redirect=true";
 	}
 	
 	public String editarCategoria(String nombre, String nuevoNombre) {
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/editarCategoria";
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/editarCategoria";
 		Form form = new Form();
         form.param("nombre", nombre);
         form.param("nombreNuevo", nuevoNombre);
-        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
-        String response2 = response.readEntity(String.class);
-        System.out.println("La respuesta es:  " + response2);
+        new ClientControl().realizarPeticion(urlRestService, "POST", form);
         return "/faces/Admin/categoria.xhtml";
 	}
 	
 	public String eliminarCategoria(String nombre) {
-		String urlRestService = "http://localhost:8080/rest-lab/api/ejemplo/eliminarCategoria";
-		Client client = ClientBuilder.newClient();
-		WebTarget target= client.target(urlRestService);
+		String urlRestService = "http://localhost:8080/rest-lab/api/recursos/eliminarCategoria";
 		Form form = new Form();
         form.param("nombre", nombre);
-        Response response = target.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
-        String response2 = response.readEntity(String.class);
-        System.out.println("La respuesta es:  " + response2);
+        new ClientControl().realizarPeticion(urlRestService, "POST", form);
         return "/faces/Admin/categoria.xhtml?faces-redirect=true";
 	}
 	

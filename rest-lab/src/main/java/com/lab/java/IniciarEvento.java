@@ -7,7 +7,7 @@ import java.util.TimerTask;
 import com.dao.EventoDAO;
 import com.model.Evento;
 
-class IniciarEvento extends TimerTask{
+public class IniciarEvento extends TimerTask{
 		private String nombre;
 		
 	  public IniciarEvento(String nombre){

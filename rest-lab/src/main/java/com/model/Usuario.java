@@ -10,7 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -25,6 +24,10 @@ import javax.persistence.OneToMany;
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @XmlRootElement
 public abstract class Usuario implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	private String nick;
 	@Column

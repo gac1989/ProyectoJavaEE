@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import com.dao.CompraDAO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
@@ -19,6 +17,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name="jugador")
 @PrimaryKeyJoinColumn(name="nick")
 public class Jugador extends Usuario {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Column
 	private Date fecha_nac;
 	@Column
