@@ -259,6 +259,24 @@ public class JuegoBean implements Serializable{
         return datos;
 	}
 	
+	public List<Juego> obtenerJuegosDesarrollador2(String nick){
+		if(juegosdesarrollador==null) {
+			String urlRestService = "http://localhost:8080/rest-lab/api/recursos/juegosdesarrollador/" + nick;
+	        Response response = new ClientControl().realizarPeticion(urlRestService, "GET", null);
+	        String response2 = response.readEntity(String.class);
+	        Juego[] j = null;
+	        if(response2!=null && !response2.isEmpty()) {
+	        	 j = json.fromJson(response2, Juego[].class);
+	        }
+	        List<Juego> datos = null;
+	        if(j!=null) {
+	        	datos = Arrays.asList(j);
+	        }
+	        juegosdesarrollador= datos;
+		}
+		return juegosdesarrollador;
+	}
+	
 	public String listarJuegos() {
 		this.juegos=this.obtenerJuegos();
 		return "/faces/paginasJuegos/listarJuego.xhtml";
@@ -289,6 +307,13 @@ public class JuegoBean implements Serializable{
 				portada.setContenido(j1.getImagen());
 				lista.add(0, portada);
 				return lista;
+			}
+			else {
+				List<Imagen> portada = new ArrayList<Imagen>();
+				Imagen img = new Imagen();
+				img.setContenido(j1.getImagen());
+				portada.add(0, img);
+				return portada;
 			}
 		}
 		return null;

@@ -22,6 +22,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Entity
@@ -52,9 +53,9 @@ public class Juego {
 	private Evento evento;
 	@Column
 	private float nota = 0;
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "desarrollador_id")
-	@JsonBackReference
+	@JsonManagedReference
 	private Desarrollador desarrollador;
 	@OneToMany(mappedBy = "juego")
 	@JsonBackReference

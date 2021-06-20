@@ -11,6 +11,8 @@ public interface AdminInterface {
 	
 	public List<Chart> getDatosFecha();
 	
+	public List<Chart> getIngresosFecha();
+	
 	public AdminStats adminStats();
 	
 	public List<DevStat> adminStatsJuego();

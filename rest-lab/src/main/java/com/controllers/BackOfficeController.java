@@ -22,6 +22,11 @@ public class BackOfficeController implements BackOfficeInterface {
 	}
 	
 	@Override
+	public List<Chart> getIngresosFecha(){
+		return new AdminController().getIngresosFecha();
+	}
+	
+	@Override
 	public AdminStats adminStats() {
 		return new AdminController().adminStats();
 	}

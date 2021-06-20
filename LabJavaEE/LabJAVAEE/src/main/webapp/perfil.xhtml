@@ -202,8 +202,10 @@
 						  	</div>
 					  	</div>
 				  	</div>
-                       <div class="card-body">
-                       	<h2 class="titulo">#{perfil.nombre}</h2>
+                    <div class="card-body">
+                       	<h:form>
+                       		<h2 class="titulo">#{perfil.nombre}</h2><small class="text-muted">Posted by <h:commandLink class="titulo" action="#{PublicacionBean.mostrarPerfil2(perfil.desarrollador)}" value="#{perfil.desarrollador.nick}"></h:commandLink></small>
+                       	</h:form>
                         <h5 class="oferta" jsf:rendered="#{perfil.evento!=null}">Oferta #{perfil.evento.nombre}!!</h5>
 					    <h3 jsf:rendered="#{perfil.evento==null and perfil.precio!=0}">Precio: U$S #{perfil.precio}</h3>
 					    <h3 jsf:rendered="#{perfil.precio==0}" class="despues">FREE</h3>
@@ -239,8 +241,8 @@
                    		 	<h:form>
                     		<c:forEach items="#{ComentarioBean.obtenerComentarios(perfil.id)}" var="c">
                     			<div jsf:rendered="#{c.estado!='BLOQUEADO'}">
-	                    			<p>#{c.texto} - #{c.nota}  <p:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" icon="pi pi-bell" styleClass="rounded-button ui-button-warning" rendered="#{c.autor.nick!=user.nick}"/></p>
-	                          		<small class="text-muted">Posted by <h:commandLink action="#{PublicacionBean.mostrarPerfil(c.autor.nick)}" value="#{c.autor.nick}"></h:commandLink></small>
+	                    			<p>#{c.texto} - #{c.nota}  <p:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" icon="pi pi-bell" styleClass="rounded-button ui-button-warning" rendered="#{type!='visitante' and c.autor.nick!=user.nick}"/></p>
+	                          		<small class="text-muted">Posted by <h:commandLink action="#{PublicacionBean.mostrarPerfil2(c.autor)}" value="#{c.autor.nick}"></h:commandLink></small>
 	                          		<hr />
                           		</div>
                            </c:forEach>

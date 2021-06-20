@@ -75,7 +75,7 @@
 	                            </div>
 	                            <br/>
 	                            <div class="form-group">
-							        <p:selectManyMenu id="cat" value="#{juegoBean.categoria}" scrollHeight="125" required="true" requiredMessage="Debe ingresar al menos una categoria">
+							        <p:selectManyMenu id="cat" value="#{juegoBean.categoria}" scrollHeight="125" requiredMessage="Debe ingresar al menos una categoria">
  										<f:selectItems value="#{CategoriaBean.getCategoriasList()}" />							
 							        </p:selectManyMenu>
 							        <p:message for="cat" />

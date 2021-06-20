@@ -28,6 +28,11 @@ public class AdminController implements AdminInterface {
 	}
 	
 	@Override
+	public List<Chart> getIngresosFecha(){
+		return new AdminDAO().obtenerIngresosFecha();
+	}
+	
+	@Override
 	public AdminStats adminStats() {
 		return new AdminDAO().obtenerStats();
 	}

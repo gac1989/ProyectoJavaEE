@@ -22,8 +22,6 @@ public class Comentario {
 	@JoinColumn(name="nick", foreignKey = @ForeignKey(name = "nick"))
 	private Jugador autor;
 	
-	
-	
 	public Estado getEstado() {
 		return estado;
 	}

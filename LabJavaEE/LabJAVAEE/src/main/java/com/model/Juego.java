@@ -17,10 +17,16 @@ public class Juego {
 	private String tags;
 	private String imagen;
 	private List<Imagen> imagenes;
+	private Desarrollador desarrollador;
 	
 	
 	
-	
+	public Desarrollador getDesarrollador() {
+		return desarrollador;
+	}
+	public void setDesarrollador(Desarrollador desarrollador) {
+		this.desarrollador = desarrollador;
+	}
 	public String getImagen() {
 		return imagen;
 	}

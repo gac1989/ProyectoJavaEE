@@ -138,6 +138,21 @@ public class AdminDAO {
 	     return lista;
 	}
 	
+	
+	public List<Chart> obtenerIngresosFecha() {
+		 Query q = entity.createQuery("SELECT monthname(c.fecha),SUM(c.precio) FROM CompraJuego c group by monthname(c.fecha) order by month(c.fecha) asc");
+		 List<Object[]> resultado= (List<Object[]>)q.getResultList();
+		 List<Chart> lista = new ArrayList<Chart>();
+	     for(Object[] dato: resultado){
+	    	Chart c1 = new Chart();
+	    	c1.setMonth((String)dato[0]);
+	    	double total =  (double)dato[1];
+	    	c1.setTotal(new Double(total).longValue());
+	    	lista.add(c1);
+	     }
+	     return lista;
+	}
+	
 	// obtener todos los Administrador
 	public List<Administrador> obtenerAdministradors() {
 		List<Administrador> listaAdministradors = new ArrayList<Administrador>();

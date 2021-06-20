@@ -75,4 +75,16 @@ private List<Publicacion> publicaciones = null;
         return "";
 	}
 	
+	public String mostrarPerfil2(Usuario u) {
+		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+		try {
+			Desarrollador d1 = (Desarrollador)u;
+			sessionMap.put("visitado", d1);
+ 			return "/faces/perfilVisitanteDev?faces-redirect=true";
+		}catch(Exception e) {
+			Jugador j = (Jugador)u;
+			sessionMap.put("visitado", j);
+ 			return "/faces/perfilVisitantePlay?faces-redirect=true";
+		}
+	}
 }

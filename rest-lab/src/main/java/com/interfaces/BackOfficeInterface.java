@@ -13,16 +13,14 @@ import com.model.DevStat;
 @Local
 public interface BackOfficeInterface {
 
-	//Obtiene datos de las ventas en la base segun mes, usado para popular Graficas
 	public List<Chart> getDatosFecha();
 	
-	//Estadicticas generales del admin
+	public List<Chart> getIngresosFecha();
+	
 	public AdminStats adminStats();
 	
-	//Obtiene las ventas en la pagina ordenadas por juego
 	public List<DevStat> adminStatsJuego();
 	
-	//Obtiene las ventas en la pagina ordenadas por desarrollador
 	public List<DevStat> adminStatsVentas();
 	
 	public boolean finalizarEvento(String nombre, String nick);
@@ -42,6 +40,6 @@ public interface BackOfficeInterface {
 	public boolean editarCategoria(String nombre, String nombreNuevo);
 	
 	public boolean eliminarCategoria(String nombre);
-
+	
 	
 }

@@ -104,6 +104,19 @@ public class RecursosRest {
 		}
 	}
 	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ingresosfecha")
+	public Response getIngresosFecha() {
+		List<Chart> datos = back.getIngresosFecha();
+		if(datos!=null) {
+			return Response.ok(datos).build();
+		}
+		else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/adminstats")

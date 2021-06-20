@@ -56,7 +56,6 @@
 						                            <thead class="thead-dark">
 						                                <tr>
 						                                    <th>Nombre</th>
-						                                    <th>Foto</th>
 						                                    <th>Accion</th>
 						
 						                                </tr>
@@ -70,7 +69,6 @@
 						                                <c:forEach items="#{CategoriaBean.categorias}" var="cat">
 						                                	<tr>
 						                                		<td>#{cat.nombre}</td>
-						                                		<td>Por ahora no xD</td>
 						                                		<td>
 						                                			<h:form>
 						                                				<h:commandLink action="#{CategoriaBean.eliminarCategoria(cat.nombre)}" class="btn btn-danger" role="button"><i class="fa fa-trash"></i></h:commandLink>

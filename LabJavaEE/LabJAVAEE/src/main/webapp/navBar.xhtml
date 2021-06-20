@@ -36,9 +36,6 @@
         	 <h:link value = "Usuarios" outcome = "#{(UsuarioBean.listarUsuarios())}" class="nav-link"/>
         </li>
         <li class="nav-item dropdown">
-         	<h:link value = "Categorias" outcome = "/faces/mostrarCategorias.xhtml" class="nav-link" />
-        </li>
-        <li class="nav-item dropdown">
          	<h:link value = "Login" outcome = "/faces/login.xhtml" class="nav-link" rendered="#{type==null or type == 'visitante'}" />
         </li>
         <h:panelGroup rendered="#{type==null or type == 'visitante'}">
