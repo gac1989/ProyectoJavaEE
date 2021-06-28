@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://primefaces.org/ui">
+	
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>SteamIndie</title>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+	<script>
+      $(document).ready(function() {
+        // Gets the span width of the filled-ratings span
+        // this will be the same for each rating
+        var star_rating_width = $('.fill-ratings span').width();
+        // Sets the container of the ratings to span width
+        // thus the percentages in mobile will never be wrong
+        $('.star-ratings').width(star_rating_width);
+      });
+    </script>
+    <style>
+	      .star-ratings {
+	        unicode-bidi: bidi-override;
+	        color: #ccc;
+	        font-size: 64px;
+	        position: relative;
+	        margin: 0;
+	        padding: 0;
+	      }
+	      .fill-ratings {
+	        color: #e7711b;
+	        padding: 0;
+	        position: absolute;
+	        z-index: 1;
+	        display: block;
+	        top: 0;
+	        left: 0;
+	        overflow: hidden;
+	      }
+	      span {
+	        display: inline-block;
+	        font-size:20pt;
+	      }
+	      .empty-ratings {
+	        padding: 0;
+	        display: block;
+	        z-index: 0;
+	      }
+    
+		img {
+			height: 250px;
+			width: 400px;
+			object-fit: cover;
+		}
+			
+	      body {
+	        margin-top: 50px;
+	        font-family: sans-serif;
+	        background: #f1f1f1;
+	      }
+	
+	      table {
+	        margin: 0 auto;
+	        text-align: center;
+	        border-collapse: collapse;
+	        border: 1px solid #d4d4d4;
+	        font-size: 20px;
+	        background: #fff;
+	      }
+	
+	      table th,
+	      table tr:nth-child(2n + 2) {
+	        background: #e7e7e7;
+	      }
+	
+	      table th,
+	      table td {
+	        padding: 20px 50px;
+	      }
+	
+	      table th {
+	        border-bottom: 1px solid #d4d4d4;
+	      }
+	
+	      .stars-outer {
+	        display: inline-block;
+	        position: relative;
+	        font-family: FontAwesome;
+	      }
+	
+	      .stars-outer::before {
+	        content: "\f006 \f006 \f006 \f006 \f006";
+	      }
+	
+	      .stars-inner {
+	        position: absolute;
+	        top: 0;
+	        left: 0;
+	        white-space: nowrap;
+	        overflow: hidden;
+	        width: 0;
+	      }
+	
+	      .stars-inner::before {
+	        content: "\f005 \f005 \f005 \f005 \f005";
+	        color: #f8ce0b;
+	      }
+	
+	      .attribution {
+	        font-size: 12px;
+	        color: #444;
+	        text-decoration: none;
+	        text-align: center;
+	        position: fixed;
+	        right: 10px;
+	        bottom: 10px;
+	        z-index: -1;
+	      }
+	      .attribution:hover {
+	        color: #1fa67a;
+	      }
+	      .oferta{
+				color: orange;
+			}
+			.antes{
+				color: red;
+				text-decoration: line-through;
+			}
+			.despues{
+				color:green;		
+			}
+			.titulo{
+				color: #17a2b8;
+				text-decoration: none;
+			}
+			
+			.transformacion3 { 
+				text-transform: uppercase;
+				font-size:15pt;
+			}
+		
+    </style>
+
+</h:head>
+<h:body>
+	<ui:include src="./navBar.xhtml" />
+	<br/>
+	<div class="row justify-content-start">
+	<ui:include src="./left_bar.xhtml" />
+	    <div class="col-10">
+			<h:form id="form">
+			    <div class="card">
+			    	<h1 class="titulo" style="color:rgb(33,37,41);">ULTIMOS JUEGOS</h1>
+			        <p:carousel value="#{juegoBean.obtenerUltimosJuegos()}" var="juego" responsive="true" >
+			            <div class="product" jsf:rendered="#{juego.estado!='BLOQUEADO'}">
+			                <div class="product-grid-item p-p-5">
+			                    <div class="product-grid-item-content">
+		                     	 	<img src="data:image/png;base64, #{juego.imagen}" class="card-img-top" />
+							    	<h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2>
+			                        <div class="product-description">#{juego.descripcion.length() gt 50 ? juego.descripcion.substring(0,57).concat('...') : juego.descripcion}</div>
+					                <h5 class="oferta" jsf:rendered="#{juego.evento!=null}">Oferta #{juego.evento.nombre}!!</h5>
+								    <h6 jsf:rendered="#{juego.evento==null}">Precio: #{juego.precio}</h6>
+								    <h6 class="antes" jsf:rendered="#{juego.evento!=null}">Precio antes: #{juego.precio}</h6>
+								    <h6 class="despues" jsf:rendered="#{juego.evento!=null}"> Precio en oferta!! U$S #{juego.precio-(juego.precio*juego.evento.descuento)/100}</h6>
+								    <h6 class="despues" jsf:rendered="#{juego.evento!=null}">#{juego.evento.descuento}% de descuento!</h6>
+		
+			                        <div class="star-ratings">
+								      <div class="fill-ratings" style="width: #{juego.nota*100/5}%;">
+								        <span>🟊🟊🟊🟊🟊</span>
+								      </div>
+								      <div class="empty-ratings">
+								        <span>🟊🟊🟊🟊🟊</span>
+								      </div>
+								    </div>
+			                    </div>
+			                </div>
+			            </div>
+			        </p:carousel>
+			        <h1 class="titulo" style="color:rgb(33,37,41);">OFERTAS</h1>
+			        <p:carousel value="#{EventoBean.obtenerJuegosOferta()}" var="juego" responsive="true" >
+			            <div class="product" jsf:rendered="#{juego.estado!='BLOQUEADO'}">
+			                <div class="product-grid-item p-p-5">
+			                    <div class="product-grid-item-content">
+		                     	 	<img src="data:image/png;base64, #{juego.imagen}" class="card-img-top" />
+							    	<h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2>
+			                        <div class="product-description">#{juego.descripcion.length() gt 50 ? juego.descripcion.substring(0,57).concat('...') : juego.descripcion}</div>
+					                <h5 class="oferta" jsf:rendered="#{juego.evento!=null}">Oferta #{juego.evento.nombre}!!</h5>
+								    <h6 jsf:rendered="#{juego.evento==null}">Precio: #{juego.precio}</h6>
+								    <h6 class="antes" jsf:rendered="#{juego.evento!=null}">Precio antes: #{juego.precio}</h6>
+								    <h6 class="despues" jsf:rendered="#{juego.evento!=null}"> Precio en oferta!!   <h:outputText value="#{juego.oferta}">
+								        <f:convertNumber type="number" groupingUsed="true" minFractionDigits="2" pattern="#0.00"/>
+								    </h:outputText></h6>
+								    <h6 class="despues" jsf:rendered="#{juego.evento!=null}">#{juego.evento.descuento}% de descuento!</h6>
+		
+			                        <div class="star-ratings">
+								      <div class="fill-ratings" style="width: #{juego.nota*100/5}%;">
+								        <span>🟊🟊🟊🟊🟊</span>
+								      </div>
+								      <div class="empty-ratings">
+								        <span>🟊🟊🟊🟊🟊</span>
+								      </div>
+								    </div>
+			                    </div>
+			                </div>
+			            </div>
+			        </p:carousel>
+			    </div>
+			</h:form>
+	    </div>
+  </div>
+  <ui:include src="./footer.xhtml" />
+</h:body>
+</html>

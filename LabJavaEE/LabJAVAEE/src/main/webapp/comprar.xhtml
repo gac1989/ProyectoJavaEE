@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>Listar juegos</title>
+	<link type = "text/css" rel = "stylesheet" href = "resources/style2.css" /> 
+</h:head>
+<h:body>
+
+	<ui:include src="./navBar.xhtml" />	
+    <div id="login">
+        <div class="container">
+			<br></br>
+			<h3>Compra Juego</h3>
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+                 		<h:form id='login-form' class="form">
+                          	<div class="form-group">
+	                              <label for="username" class="text-info">Nombre:</label><br></br>
+	                               <h:outputText id="username" value="#{param['nombreJuego']}" class="form-control"></h:outputText>
+                         	</div>
+                          	<div class="form-group">
+	                            <label for="password" class="text-info">Precio:</label><br></br>
+	                            <h:outputText id="password" value="#{param['precioJuego']}" class="form-control"></h:outputText>
+	                            <br></br>
+	                        </div>
+	                        <div class="form-group">
+	                          	<h:commandButton action="#{AutorizarPago.AutorizarPago()}" value="Checkout" class="btn btn-info btn-md">
+				                	<f:param name="product" value="#{param['nombreJuego']}" />
+				                	<f:param name="precio" value="#{param['precioJuego']}" />
+				                	<f:param name="id" value="#{param['id']}" />
+				                </h:commandButton>
+			                </div>
+		                </h:form>
+                    </div>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+    <ui:include src="./footer.xhtml" />
+</h:body>
+</html>

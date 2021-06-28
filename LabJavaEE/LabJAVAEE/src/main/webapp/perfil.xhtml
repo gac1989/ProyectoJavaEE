@@ -1,0 +1,281 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:o="http://omnifaces.org/ui">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>Nuevo juego</title>
+	<script>
+      $(document).ready(function() {
+        // Gets the span width of the filled-ratings span
+        // this will be the same for each rating
+        var star_rating_width = $('.fill-ratings span').width();
+        // Sets the container of the ratings to span width
+        // thus the percentages in mobile will never be wrong
+        $('.star-ratings').width(star_rating_width);
+      });
+    </script>
+    <style>
+	      .star-ratings {
+	        unicode-bidi: bidi-override;
+	        color: #ccc;
+	        font-size: 64px;
+	        position: relative;
+	        margin: 0;
+	        padding: 0;
+	      }
+	      .fill-ratings {
+	        color: #e7711b;
+	        padding: 0;
+	        position: absolute;
+	        z-index: 1;
+	        display: block;
+	        top: 0;
+	        left: 0;
+	        overflow: hidden;
+	      }
+	      span {
+	        display: inline-block;
+	      }
+	      .empty-ratings {
+	        padding: 0;
+	        display: block;
+	        z-index: 0;
+	      }
+    
+		img {
+			width: 100%;
+			object-fit: cover;
+		}
+			
+	      body {
+	        margin-top: 50px;
+	        font-family: sans-serif;
+	        background: #f1f1f1;
+	      }
+	
+	      table {
+	        margin: 0 auto;
+	        text-align: center;
+	        border-collapse: collapse;
+	        border: 1px solid #d4d4d4;
+	        font-size: 20px;
+	        background: #fff;
+	      }
+	
+	      table th,
+	      table tr:nth-child(2n + 2) {
+	        background: #e7e7e7;
+	      }
+	
+	      table th,
+	      table td {
+	        padding: 20px 50px;
+	      }
+	
+	      table th {
+	        border-bottom: 1px solid #d4d4d4;
+	      }
+	
+	      .stars-outer {
+	        display: inline-block;
+	        position: relative;
+	        font-family: FontAwesome;
+	      }
+	
+	      .stars-outer::before {
+	        content: "\f006 \f006 \f006 \f006 \f006";
+	      }
+	
+	      .stars-inner {
+	        position: absolute;
+	        top: 0;
+	        left: 0;
+	        white-space: nowrap;
+	        overflow: hidden;
+	        width: 0;
+	      }
+	
+	      .stars-inner::before {
+	        content: "\f005 \f005 \f005 \f005 \f005";
+	        color: #f8ce0b;
+	      }
+	
+	      .attribution {
+	        font-size: 12px;
+	        color: #444;
+	        text-decoration: none;
+	        text-align: center;
+	        position: fixed;
+	        right: 10px;
+	        bottom: 10px;
+	        z-index: -1;
+	      }
+	      .attribution:hover {
+	        color: #1fa67a;
+	      }
+	      .oferta{
+				color: orange;
+			}
+			.antes{
+				color: red;
+				text-decoration: line-through;
+			}
+			.despues{
+				color:green;		
+			}
+			.titulo{
+				color: #17a2b8;
+				text-decoration: none;
+			}
+			.ui-galleria{
+				width: 100% !important;
+			}
+			.ui-galleria-panel-wrapper{
+				width: 100% !important;
+			}
+			.ui-galleria-panel{
+				width: 100% !important;
+			}
+			
+			iframe{
+				width: 100%;
+				height: 25vw;
+			}
+			
+    </style>
+</h:head>
+<h:body>
+	<ui:include src="./navBar.xhtml" />	
+ 	<div class="container">
+           <div class="row">
+               <div class="col-lg-3">
+                   <div class="my-4"><h1 class="titulo">Steamindie chat</h1></div>
+                   <div class="card">
+	                   	<div class="card-body">
+		                   <form>
+								<br/><br/>
+								<textarea id="chatRoomField" rows="10" cols="30" class="form-control" readonly="true"></textarea>
+								<br/>
+								<div class="row g-2" jsf:rendered="#{user!=null}">
+									<div class="col-auto">
+										<input id="sendField" name="message" value="" type="text" class="form-control" />
+									</div>
+									<div class="col-auto">
+										<input id="sendButton" onclick="send_message();" value="Enviar" type="button" class="btn btn-primary" />
+									</div>
+								</div>
+							</form>
+            			</div>
+            		</div>
+               </div>
+               <div class="col-lg-9">
+                   <div class="card mt-4">
+                   <div class="card h-100">
+						<div class="card-body">
+							<nav>
+							  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+							    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Imagen</button>
+							    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Trailer</button>
+							  </div>
+							</nav>
+							<div class="tab-content" id="nav-tabContent">
+							  	<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+									<div>
+									    <div>
+										    <p:galleria value="#{juegoBean.obtenerImagenesJuego(perfil)}" var="imagen" panelHeight="600" >
+										        <img src="data:image/png;base64, #{imagen.contenido}" />
+										    </p:galleria>
+										</div>
+									</div>
+						  		</div>
+						  		<div class="tab-pane fade show" id="nav-profile" role="tabpanel" aria-labelledby="nav-home-tab">
+						  			<iframe src="#{perfil.trailer}" title="Game trailer" ></iframe>
+						  		</div>
+						  	</div>
+					  	</div>
+				  	</div>
+                    <div class="card-body">
+                       	<h:form>
+                       		<h2 class="titulo">#{perfil.nombre}</h2><small class="text-muted">Posted by <h:commandLink class="titulo" action="#{PublicacionBean.mostrarPerfil2(perfil.desarrollador)}" value="#{perfil.desarrollador.nick}"></h:commandLink></small>
+                       	</h:form>
+                        <h5 class="oferta" jsf:rendered="#{perfil.evento!=null}">Oferta #{perfil.evento.nombre}!!</h5>
+					    <h3 jsf:rendered="#{perfil.evento==null and perfil.precio!=0}">Precio: U$S #{perfil.precio}</h3>
+					    <h3 jsf:rendered="#{perfil.precio==0}" class="despues">FREE</h3>
+					    <h6 class="antes" jsf:rendered="#{perfil.evento!=null}">Precio antes: #{perfil.precio}</h6>
+				      	<h6 class="despues" jsf:rendered="#{perfil.evento!=null}"> Precio en oferta!!   <h:outputText value="#{perfil.oferta}">
+					        <f:convertNumber type="number" groupingUsed="true" minFractionDigits="2" pattern="#0.00"/>
+					    </h:outputText></h6>
+				     	<h6 class="despues" jsf:rendered="#{perfil.evento!=null}">#{perfil.evento.descuento}% de descuento!</h6>
+			     	  	<hr/>
+                           <h:form>
+                           		<input type='hidden' name='cancel_return' value="#{ComentarioBean.juegoComprado(perfil.id)}"></input>
+					    		<h:commandButton action="#{ComprarJuego.buscarJuego(perfil)}" value="Comprar" class="btn btn-primary" rendered="#{type == 'jugador' and  ComentarioBean.done2 eq false}"></h:commandButton>
+						    	<h:panelGroup layout="block" rendered="#{type == 'jugador' and  ComentarioBean.done eq true}" class="alert alert-success">Ya ha comprado este juego</h:panelGroup>
+					  			<h:commandButton  action="#{juegoBean.reportarJuego(perfil.id)}" value="Reportar" class="btn btn-warning" rendered="#{c.autor.nick!=user.nick}"/>
+				  			</h:form>
+					  		<div class="star-ratings">
+						      <div class="fill-ratings" style="width: #{perfil.nota*100/5}%;">
+						        <span>🟊🟊🟊🟊🟊</span>
+						      </div>
+						      <div class="empty-ratings">
+						        <span>🟊🟊🟊🟊🟊</span>
+						      </div>
+						    </div>
+					       <div class="card card-outline-secondary my-4">
+		                       <div class="card-header">Descripcion:</div>
+		                       <div class="card-body">
+		                       		 #{perfil.descripcion}
+		                       </div>
+	                       	</div>
+                       </div>
+                   </div>
+                   <div class="card card-outline-secondary my-4">
+                       <div class="card-header">Product Reviews</div>
+                       <div class="card-body">
+                   		 	<h:form>
+                    		<c:forEach items="#{ComentarioBean.obtenerComentarios(perfil.id)}" var="c">
+                    			<div jsf:rendered="#{c.estado!='BLOQUEADO'}">
+	                    			<p>#{c.texto} - #{c.nota}  <p:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" icon="pi pi-bell" styleClass="rounded-button ui-button-warning" rendered="#{type!=null and type!='visitante' and c.autor.nick!=user.nick}"/></p>
+	                          		<small class="text-muted">Posted by <h:commandLink class="titulo" action="#{PublicacionBean.mostrarPerfil2(c.autor)}" value="#{c.autor.nick}"></h:commandLink></small>
+	                          		<hr />
+                          		</div>
+                           </c:forEach>
+                           </h:form>
+                           <h:form>
+	                           <h:panelGroup rendered="#{type == 'jugador'}">
+		                           	<p:inputNumber id="input1" value="#{ComentarioBean.nota}" modifyValueOnWheel="false" maxValue="5" minValue="1" rendered="#{ComentarioBean.done eq true}"/>
+		                           	<br></br>
+		                           	<br></br>
+		                          	 <h:inputText id="username" value="#{ComentarioBean.texto}" class="form-control" rendered="#{ComentarioBean.done eq true}"></h:inputText>
+		                           	<br></br>
+		                          	<h:commandButton  action="#{ComentarioBean.publicarComentario(ComentarioBean.texto, perfil.id, ComentarioBean.nota)}" value="Publicar" class="btn btn-success" rendered="#{ComentarioBean.done==true}"/>
+	                      		</h:panelGroup>
+                     		</h:form>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <script>
+	       var username="#{user.nick}";
+	       var websocket = new WebSocket("ws://localhost:8080/LabJAVAEE/chatroom/#{perfil.nombre}");
+	
+	       websocket.onmessage = function(evt) { 
+	       	document.getElementById("chatRoomField").innerHTML += evt.data + "\n";
+	       };
+	
+	       function send_message() {
+	           websocket.send(username + ": " + document.getElementById("sendField").value);
+	       }
+       </script>
+       <ui:include src="./footer.xhtml" />
+</h:body>
+</html>

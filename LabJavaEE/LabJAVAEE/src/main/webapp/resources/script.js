@@ -1,0 +1,2 @@
+alert("LALAL ENTRE AL SCRIPT");
+console.log("LLALALA CONSOLA");
