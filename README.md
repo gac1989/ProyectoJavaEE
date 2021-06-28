@@ -17,3 +17,8 @@ Proyecto Java EE 2021
   5. Editar el archivo "persistence.xml" ubicado en el proyecto rest-lab en la ruta src/main/java/META-INF, ingresando las credenciales correspondientes(user, password de la conexion MySQL a utiizar).
   6. En el Project explorer de Eclipse click derecho en el proyecto rest-lab y seleccionar la opcion "Run as" y "Run on server".
   7. Seleccionar el servidor Wildfly y luego hacer click en Finish, el procedimiento es el mismo para el proyecto LabJAVAEE.
+  
+  *Notas de funcionamiento: 
+    - El administrador debe ser creado manualmente en la base de datos.
+    - Al crearse el administrador la contraseña debe ser un hash (Ejemplo de ingreso de un administrador en sql.txt).
+    
