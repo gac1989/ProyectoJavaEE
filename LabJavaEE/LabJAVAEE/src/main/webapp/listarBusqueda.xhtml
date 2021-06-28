@@ -33,6 +33,22 @@
 			width: 250px;
 			object-fit: cover;
 		}
+		
+		.oferta{
+			color: orange;
+		}
+		.antes{
+			color: red;
+			text-decoration: line-through;
+		}
+		.despues{
+			color:green;		
+		}
+		
+		.titulo{
+			color: #17a2b8;
+			text-decoration: none;
+		}
 				
 	</style>
 	
@@ -47,7 +63,13 @@
 			  <img src="data:image/png;base64, #{juego.imagen}" class="card-img-top" />
 			  <div class="card-body">
 			  	<h:form><h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2></h:form>
-			    <h6> U$S #{juego.precio}</h6>
+			        <h5 class="oferta" jsf:rendered="#{juego.evento!=null}">Oferta #{juego.evento.nombre}!!</h5>
+			        <h6 jsf:rendered="#{juego.evento==null}">Precio: #{juego.precio}</h6>
+				    <h6 class="antes" jsf:rendered="#{juego.evento!=null}">Precio antes: #{juego.precio}</h6>
+			      	<h6 class="despues" jsf:rendered="#{juego.evento!=null}"> Precio en oferta!!   <h:outputText value="#{juego.oferta}">
+				        <f:convertNumber type="number" groupingUsed="true" minFractionDigits="2" pattern="#0.00"/>
+				    </h:outputText></h6>
+				    <h6 class="despues" jsf:rendered="#{juego.evento!=null}">#{juego.evento.descuento}% de descuento!</h6>
 		 	 </div>
 		</div>
 	    </c:forEach>

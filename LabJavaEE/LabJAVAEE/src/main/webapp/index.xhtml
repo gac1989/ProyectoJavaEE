@@ -193,7 +193,9 @@
 					                <h5 class="oferta" jsf:rendered="#{juego.evento!=null}">Oferta #{juego.evento.nombre}!!</h5>
 								    <h6 jsf:rendered="#{juego.evento==null}">Precio: #{juego.precio}</h6>
 								    <h6 class="antes" jsf:rendered="#{juego.evento!=null}">Precio antes: #{juego.precio}</h6>
-								    <h6 class="despues" jsf:rendered="#{juego.evento!=null}"> Precio en oferta!! U$S #{juego.precio-(juego.precio*juego.evento.descuento)/100}</h6>
+								    <h6 class="despues" jsf:rendered="#{juego.evento!=null}"> Precio en oferta!!   <h:outputText value="#{juego.oferta}">
+								        <f:convertNumber type="number" groupingUsed="true" minFractionDigits="2" pattern="#0.00"/>
+								    </h:outputText></h6>
 								    <h6 class="despues" jsf:rendered="#{juego.evento!=null}">#{juego.evento.descuento}% de descuento!</h6>
 		
 			                        <div class="star-ratings">

@@ -37,6 +37,16 @@
 			color: #17a2b8;
 			text-decoration: none;
 		}
+		.oferta{
+			color: orange;
+		}
+		.antes{
+			color: red;
+			text-decoration: line-through;
+		}
+		.despues{
+			color:green;		
+		}
 				
 	</style>
 	
@@ -44,6 +54,8 @@
 <h:body>
 	<ui:include src="./navBar.xhtml" />
 	<br/>
+	<br/>
+	<h1 class="titulo" style="padding-left: 50px">Juegos de: #{param['nombre']}</h1>
 	<br/>
 	<div class="row row-cols-1 row-cols-md-4 g-4" style="margin-left: 40px">
 		<c:forEach items="#{CategoriaBean.obtenerJuegosCategoria(param['nombre'])}" var="juego" >
@@ -53,7 +65,13 @@
 				    <h:form>
 				    	<h2 class="titulo"><h:commandLink action="#{juegoBean.perfilJuego(juego)}" value="#{juego.nombre}" class="titulo"></h:commandLink></h2>
 				    </h:form>
-				    <h6> U$S #{juego.precio}</h6>
+				    <h5 class="oferta" jsf:rendered="#{juego.evento!=null}">Oferta #{juego.evento.nombre}!!</h5>
+				    <h6 jsf:rendered="#{juego.evento==null}">Precio: #{juego.precio}</h6>
+				    <h6 class="antes" jsf:rendered="#{juego.evento!=null}">Precio antes: #{juego.precio}</h6>
+			      	<h6 class="despues" jsf:rendered="#{juego.evento!=null}"> Precio en oferta!!   <h:outputText value="#{juego.oferta}">
+				        <f:convertNumber type="number" groupingUsed="true" minFractionDigits="2" pattern="#0.00"/>
+				    </h:outputText></h6>
+				    <h6 class="despues" jsf:rendered="#{juego.evento!=null}">#{juego.evento.descuento}% de descuento!</h6>
 			 	 </div>
 			</div>
 	    </c:forEach>

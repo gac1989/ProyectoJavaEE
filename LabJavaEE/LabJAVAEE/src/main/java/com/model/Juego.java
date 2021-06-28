@@ -10,6 +10,7 @@ public class Juego {
 	private float precio;
 	private float nota;
 	private float precio_descuento;
+	private double oferta;
 	private Evento evento;
 	private String estado;
 	private boolean desbloqueo;
@@ -21,6 +22,12 @@ public class Juego {
 	
 	
 	
+	public double getOferta() {
+		return oferta;
+	}
+	public void setOferta(double oferta) {
+		this.oferta = oferta;
+	}
 	public Desarrollador getDesarrollador() {
 		return desarrollador;
 	}

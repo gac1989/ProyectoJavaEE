@@ -210,7 +210,9 @@
 					    <h3 jsf:rendered="#{perfil.evento==null and perfil.precio!=0}">Precio: U$S #{perfil.precio}</h3>
 					    <h3 jsf:rendered="#{perfil.precio==0}" class="despues">FREE</h3>
 					    <h6 class="antes" jsf:rendered="#{perfil.evento!=null}">Precio antes: #{perfil.precio}</h6>
-					    <h6 class="despues" jsf:rendered="#{perfil.evento!=null}"> Precio en oferta!! U$S #{perfil.precio-(perfil.precio*perfil.evento.descuento)/100}</h6>
+				      	<h6 class="despues" jsf:rendered="#{perfil.evento!=null}"> Precio en oferta!!   <h:outputText value="#{perfil.oferta}">
+					        <f:convertNumber type="number" groupingUsed="true" minFractionDigits="2" pattern="#0.00"/>
+					    </h:outputText></h6>
 				     	<h6 class="despues" jsf:rendered="#{perfil.evento!=null}">#{perfil.evento.descuento}% de descuento!</h6>
 			     	  	<hr/>
                            <h:form>
@@ -241,8 +243,8 @@
                    		 	<h:form>
                     		<c:forEach items="#{ComentarioBean.obtenerComentarios(perfil.id)}" var="c">
                     			<div jsf:rendered="#{c.estado!='BLOQUEADO'}">
-	                    			<p>#{c.texto} - #{c.nota}  <p:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" icon="pi pi-bell" styleClass="rounded-button ui-button-warning" rendered="#{type!='visitante' and c.autor.nick!=user.nick}"/></p>
-	                          		<small class="text-muted">Posted by <h:commandLink action="#{PublicacionBean.mostrarPerfil2(c.autor)}" value="#{c.autor.nick}"></h:commandLink></small>
+	                    			<p>#{c.texto} - #{c.nota}  <p:commandButton  action="#{ComentarioBean.reportarComentario(c.id)}" icon="pi pi-bell" styleClass="rounded-button ui-button-warning" rendered="#{type!=null and type!='visitante' and c.autor.nick!=user.nick}"/></p>
+	                          		<small class="text-muted">Posted by <h:commandLink class="titulo" action="#{PublicacionBean.mostrarPerfil2(c.autor)}" value="#{c.autor.nick}"></h:commandLink></small>
 	                          		<hr />
                           		</div>
                            </c:forEach>

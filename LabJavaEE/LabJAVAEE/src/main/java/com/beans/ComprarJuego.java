@@ -40,6 +40,6 @@ public class ComprarJuego implements Serializable{
 	public String buscarJuego(Juego j) {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("juego",j);
-		return "/faces/comprar.xhtml?faces-redirect=true&nombreJuego=" + j.getNombre() + "&precioJuego=" + j.getPrecio() + "&id=" + j.getId();
+		return "/faces/comprar.xhtml?faces-redirect=true&nombreJuego=" + j.getNombre() + "&precioJuego=" + j.getOferta() + "&id=" + j.getId();
 	}
 }

@@ -51,6 +51,7 @@ public class JuegoController implements JuegoInterface{
 	 
 	 public void registroJuego(String json, String nick, String[] categoria, Map<String, List<InputPart>> uploadForm ) throws IOException {
 			UsuarioDAO controlus = new UsuarioDAO();
+			System.out.println("EL NICK EN LA COMPRA ES: " + nick);
 			Desarrollador d1 = (Desarrollador)controlus.buscar(nick);
 			if(d1!=null) {
 				Juego j1 = new Juego();
