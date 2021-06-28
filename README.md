@@ -15,12 +15,12 @@ Proyecto Java EE 2021
   2. En Eclipse configurar el ambiente agregando el servidor Wildlfy a la lista de servidores disponibles y asegurarse que esta configurada la version correspondiente de Java. Nota: Es posible que para agregar el servidor Wildfly sea necesario instalar el plugin JBoss Tools desde Eclipse Marketplace.
   3. Importar los proyectos: LabJAVAEE(Front) y rest-lab(API).
   4. En el Project Explorer de Eclipse, actualizar las dependencias de los proyectos, haciendo click derecho sobre cada proyecto, y en la opcion de "Maven" seleccionando "Update project".
-  5. Editar el archivo "persistence.xml" ubicado en el proyecto rest-lab en la ruta src/main/java/META-INF, ingresando las credenciales correspondientes(user, password de la conexion MySQL a utiizar).
+  5. Editar el archivo "persistence.xml" ubicado en el proyecto rest-lab en la ruta src/main/java/META-INF, ingresando las credenciales correspondientes(user, password de la conexion MySQL a utilizar).
   6. En el Project explorer de Eclipse click derecho en el proyecto rest-lab y seleccionar la opcion "Run as" y "Run on server".
   7. Seleccionar el servidor Wildfly y luego hacer click en Finish, el procedimiento es el mismo para el proyecto LabJAVAEE.
   
   *Notas de funcionamiento: 
   
     - El administrador debe ser creado manualmente en la base de datos.
-    - Al crearse el administrador la contraseña debe ser un hash (Ejemplo de ingreso de un administrador en sql.txt).
+    - Al crearse el administrador la contraseña debe ser un hash (Ejemplo de ingreso de un administrador en ejemplo.sql).
     
