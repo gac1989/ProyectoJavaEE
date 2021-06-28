@@ -22,5 +22,5 @@ Proyecto Java EE 2021
   *Notas de funcionamiento: 
   
     - El administrador debe ser creado manualmente en la base de datos.
-    - Al crearse el administrador la contraseña debe ser un hash (Ejemplo de ingreso de un administrador en sql.txt).
+    - Al crearse el administrador la contraseña debe ser un hash (Ejemplo de ingreso de un administrador en ejemplo.sql).
     
