@@ -1,8 +1,1 @@
-CREATE TABLE `labjava_base`.`usuario` (
-  `nick` VARCHAR(50) NOT NULL,
-  `nombres` VARCHAR(50) NULL,
-  `apellidos` VARCHAR(45) NULL,
-  `direccion` VARCHAR(45) NULL,
-  `email` VARCHAR(45) NULL,
-  `telefono` VARCHAR(45) NULL,
-  PRIMARY KEY (`nick`));
+INSERT INTO `administrador`(nick, email, imagen, password) VALUES ('Marcos55','marcos@gmail.com',NULL,'$2a$12$HGsKPIUeFD5simpSltN6bepDYp54NEaVw15eEYemnhdQvxc1FNMiu');
