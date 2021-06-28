@@ -19,6 +19,7 @@ Proyecto Java EE 2021
   7. Seleccionar el servidor Wildfly y luego hacer click en Finish, el procedimiento es el mismo para el proyecto LabJAVAEE.
   
   *Notas de funcionamiento: 
+  
     - El administrador debe ser creado manualmente en la base de datos.
     - Al crearse el administrador la contraseña debe ser un hash (Ejemplo de ingreso de un administrador en sql.txt).
     
